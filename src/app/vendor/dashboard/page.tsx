@@ -192,7 +192,7 @@ export default function VendorDashboardPage() {
 
         {/* Search and Filter Bar */}
         <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
               <input
@@ -203,38 +203,45 @@ export default function VendorDashboardPage() {
                 className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
               />
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setFilter('all')}
-                className={`px-4 py-2 rounded-lg font-medium transition ${
-                  filter === 'all' 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setFilter('pending')}
-                className={`px-4 py-2 rounded-lg font-medium transition ${
-                  filter === 'pending' 
-                    ? 'bg-yellow-600 text-white' 
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                Pending
-              </button>
-              <button
-                onClick={() => setFilter('in_progress')}
-                className={`px-4 py-2 rounded-lg font-medium transition ${
-                  filter === 'in_progress' 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                In Progress
-              </button>
-            </div>
+            <Link 
+              href="/vendor/work-orders"
+              className="bg-sky-500 hover:bg-sky-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap"
+            >
+              <FileText className="w-5 h-5" />
+              Manage Work Orders
+            </Link>
+          </div>
+          <div className="flex gap-2 mt-4">
+            <button
+              onClick={() => setFilter('all')}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                filter === 'all' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setFilter('pending')}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                filter === 'pending' 
+                  ? 'bg-yellow-600 text-white' 
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              Pending
+            </button>
+            <button
+              onClick={() => setFilter('in_progress')}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                filter === 'in_progress' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              In Progress
+            </button>
           </div>
         </div>
 
