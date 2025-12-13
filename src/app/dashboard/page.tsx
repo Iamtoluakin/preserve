@@ -59,8 +59,12 @@ export default function DashboardPage() {
         {/* Sidebar */}
         <aside className="w-64 bg-white border-r min-h-screen hidden lg:block">
           <nav className="p-4 space-y-2">
-            <NavItem icon={<Home />} label="Properties" active />
-            <NavItem icon={<FileText />} label="Work Orders" />
+            <Link href="/dashboard">
+              <NavItem icon={<Home />} label="Properties" active />
+            </Link>
+            <Link href="/dashboard/work-orders">
+              <NavItem icon={<FileText />} label="Work Orders" />
+            </Link>
             <NavItem icon={<Camera />} label="Inspections" />
             <NavItem icon={<Settings />} label="Settings" />
           </nav>
@@ -103,13 +107,13 @@ export default function DashboardPage() {
           {/* Actions Bar */}
           <div className="bg-white rounded-lg shadow-sm border p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
+              <Link href="/dashboard/properties/add" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
                 <Plus className="w-5 h-5" />
                 Add Property
-              </button>
-              <button className="border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:border-blue-600 hover:text-blue-600 transition">
+              </Link>
+              <Link href="/dashboard/work-orders/create" className="border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:border-blue-600 hover:text-blue-600 transition">
                 Create Work Order
-              </button>
+              </Link>
             </div>
             <div className="flex items-center gap-2">
               <select className="border border-slate-300 rounded-lg px-3 py-2 text-sm">
