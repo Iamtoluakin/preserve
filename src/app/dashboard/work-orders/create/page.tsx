@@ -137,7 +137,7 @@ export default function CreateWorkOrderPage() {
                 value={formData.propertyId}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
               >
                 <option value="">Select a property</option>
                 {sampleProperties.map(property => (
@@ -232,7 +232,7 @@ export default function CreateWorkOrderPage() {
                   value={formData.priority}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                 >
                   <option value="low">Low - Routine maintenance</option>
                   <option value="normal">Normal - Standard service</option>
@@ -252,7 +252,7 @@ export default function CreateWorkOrderPage() {
                   onChange={handleChange}
                   required
                   min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                 />
               </div>
             </div>
@@ -281,7 +281,7 @@ export default function CreateWorkOrderPage() {
                   onChange={handleChange}
                   required
                   rows={4}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                   placeholder="Describe the service needed, specific issues, or areas of concern..."
                 />
               </div>
@@ -295,7 +295,7 @@ export default function CreateWorkOrderPage() {
                   value={formData.urgency}
                   onChange={handleChange}
                   rows={2}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                   placeholder="Any code violations, HOA complaints, or time-sensitive issues?"
                 />
               </div>
@@ -309,7 +309,7 @@ export default function CreateWorkOrderPage() {
                   value={formData.accessInstructions}
                   onChange={handleChange}
                   rows={2}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                   placeholder="Gate codes, lockbox location, key pickup instructions, etc."
                 />
               </div>

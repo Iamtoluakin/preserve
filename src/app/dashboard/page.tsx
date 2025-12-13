@@ -39,7 +39,7 @@ export default function DashboardPage() {
                 <input
                   type="text"
                   placeholder="Search properties..."
-                  className="pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+                  className="pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64 text-slate-900"
                 />
               </div>
               <button className="relative p-2 text-slate-600 hover:bg-slate-100 rounded-lg">
@@ -60,7 +60,10 @@ export default function DashboardPage() {
         <aside className="w-64 bg-white border-r min-h-screen hidden lg:block">
           <nav className="p-4 space-y-2">
             <Link href="/dashboard">
-              <NavItem icon={<Home />} label="Properties" active />
+              <NavItem icon={<Home />} label="Dashboard" active />
+            </Link>
+            <Link href="/dashboard/properties">
+              <NavItem icon={<MapPin />} label="Your Properties" />
             </Link>
             <Link href="/dashboard/work-orders">
               <NavItem icon={<FileText />} label="Work Orders" />
@@ -116,13 +119,13 @@ export default function DashboardPage() {
               </Link>
             </div>
             <div className="flex items-center gap-2">
-              <select className="border border-slate-300 rounded-lg px-3 py-2 text-sm">
+              <select className="border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900">
                 <option>All Properties</option>
                 <option>Active</option>
                 <option>Pending</option>
                 <option>Completed</option>
               </select>
-              <select className="border border-slate-300 rounded-lg px-3 py-2 text-sm">
+              <select className="border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900">
                 <option>All Counties</option>
                 <option>Durham</option>
                 <option>Wake</option>
@@ -133,8 +136,17 @@ export default function DashboardPage() {
 
           {/* Properties Table */}
           <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-            <div className="p-4 border-b">
+            <div className="p-4 border-b flex items-center justify-between">
               <h2 className="text-xl font-semibold text-slate-900">Your Properties</h2>
+              <Link 
+                href="/dashboard/properties"
+                className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1"
+              >
+                View All Properties
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">

@@ -110,7 +110,7 @@ export default function AddPropertyPage() {
                   value={formData.address}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                   placeholder="1234 Main Street"
                 />
               </div>
@@ -125,7 +125,7 @@ export default function AddPropertyPage() {
                   value={formData.city}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                   placeholder="Durham"
                 />
               </div>
@@ -139,7 +139,7 @@ export default function AddPropertyPage() {
                   value={formData.county}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                 >
                   <option value="">Select County</option>
                   <option value="Durham">Durham County</option>
@@ -163,7 +163,7 @@ export default function AddPropertyPage() {
                   value={formData.state}
                   onChange={handleChange}
                   readOnly
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 text-slate-900"
                 />
               </div>
 
@@ -178,7 +178,7 @@ export default function AddPropertyPage() {
                   onChange={handleChange}
                   required
                   pattern="[0-9]{5}"
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                   placeholder="27701"
                 />
               </div>
@@ -207,7 +207,7 @@ export default function AddPropertyPage() {
                   value={formData.propertyType}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                 >
                   <option value="single_family">Single Family Home</option>
                   <option value="condo">Condo/Townhouse</option>
@@ -225,7 +225,7 @@ export default function AddPropertyPage() {
                   name="parcelId"
                   value={formData.parcelId}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                   placeholder="123-456-789"
                 />
               </div>
@@ -239,7 +239,7 @@ export default function AddPropertyPage() {
                   name="acquisitionDate"
                   value={formData.acquisitionDate}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                 />
               </div>
 
@@ -252,7 +252,7 @@ export default function AddPropertyPage() {
                   name="bankReference"
                   value={formData.bankReference}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                   placeholder="REF-2025-001234"
                 />
               </div>
@@ -280,7 +280,7 @@ export default function AddPropertyPage() {
                 value={formData.notes}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                 placeholder="Enter any special instructions, access codes, known issues, or other relevant information..."
               />
             </div>

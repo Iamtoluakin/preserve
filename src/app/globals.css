@@ -26,6 +26,15 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+@layer base {
+  /* Ensure all input fields have dark text by default */
+  input,
+  textarea,
+  select {
+    @apply text-slate-900;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
