@@ -370,30 +370,31 @@ export default function CreateWorkOrderV2Page() {
                                   : 'border-slate-200 hover:border-blue-400 hover:shadow-md bg-white'
                               }`}
                             >
-                              {/* Selection Badge */}
-                              <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${
-                                isSelected 
-                                  ? 'bg-green-600 text-white' 
-                                  : 'bg-slate-100 text-slate-600'
-                              }`}>
-                                {isSelected ? (
-                                  <>
-                                    <CheckCircle2 className="w-3 h-3" />
-                                    Added {selectedService && selectedService.quantity > 1 ? `(${selectedService.quantity})` : ''}
-                                  </>
-                                ) : (
-                                  <>
-                                    <Plus className="w-3 h-3" />
-                                    Click to Add
-                                  </>
-                                )}
-                              </div>
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1 pr-28">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <h4 className={`font-semibold ${isSelected ? 'text-green-900' : 'text-slate-900'}`}>
+                              <div className="flex items-start justify-between gap-4">
+                                {/* Left Content */}
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-start gap-2 mb-1">
+                                    <h4 className={`font-semibold flex-1 ${isSelected ? 'text-green-900' : 'text-slate-900'}`}>
                                       {service.name}
                                     </h4>
+                                    {/* Status Badge - Inline with title */}
+                                    <div className={`px-2.5 py-0.5 rounded-full text-xs font-bold flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${
+                                      isSelected 
+                                        ? 'bg-green-600 text-white' 
+                                        : 'bg-slate-200 text-slate-600'
+                                    }`}>
+                                      {isSelected ? (
+                                        <>
+                                          <CheckCircle2 className="w-3 h-3" />
+                                          Added{selectedService && selectedService.quantity > 1 ? ` ×${selectedService.quantity}` : ''}
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Plus className="w-3 h-3" />
+                                          Add
+                                        </>
+                                      )}
+                                    </div>
                                   </div>
                                   <p className="text-sm text-slate-600 mb-2">{service.description}</p>
                                   <div className="flex items-center gap-4 text-sm">
@@ -405,8 +406,9 @@ export default function CreateWorkOrderV2Page() {
                                     <span className="text-slate-500">{service.unit}</span>
                                   </div>
                                 </div>
-                                <div className="text-right ml-4">
-                                  <div className="text-2xl font-bold text-blue-600">
+                                {/* Right Price - Always visible */}
+                                <div className="text-right flex-shrink-0 ml-2">
+                                  <div className="text-2xl font-bold text-blue-600 whitespace-nowrap">
                                     ${service.basePrice}
                                   </div>
                                   <div className="text-xs text-slate-500">{service.unit}</div>

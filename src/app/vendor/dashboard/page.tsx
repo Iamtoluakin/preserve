@@ -123,7 +123,7 @@ export default function VendorDashboardPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold">Preserve</h1>
-                <p className="text-blue-100 text-sm">Vendor Dashboard</p>
+                <p className="text-blue-100 text-sm">Management Portal</p>
               </div>
             </div>
             <div className="flex items-center gap-4">

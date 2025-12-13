@@ -231,7 +231,7 @@ export default function HomePage() {
               <Link href="#about" className="text-slate-600 hover:text-blue-600 transition">About</Link>
               <Link href="#contact" className="text-slate-600 hover:text-blue-600 transition">Contact</Link>
               <Link href="/vendor/dashboard" className="text-slate-600 hover:text-blue-600 transition font-medium">
-                Vendor Portal
+                Management Portal
               </Link>
               <Link href="/dashboard" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
                 Client Portal
