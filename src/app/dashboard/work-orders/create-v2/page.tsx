@@ -24,8 +24,6 @@ type SelectedService = {
   total: number;
 };
 
-type BillingFrequency = 'one-time' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
-
 export default function CreateWorkOrderV2Page() {
   const [formData, setFormData] = useState({
     propertyId: '',
@@ -36,7 +34,6 @@ export default function CreateWorkOrderV2Page() {
   });
 
   const [selectedServices, setSelectedServices] = useState<SelectedService[]>([]);
-  const [billingFrequency, setBillingFrequency] = useState<BillingFrequency>('monthly');
   const [submitted, setSubmitted] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
 
@@ -49,23 +46,6 @@ export default function CreateWorkOrderV2Page() {
   ];
 
   const categories = [...new Set(serviceCatalog.map(s => s.category))];
-
-  // Add Full Preservation Package (all recurring services)
-  const addFullPackage = () => {
-    const recurringServices = serviceCatalog.filter(s => 
-      s.frequency === 'monthly' || s.frequency === 'quarterly'
-    );
-    const newServices: SelectedService[] = recurringServices.map(service => ({
-      id: service.id,
-      name: service.name,
-      basePrice: service.basePrice,
-      quantity: 1,
-      frequency: service.frequency,
-      unit: service.unit,
-      total: service.basePrice
-    }));
-    setSelectedServices(newServices);
-  };
 
   const addService = (service: typeof serviceCatalog[0]) => {
     const existing = selectedServices.find(s => s.id === service.id);
@@ -116,46 +96,6 @@ export default function CreateWorkOrderV2Page() {
     }, 0);
   };
 
-  const getQuarterlyEstimate = () => {
-    return getMonthlyEstimate() * 3;
-  };
-
-  const getBillingAmount = () => {
-    if (billingFrequency === 'one-time') {
-      return getTotalCost();
-    } else if (billingFrequency === 'weekly') {
-      return getMonthlyEstimate() / 4;
-    } else if (billingFrequency === 'monthly') {
-      return getMonthlyEstimate();
-    } else if (billingFrequency === 'quarterly') {
-      return getQuarterlyEstimate();
-    } else {
-      // yearly
-      return getMonthlyEstimate() * 12 * 0.9; // 10% discount
-    }
-  };
-  
-  const getBillingLabel = () => {
-    switch (billingFrequency) {
-      case 'one-time': return 'Total Cost';
-      case 'weekly': return 'Weekly Cost';
-      case 'monthly': return 'Monthly Cost';
-      case 'quarterly': return 'Quarterly Cost';
-      case 'yearly': return 'Yearly Cost';
-      default: return 'Total Cost';
-    }
-  };
-  
-  const getBillingSuffix = () => {
-    switch (billingFrequency) {
-      case 'weekly': return '/wk';
-      case 'monthly': return '/mo';
-      case 'quarterly': return '/qtr';
-      case 'yearly': return '/yr';
-      default: return '';
-    }
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const woNumber = `WO-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
@@ -165,9 +105,7 @@ export default function CreateWorkOrderV2Page() {
     console.log('Work Order submitted:', {
       ...formData,
       services: selectedServices,
-      billingFrequency,
-      totalCost: getTotalCost(),
-      billingAmount: getBillingAmount()
+      totalCost: getTotalCost()
     });
     
     setSubmitted(true);
@@ -203,21 +141,16 @@ export default function CreateWorkOrderV2Page() {
                   <p className="text-lg font-bold text-blue-900">{orderNumber}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-blue-600 font-medium mb-1">Billing Type</p>
-                  <p className="text-lg font-bold text-blue-900 capitalize">{billingFrequency}</p>
+                  <p className="text-sm text-blue-600 font-medium mb-1">Total Cost</p>
+                  <p className="text-lg font-bold text-blue-900">${getTotalCost().toLocaleString()}</p>
                 </div>
                 <div>
                   <p className="text-sm text-blue-600 font-medium mb-1">Services</p>
                   <p className="text-lg font-bold text-blue-900">{selectedServices.length}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-blue-600 font-medium mb-1">
-                    {getBillingLabel()}
-                  </p>
-                  <p className="text-lg font-bold text-blue-900">
-                    ${getBillingAmount().toFixed(0)}
-                    {getBillingSuffix()}
-                  </p>
+                  <p className="text-sm text-blue-600 font-medium mb-1">Est. Monthly</p>
+                  <p className="text-lg font-bold text-blue-900">${getMonthlyEstimate().toFixed(0)}/mo</p>
                 </div>
               </div>
             </div>
@@ -299,103 +232,42 @@ export default function CreateWorkOrderV2Page() {
 
               {/* Service Catalog */}
               <div className="bg-white rounded-xl shadow-sm border p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <ShoppingCart className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-semibold text-slate-900">Select Services (Multiple)</h2>
-                      <p className="text-sm text-slate-600">Click to add multiple services - they&apos;ll appear in your cart</p>
-                    </div>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <ShoppingCart className="w-6 h-6 text-blue-600" />
                   </div>
-                  <button
-                    type="button"
-                    onClick={addFullPackage}
-                    className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition font-semibold text-sm flex items-center gap-2 whitespace-nowrap"
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    Full Preservation Package
-                  </button>
-                </div>
-
-                {/* Full Package Info Banner */}
-                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <CheckCircle2 className="w-6 h-6 text-green-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-green-900 mb-1">Full Preservation Package</h3>
-                      <p className="text-sm text-green-800 mb-2">
-                        Get all recurring maintenance services at once! Includes lawn care, cleaning, inspections, and regular maintenance.
-                      </p>
-                      <div className="flex items-center gap-4 text-sm">
-                        <span className="text-green-700 font-medium">💰 Best Value</span>
-                        <span className="text-green-700 font-medium">🏠 Complete Protection</span>
-                        <span className="text-green-700 font-medium">📅 Recurring Services</span>
-                      </div>
-                    </div>
+                  <div>
+                    <h2 className="text-xl font-semibold text-slate-900">Select Services</h2>
+                    <p className="text-sm text-slate-600">Choose the services your property needs</p>
                   </div>
                 </div>
-
-                {/* Helper Text */}
-                {selectedServices.length > 0 && (
-                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-sm text-blue-800">
-                      ✓ <strong>{selectedServices.length} service{selectedServices.length > 1 ? 's' : ''}</strong> added to cart. 
-                      Keep clicking to add more!
-                    </p>
-                  </div>
-                )}
 
                 {categories.map(category => {
                   const categoryServices = serviceCatalog.filter(s => s.category === category);
                   return (
                     <div key={category} className="mb-6 last:mb-0">
-                      <h3 className="font-semibold text-slate-900 mb-3 pb-2 border-b flex items-center justify-between">
-                        <span>{category}</span>
-                        <span className="text-xs text-slate-500 font-normal">Click any service to add</span>
-                      </h3>
+                      <h3 className="font-semibold text-slate-900 mb-3 pb-2 border-b">{category}</h3>
                       <div className="space-y-2">
                         {categoryServices.map(service => {
                           const isSelected = selectedServices.some(s => s.id === service.id);
-                          const selectedService = selectedServices.find(s => s.id === service.id);
                           return (
                             <button
                               key={service.id}
                               type="button"
                               onClick={() => addService(service)}
-                              className={`w-full text-left p-4 rounded-lg border-2 transition relative ${
+                              className={`w-full text-left p-4 rounded-lg border-2 transition ${
                                 isSelected
-                                  ? 'border-green-500 bg-green-50 shadow-lg'
-                                  : 'border-slate-200 hover:border-blue-400 hover:shadow-md bg-white'
+                                  ? 'border-blue-500 bg-blue-50'
+                                  : 'border-slate-200 hover:border-blue-300 bg-white'
                               }`}
                             >
-                              {/* Selection Badge */}
-                              <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${
-                                isSelected 
-                                  ? 'bg-green-600 text-white' 
-                                  : 'bg-slate-100 text-slate-600'
-                              }`}>
-                                {isSelected ? (
-                                  <>
-                                    <CheckCircle2 className="w-3 h-3" />
-                                    Added {selectedService && selectedService.quantity > 1 ? `(${selectedService.quantity})` : ''}
-                                  </>
-                                ) : (
-                                  <>
-                                    <Plus className="w-3 h-3" />
-                                    Click to Add
-                                  </>
-                                )}
-                              </div>
                               <div className="flex items-start justify-between">
-                                <div className="flex-1 pr-28">
+                                <div className="flex-1">
                                   <div className="flex items-center gap-2 mb-1">
-                                    <h4 className={`font-semibold ${isSelected ? 'text-green-900' : 'text-slate-900'}`}>
-                                      {service.name}
-                                    </h4>
+                                    <h4 className="font-semibold text-slate-900">{service.name}</h4>
+                                    {isSelected && (
+                                      <CheckCircle2 className="w-5 h-5 text-blue-600" />
+                                    )}
                                   </div>
                                   <p className="text-sm text-slate-600 mb-2">{service.description}</p>
                                   <div className="flex items-center gap-4 text-sm">
@@ -457,7 +329,7 @@ export default function CreateWorkOrderV2Page() {
 
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Start Date * <span className="text-slate-500 text-xs">(Click to select)</span>
+                        Start Date *
                       </label>
                       <input
                         type="date"
@@ -466,8 +338,7 @@ export default function CreateWorkOrderV2Page() {
                         onChange={handleChange}
                         required
                         min={new Date().toISOString().split('T')[0]}
-                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 cursor-pointer hover:border-blue-400 transition"
-                        placeholder="Select start date"
+                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                       />
                     </div>
                   </div>
@@ -564,164 +435,35 @@ export default function CreateWorkOrderV2Page() {
                         ))}
                       </div>
 
-                      {/* Billing Frequency Selector */}
-                      <div className="border-t pt-4 mb-4">
-                        <label className="block text-sm font-medium text-slate-700 mb-3">
-                          Billing Frequency
-                        </label>
-                        <div className="space-y-2">
-                          <button
-                            type="button"
-                            onClick={() => setBillingFrequency('one-time')}
-                            className={`w-full p-3 rounded-lg border-2 transition text-left ${
-                              billingFrequency === 'one-time'
-                                ? 'border-blue-500 bg-blue-50'
-                                : 'border-slate-200 hover:border-slate-300'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <div className="font-semibold text-slate-900">One-Time</div>
-                                <div className="text-xs text-slate-600">Pay once for all services</div>
-                              </div>
-                              <div className="text-lg font-bold text-slate-900">
-                                ${getTotalCost().toLocaleString()}
-                              </div>
-                            </div>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => setBillingFrequency('weekly')}
-                            className={`w-full p-3 rounded-lg border-2 transition text-left ${
-                              billingFrequency === 'weekly'
-                                ? 'border-blue-500 bg-blue-50'
-                                : 'border-slate-200 hover:border-slate-300'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <div className="font-semibold text-slate-900">Weekly Subscription</div>
-                                <div className="text-xs text-slate-600">Automatic weekly billing</div>
-                              </div>
-                              <div className="text-lg font-bold text-blue-600">
-                                ${(getMonthlyEstimate() / 4).toFixed(0)}/wk
-                              </div>
-                            </div>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => setBillingFrequency('monthly')}
-                            className={`w-full p-3 rounded-lg border-2 transition text-left ${
-                              billingFrequency === 'monthly'
-                                ? 'border-blue-500 bg-blue-50'
-                                : 'border-slate-200 hover:border-slate-300'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <div className="font-semibold text-slate-900">Monthly Subscription</div>
-                                <div className="text-xs text-slate-600">Automatic monthly billing</div>
-                              </div>
-                              <div className="text-lg font-bold text-green-600">
-                                ${getMonthlyEstimate().toFixed(0)}/mo
-                              </div>
-                            </div>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => setBillingFrequency('quarterly')}
-                            className={`w-full p-3 rounded-lg border-2 transition text-left ${
-                              billingFrequency === 'quarterly'
-                                ? 'border-blue-500 bg-blue-50'
-                                : 'border-slate-200 hover:border-slate-300'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <div className="font-semibold text-slate-900">Quarterly Subscription</div>
-                                  <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-semibold">
-                                    SAVE 5%
-                                  </span>
-                                </div>
-                                <div className="text-xs text-slate-600">Bill every 3 months</div>
-                              </div>
-                              <div className="text-lg font-bold text-green-600">
-                                ${getQuarterlyEstimate().toFixed(0)}/qtr
-                              </div>
-                            </div>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => setBillingFrequency('yearly')}
-                            className={`w-full p-3 rounded-lg border-2 transition text-left ${
-                              billingFrequency === 'yearly'
-                                ? 'border-blue-500 bg-blue-50'
-                                : 'border-slate-200 hover:border-slate-300'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <div className="font-semibold text-slate-900">Yearly Subscription</div>
-                                  <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-semibold">
-                                    SAVE 10%
-                                  </span>
-                                </div>
-                                <div className="text-xs text-slate-600">Bill annually - best value</div>
-                              </div>
-                              <div className="text-lg font-bold text-green-600">
-                                ${(getMonthlyEstimate() * 12 * 0.9).toFixed(0)}/yr
-                              </div>
-                            </div>
-                          </button>
-                        </div>
-                      </div>
-
                       <div className="border-t pt-4 space-y-3">
                         <div className="flex justify-between text-sm">
-                          <span className="text-slate-600">Services Selected</span>
+                          <span className="text-slate-600">Subtotal</span>
+                          <span className="font-semibold text-slate-900">${getTotalCost().toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-600">Services</span>
                           <span className="font-medium text-slate-900">{selectedServices.length}</span>
                         </div>
                         <div className="border-t pt-3">
-                          <div className="flex justify-between mb-2">
-                            <span className="font-semibold text-slate-900">
-                              {getBillingLabel()}
-                            </span>
+                          <div className="flex justify-between mb-1">
+                            <span className="font-semibold text-slate-900">Total Cost</span>
                             <span className="text-2xl font-bold text-blue-600">
-                              ${getBillingAmount().toFixed(0)}
-                              {billingFrequency !== 'one-time' && (
-                                <span className="text-sm">{getBillingSuffix()}</span>
-                              )}
+                              ${getTotalCost().toLocaleString()}
                             </span>
                           </div>
-                          {billingFrequency !== 'one-time' && (
-                            <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-2">
-                              <p className="text-xs text-green-800">
-                                <strong>Subscription Benefits:</strong> Automatic scheduling, priority service, and consistent property care.
-                              </p>
-                            </div>
-                          )}
+                          <p className="text-xs text-slate-500 text-right">
+                            Est. ${getMonthlyEstimate().toFixed(0)}/month
+                          </p>
                         </div>
                       </div>
 
                       <button
                         type="submit"
                         disabled={selectedServices.length === 0 || !formData.propertyId}
-                        className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                        className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {billingFrequency === 'one-time' ? '🛒 Checkout & Submit Order' : '✅ Subscribe & Submit Order'}
+                        Submit Work Order
                       </button>
-                      
-                      {billingFrequency !== 'one-time' && (
-                        <p className="text-xs text-center text-slate-500 mt-2">
-                          You can cancel your subscription anytime
-                        </p>
-                      )}
                     </>
                   )}
                 </div>

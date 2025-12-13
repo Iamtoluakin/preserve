@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useState } from 'react';
 import { 
   Home, 
   Shield, 
@@ -10,10 +13,207 @@ import {
   Mail,
   MapPin,
   CheckCircle2,
-  ArrowRight
+  ArrowRight,
+  X,
+  DollarSign,
+  Clock,
+  Users,
+  CheckSquare
 } from 'lucide-react';
 
+// Service details data with comprehensive information
+const serviceDetails = {
+  'lawn': {
+    title: 'Lawn & Grounds Maintenance',
+    icon: Home,
+    color: 'green',
+    images: [
+      'https://images.unsplash.com/photo-1558904541-efa843a96f01?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1621574541862-c7c0c7e876f2?w=800&h=600&fit=crop'
+    ],
+    description: 'Professional lawn care and grounds maintenance to keep your properties looking pristine and code-compliant.',
+    longDescription: 'Our comprehensive lawn and grounds maintenance service ensures your foreclosed properties maintain excellent curb appeal, comply with municipal codes, and avoid HOA violations. We provide regular scheduled maintenance with documented before/after photos.',
+    pricing: {
+      base: 100,
+      frequency: 'per visit',
+      monthly: 'Starting at $100-300/month'
+    },
+    includes: [
+      'Complete lawn mowing and edging',
+      'Trimming around structures and obstacles',
+      'Grass clipping removal and disposal',
+      'Sidewalk and driveway edging',
+      'Basic weed control in lawn areas',
+      'GPS-stamped before/after photos',
+      'Municipal code compliance reporting',
+      'Emergency same-day service available'
+    ],
+    frequency: 'Weekly, Bi-weekly, or Monthly',
+    timeline: '1-2 hours per visit',
+    team: '2-person crew with professional equipment'
+  },
+  'securing': {
+    title: 'Property Securing',
+    icon: Shield,
+    color: 'orange',
+    images: [
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1582139329536-e7284fece509?w=800&h=600&fit=crop'
+    ],
+    description: 'Comprehensive security measures to protect vacant properties from unauthorized access and vandalism.',
+    longDescription: 'Protect your vacant properties with our professional securing services. We provide immediate response to secure properties after foreclosure, break-ins, or weather damage. All work meets insurance requirements and municipal regulations.',
+    pricing: {
+      base: 250,
+      frequency: 'one-time',
+      monthly: 'Starting at $250-500 per property'
+    },
+    includes: [
+      'Complete lock change on all entry points',
+      'Installation of secure lockbox systems',
+      'Window and door boarding (if needed)',
+      'Gate securing and lock installation',
+      'Exterior lighting inspection',
+      'Security system documentation',
+      'Detailed photo documentation',
+      'Insurance-compliant reporting'
+    ],
+    frequency: 'As-needed / Emergency Response',
+    timeline: '2-4 hours per property',
+    team: 'Licensed security specialists'
+  },
+  'winterization': {
+    title: 'Winterization Services',
+    icon: Snowflake,
+    color: 'cyan',
+    images: [
+      'https://images.unsplash.com/photo-1516380851973-7c4b90251c91?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1585338107529-13afc5f02586?w=800&h=600&fit=crop'
+    ],
+    description: 'Complete plumbing winterization and de-winterization to prevent costly freeze damage.',
+    longDescription: 'Protect your properties from freeze damage with our comprehensive winterization services. Our licensed technicians follow industry-standard protocols and provide detailed documentation for insurance and compliance purposes.',
+    pricing: {
+      base: 350,
+      frequency: 'seasonal',
+      monthly: 'Starting at $300-400 per service'
+    },
+    includes: [
+      'Drain all water supply lines',
+      'Add antifreeze to all drain traps',
+      'HVAC system shutdown and protection',
+      'Water heater drainage and shutdown',
+      'Toilet winterization with antifreeze',
+      'Exterior spigot and sprinkler winterization',
+      'Posted winterization notices',
+      'Detailed service report with photos'
+    ],
+    frequency: 'Seasonal (Fall/Spring)',
+    timeline: '2-3 hours per property',
+    team: 'Licensed plumbing specialists'
+  },
+  'inspection': {
+    title: 'Property Inspections',
+    icon: ClipboardCheck,
+    color: 'purple',
+    images: [
+      'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop'
+    ],
+    description: 'Detailed property inspections with GPS-stamped photos and comprehensive condition reports.',
+    longDescription: 'Our thorough property inspections provide you with complete visibility into your asset condition. Every inspection includes GPS-stamped photos, detailed checklists, and immediate notification of urgent issues.',
+    pricing: {
+      base: 200,
+      frequency: 'per visit',
+      monthly: 'Starting at $150-250 per inspection'
+    },
+    includes: [
+      'Complete interior and exterior inspection',
+      'GPS-stamped photos (30-50+ images)',
+      'Detailed condition checklist',
+      'HVAC, plumbing, electrical checks',
+      'Security and entry point verification',
+      'Code violation identification',
+      'Immediate emergency alerts',
+      'Professional PDF report within 24 hours'
+    ],
+    frequency: 'Monthly, Bi-weekly, or Custom',
+    timeline: '1-2 hours per property',
+    team: 'Certified property inspectors'
+  },
+  'maintenance': {
+    title: 'Maintenance & Repairs',
+    icon: Wrench,
+    color: 'gray',
+    images: [
+      'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?w=800&h=600&fit=crop'
+    ],
+    description: 'Professional maintenance and minor repairs to preserve property value and prevent deterioration.',
+    longDescription: 'Keep your properties in excellent condition with our comprehensive maintenance and repair services. From minor repairs to major exterior work, we provide quality workmanship with detailed documentation.',
+    pricing: {
+      base: 150,
+      frequency: 'per hour',
+      monthly: 'Starting at $150-500 depending on scope'
+    },
+    includes: [
+      'Minor carpentry and repairs',
+      'Exterior painting and touch-ups',
+      'Debris and trash removal',
+      'Gutter cleaning and repair',
+      'Pressure washing services',
+      'Door and window repairs',
+      'Fence and deck maintenance',
+      'Detailed work completion reports'
+    ],
+    frequency: 'As-needed',
+    timeline: 'Varies by project scope',
+    team: 'Licensed contractors and handymen'
+  },
+  'documentation': {
+    title: 'Documentation & Reporting',
+    icon: Camera,
+    color: 'blue',
+    images: [
+      'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1551847812-b84ae5d63762?w=800&h=600&fit=crop'
+    ],
+    description: 'Professional photo documentation with GPS coordinates and comprehensive condition reports.',
+    longDescription: 'Maintain complete documentation of all your properties with our professional photo and reporting services. Every service includes GPS-stamped images, detailed timestamps, and cloud-based storage for easy access.',
+    pricing: {
+      base: 50,
+      frequency: 'per visit',
+      monthly: 'Starting at $50-100 per visit'
+    },
+    includes: [
+      'GPS-stamped exterior photos (all angles)',
+      'Interior condition photography',
+      'Timestamp on all images',
+      'Cloud storage with instant access',
+      'Detailed written condition notes',
+      'Code violation documentation',
+      'Before/after service comparisons',
+      'Professional PDF reports'
+    ],
+    frequency: 'Monthly or with each service',
+    timeline: '30-60 minutes per property',
+    team: 'Professional documentation specialists'
+  }
+};
+
 export default function HomePage() {
+  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const openServiceModal = (serviceKey: string) => {
+    setSelectedService(serviceKey);
+    setCurrentImageIndex(0);
+  };
+
+  const closeServiceModal = () => {
+    setSelectedService(null);
+    setCurrentImageIndex(0);
+  };
+
+  const service = selectedService ? serviceDetails[selectedService as keyof typeof serviceDetails] : null;
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       {/* Navigation */}
@@ -110,31 +310,37 @@ export default function HomePage() {
               icon={<Home className="w-8 h-8" />}
               title="Lawn & Grounds Maintenance"
               description="Regular mowing, trimming, edging, and landscaping to maintain curb appeal and prevent code violations."
+              onClick={() => openServiceModal('lawn')}
             />
             <ServiceCard
               icon={<Shield className="w-8 h-8" />}
               title="Property Securing"
               description="Lock changes, door/window boarding, and comprehensive security measures to protect vacant properties."
+              onClick={() => openServiceModal('securing')}
             />
             <ServiceCard
               icon={<Snowflake className="w-8 h-8" />}
               title="Winterization Services"
               description="Complete winterization and de-winterization of plumbing systems to prevent freeze damage."
+              onClick={() => openServiceModal('winterization')}
             />
             <ServiceCard
               icon={<ClipboardCheck className="w-8 h-8" />}
               title="Property Inspections"
               description="Detailed inspections with GPS-stamped photos, timestamps, and comprehensive checklists."
+              onClick={() => openServiceModal('inspection')}
             />
             <ServiceCard
               icon={<Wrench className="w-8 h-8" />}
               title="Maintenance & Repairs"
               description="Minor exterior repairs, painting, debris removal, and general property upkeep services."
+              onClick={() => openServiceModal('maintenance')}
             />
             <ServiceCard
               icon={<Camera className="w-8 h-8" />}
               title="Documentation & Reporting"
               description="Professional photo documentation with GPS coordinates and detailed condition reports."
+              onClick={() => openServiceModal('documentation')}
             />
           </div>
         </div>
@@ -251,6 +457,127 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Service Details Modal */}
+      {selectedService && service && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            {/* Backdrop */}
+            <div 
+              className="fixed inset-0 bg-slate-900 bg-opacity-75 transition-opacity"
+              onClick={closeServiceModal}
+            />
+
+            {/* Modal */}
+            <div className="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+              {/* Close Button */}
+              <button
+                onClick={closeServiceModal}
+                className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full shadow-lg hover:bg-slate-100 transition"
+              >
+                <X className="w-6 h-6 text-slate-600" />
+              </button>
+
+              {/* Image Gallery */}
+              <div className="relative h-80 bg-slate-100">
+                <img
+                  src={service.images[currentImageIndex]}
+                  alt={service.title}
+                  className="w-full h-full object-cover"
+                />
+                {service.images.length > 1 && (
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                    {service.images.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentImageIndex(index)}
+                        className={`w-2 h-2 rounded-full transition ${
+                          index === currentImageIndex ? 'bg-white w-8' : 'bg-white/50'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="p-8">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className={`w-16 h-16 bg-${service.color}-100 rounded-xl flex items-center justify-center`}>
+                    <service.icon className={`w-8 h-8 text-${service.color}-600`} />
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-3xl font-bold text-slate-900 mb-2">{service.title}</h2>
+                    <p className="text-lg text-slate-600">{service.description}</p>
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <p className="text-slate-700 leading-relaxed">{service.longDescription}</p>
+                </div>
+
+                {/* Quick Info Grid */}
+                <div className="grid md:grid-cols-4 gap-4 mb-6 p-4 bg-slate-50 rounded-xl">
+                  <div className="text-center">
+                    <DollarSign className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                    <div className="text-sm text-slate-600">Pricing</div>
+                    <div className="font-semibold text-slate-900">{service.pricing.monthly}</div>
+                  </div>
+                  <div className="text-center">
+                    <Clock className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                    <div className="text-sm text-slate-600">Timeline</div>
+                    <div className="font-semibold text-slate-900">{service.timeline}</div>
+                  </div>
+                  <div className="text-center">
+                    <Users className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                    <div className="text-sm text-slate-600">Team</div>
+                    <div className="font-semibold text-slate-900 text-sm">{service.team}</div>
+                  </div>
+                  <div className="text-center">
+                    <CheckSquare className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                    <div className="text-sm text-slate-600">Frequency</div>
+                    <div className="font-semibold text-slate-900 text-sm">{service.frequency}</div>
+                  </div>
+                </div>
+
+                {/* What's Included */}
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <CheckCircle2 className="w-6 h-6 text-green-600" />
+                    What&apos;s Included
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    {service.includes.map((item, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span className="text-slate-700">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t">
+                  <Link
+                    href="/dashboard/work-orders/create"
+                    className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold text-center"
+                    onClick={closeServiceModal}
+                  >
+                    Request This Service
+                  </Link>
+                  <Link
+                    href="#contact"
+                    className="flex-1 border-2 border-slate-300 text-slate-700 px-6 py-3 rounded-lg hover:border-blue-600 hover:text-blue-600 transition font-semibold text-center"
+                    onClick={closeServiceModal}
+                  >
+                    Contact Us
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
       <footer className="bg-slate-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -292,14 +619,20 @@ export default function HomePage() {
   );
 }
 
-function ServiceCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+function ServiceCard({ icon, title, description, onClick }: { icon: React.ReactNode; title: string; description: string; onClick?: () => void }) {
   return (
-    <div className="bg-slate-50 rounded-xl p-6 hover:shadow-lg transition border border-slate-200">
-      <div className="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-4 text-blue-600">
+    <div 
+      onClick={onClick}
+      className="bg-slate-50 rounded-xl p-6 hover:shadow-lg transition border border-slate-200 cursor-pointer group"
+    >
+      <div className="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-4 text-blue-600 group-hover:scale-110 transition">
         {icon}
       </div>
-      <h3 className="text-xl font-semibold text-slate-900 mb-3">{title}</h3>
-      <p className="text-slate-600">{description}</p>
+      <h3 className="text-xl font-semibold text-slate-900 mb-3 group-hover:text-blue-600 transition">{title}</h3>
+      <p className="text-slate-600 mb-4">{description}</p>
+      <div className="text-blue-600 font-medium text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+        Learn More <ArrowRight className="w-4 h-4" />
+      </div>
     </div>
   );
 }

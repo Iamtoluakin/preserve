@@ -125,7 +125,4 @@ If you add database or API integrations, configure environment variables in Verc
 
 ## Contact
 
-For support or inquiries:
-- Email: info@preserve-nc.com
-- Phone: (919) 555-0123
-- Location: Raleigh, North Carolina
+For support or inquiries, please use the contact form in the application portal.

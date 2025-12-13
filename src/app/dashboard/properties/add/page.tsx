@@ -22,14 +22,46 @@ export default function AddPropertyPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In production, this would send to your API
-    console.log('Property submitted:', formData);
+    
+    // Create new property object
+    const newProperty = {
+      id: Date.now().toString(),
+      address: formData.address,
+      city: formData.city,
+      county: formData.county,
+      state: formData.state,
+      zip: formData.zip,
+      propertyType: formData.propertyType,
+      acquisitionDate: formData.acquisitionDate || new Date().toISOString().split('T')[0],
+      status: 'Active',
+      bankReference: formData.bankReference || `REF-${Date.now()}`,
+      parcelId: formData.parcelId,
+      notes: formData.notes,
+      workOrders: 0
+    };
+    
+    // Save to localStorage
+    const stored = localStorage.getItem('preserve_properties');
+    let properties = [];
+    if (stored) {
+      try {
+        properties = JSON.parse(stored);
+      } catch (e) {
+        console.error('Error parsing stored properties:', e);
+      }
+    }
+    
+    // Add new property at the beginning (most recent first)
+    properties.unshift(newProperty);
+    localStorage.setItem('preserve_properties', JSON.stringify(properties));
+    
+    console.log('Property saved to localStorage:', newProperty);
     setSubmitted(true);
     
-    // Reset form after 2 seconds and redirect
+    // Redirect to properties list after 2 seconds
     setTimeout(() => {
       setSubmitted(false);
-      window.location.href = '/dashboard';
+      window.location.href = '/dashboard/properties';
     }, 2000);
   };
 

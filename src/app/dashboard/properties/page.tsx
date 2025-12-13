@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Home, 
   Plus, 
@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 
 // Sample property data - in production, this would come from your database
-const sampleProperties = [
+const defaultProperties = [
   {
     id: '1',
     address: '1234 Main Street',
@@ -58,11 +58,28 @@ const sampleProperties = [
 ];
 
 export default function PropertiesPage() {
+  const [properties, setProperties] = useState(defaultProperties);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('all');
 
+  // Load properties from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('preserve_properties');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        // Merge with default properties (in case storage is empty)
+        if (parsed.length > 0) {
+          setProperties(parsed);
+        }
+      } catch (e) {
+        console.error('Error loading properties:', e);
+      }
+    }
+  }, []);
+
   // Filter properties based on search and filter
-  const filteredProperties = sampleProperties.filter(property => {
+  const filteredProperties = properties.filter(property => {
     const matchesSearch = 
       property.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
       property.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -152,7 +169,7 @@ export default function PropertiesPage() {
                 <Home className="w-5 h-5 text-blue-600" />
               </div>
             </div>
-            <div className="text-3xl font-bold text-slate-900">{sampleProperties.length}</div>
+            <div className="text-3xl font-bold text-slate-900">{properties.length}</div>
             <div className="text-sm text-slate-500 mt-1">Active listings</div>
           </div>
 
@@ -164,7 +181,7 @@ export default function PropertiesPage() {
               </div>
             </div>
             <div className="text-3xl font-bold text-slate-900">
-              {sampleProperties.reduce((sum, prop) => sum + prop.workOrders, 0)}
+              {properties.reduce((sum, prop) => sum + prop.workOrders, 0)}
             </div>
             <div className="text-sm text-slate-500 mt-1">In progress</div>
           </div>
@@ -177,7 +194,7 @@ export default function PropertiesPage() {
               </div>
             </div>
             <div className="text-3xl font-bold text-slate-900">
-              {sampleProperties.filter(p => {
+              {properties.filter(p => {
                 const date = new Date(p.acquisitionDate);
                 const now = new Date();
                 return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
