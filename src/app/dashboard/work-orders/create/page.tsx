@@ -70,12 +70,10 @@ export default function CreateWorkOrderV2Page() {
   const addService = (service: typeof serviceCatalog[0]) => {
     const existing = selectedServices.find(s => s.id === service.id);
     if (existing) {
-      setSelectedServices(selectedServices.map(s => 
-        s.id === service.id 
-          ? { ...s, quantity: s.quantity + 1, total: (s.quantity + 1) * s.basePrice }
-          : s
-      ));
+      // Toggle off if clicking an already selected service
+      removeService(service.id);
     } else {
+      // Add new service
       setSelectedServices([...selectedServices, {
         id: service.id,
         name: service.name,
@@ -457,18 +455,22 @@ export default function CreateWorkOrderV2Page() {
 
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Start Date * <span className="text-slate-500 text-xs">(Click to select)</span>
+                        Start Date *
                       </label>
-                      <input
-                        type="date"
-                        name="scheduledDate"
-                        value={formData.scheduledDate}
-                        onChange={handleChange}
-                        required
-                        min={new Date().toISOString().split('T')[0]}
-                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 cursor-pointer hover:border-blue-400 transition"
-                        placeholder="Select start date"
-                      />
+                      <div className="relative">
+                        <input
+                          type="date"
+                          name="scheduledDate"
+                          value={formData.scheduledDate}
+                          onChange={handleChange}
+                          required
+                          min={new Date().toISOString().split('T')[0]}
+                          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 cursor-pointer hover:border-blue-400 transition"
+                          style={{ colorScheme: 'light' }}
+                        />
+                        <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                      </div>
+                      <p className="text-xs text-slate-500 mt-1">Click the calendar icon or input field to select a date</p>
                     </div>
                   </div>
 
