@@ -168,7 +168,7 @@ export default function DashboardPageDynamic() {
           {/* Welcome Message */}
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-slate-900">Welcome back, {user.firstName}!</h2>
-            <p className="text-slate-600">Here's what's happening with your properties</p>
+            <p className="text-slate-600">Here&apos;s what&apos;s happening with your properties</p>
           </div>
 
           {/* Stats Grid */}
