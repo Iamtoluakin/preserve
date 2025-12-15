@@ -86,8 +86,8 @@ const serviceDetails = {
     icon: Snowflake,
     color: 'cyan',
     images: [
-      'https://images.unsplash.com/photo-1516380851973-7c4b90251c91?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1585338107529-13afc5f02586?w=800&h=600&fit=crop'
+      'https://images.unsplash.com/photo-1607400201889-565b1ee75f8e?w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&auto=format&fit=crop'
     ],
     description: 'Complete plumbing winterization and de-winterization to prevent costly freeze damage.',
     longDescription: 'Protect your properties from freeze damage with our comprehensive winterization services. Our licensed technicians follow industry-standard protocols and provide detailed documentation for insurance and compliance purposes.',
