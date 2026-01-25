@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   ArrowLeft, 
   Home,
@@ -39,14 +39,21 @@ export default function CreateWorkOrderV2Page() {
   const [billingFrequency, setBillingFrequency] = useState<BillingFrequency>('monthly');
   const [submitted, setSubmitted] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  const [properties, setProperties] = useState<any[]>([]);
 
-  const sampleProperties = [
-    { id: '1', address: '1234 Main Street, Durham, NC 27701' },
-    { id: '2', address: '5678 Oak Avenue, Raleigh, NC 27601' },
-    { id: '3', address: '9012 Pine Road, Charlotte, NC 28201' },
-    { id: '4', address: '3456 Elm Court, Durham, NC 27703' },
-    { id: '5', address: '7890 Maple Drive, Greensboro, NC 27401' }
-  ];
+  // Load properties from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('preserve_properties');
+    if (stored) {
+      try {
+        const parsedProperties = JSON.parse(stored);
+        setProperties(parsedProperties);
+      } catch (e) {
+        console.error('Error loading properties:', e);
+        setProperties([]);
+      }
+    }
+  }, []);
 
   const categories = [...new Set(serviceCatalog.map(s => s.category))];
 
@@ -287,12 +294,21 @@ export default function CreateWorkOrderV2Page() {
                   className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                 >
                   <option value="">Select a property</option>
-                  {sampleProperties.map(property => (
-                    <option key={property.id} value={property.id}>
-                      {property.address}
-                    </option>
-                  ))}
+                  {properties.length === 0 ? (
+                    <option value="" disabled>No properties available - Add a property first</option>
+                  ) : (
+                    properties.map((property: any) => (
+                      <option key={property.id} value={property.id}>
+                        {property.address}, {property.city}, {property.state} {property.zip}
+                      </option>
+                    ))
+                  )}
                 </select>
+                {properties.length === 0 && (
+                  <p className="mt-2 text-sm text-amber-600">
+                    ⚠️ You need to <Link href="/dashboard/properties/add" className="underline font-semibold">add a property</Link> before creating a work order.
+                  </p>
+                )}
               </div>
 
               {/* Service Catalog */}
