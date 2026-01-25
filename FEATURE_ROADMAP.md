@@ -12,8 +12,8 @@
 - [ ] **Real Property Count**: Show actual count from localStorage
 - [ ] **Recent Activity Feed**: Show last 5 actions (properties added, work orders created)
 - [ ] **Quick Stats Cards**: Click to filter (e.g., click "Active Properties" to see only active)
-- [ ] **Chart/Graph**: Monthly work order trends
-- [ ] **Calendar View**: Upcoming scheduled work orders
+- [x] **Chart/Graph**: Monthly work order trends
+- [x] **Calendar View**: Upcoming scheduled work orders
 
 ### 2. **Property Management**
 - [x] **Property List with Search**: Filter by address, city, or ref number
@@ -62,8 +62,8 @@
 - [ ] **Error Handling**: Friendly error messages
 - [ ] **Toast Notifications**: Success/error notifications
 - [ ] **Keyboard Shortcuts**: Quick navigation (Cmd+K for search)
-- [ ] **Dark Mode**: Toggle dark/light theme
-- [ ] **Mobile Optimization**: Better mobile experience
+- [x] **Dark Mode**: Toggle dark/light theme
+- [x] **Mobile Optimization**: Better mobile experience
 
 ### 6. **Reports & Analytics**
 - [ ] **Property Report**: PDF export with all details
