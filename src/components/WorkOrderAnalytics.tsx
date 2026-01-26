@@ -117,10 +117,10 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
 
   if (!workOrders || workOrders.length === 0) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 p-8 text-center">
-        <TrendingUp className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No Analytics Data Yet</h3>
-        <p className="text-slate-600 dark:text-slate-400">Create some work orders to see trends and analytics</p>
+      <div className="bg-white rounded-xl shadow-sm border p-8 text-center">
+        <TrendingUp className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-slate-900 mb-2">No Analytics Data Yet</h3>
+        <p className="text-slate-600">Create some work orders to see trends and analytics</p>
       </div>
     );
   }
@@ -156,9 +156,9 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
       </div>
 
       {/* Monthly Trends Chart */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 p-4 md:p-6">
-        <h3 className="text-base md:text-lg font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+      <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
+        <h3 className="text-base md:text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-blue-600" />
           Monthly Work Order Trends
         </h3>
         <ResponsiveContainer width="100%" height={250} className="md:h-[300px]">
@@ -184,8 +184,8 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
 
       <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
         {/* Status Distribution */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 p-4 md:p-6">
-          <h3 className="text-base md:text-lg font-semibold text-slate-900 dark:text-white mb-4">Work Order Status</h3>
+        <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
+          <h3 className="text-base md:text-lg font-semibold text-slate-900 mb-4">Work Order Status</h3>
           <ResponsiveContainer width="100%" height={220} className="md:h-[250px]">
             <PieChart>
               <Pie
@@ -215,8 +215,8 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
         </div>
 
         {/* Top Services */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 p-4 md:p-6">
-          <h3 className="text-base md:text-lg font-semibold text-slate-900 dark:text-white mb-4">Most Requested Services</h3>
+        <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
+          <h3 className="text-base md:text-lg font-semibold text-slate-900 mb-4">Most Requested Services</h3>
           {serviceData.length > 0 ? (
             <ResponsiveContainer width="100%" height={220} className="md:h-[250px]">
               <BarChart data={serviceData} layout="vertical">
@@ -235,7 +235,7 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-slate-500 dark:text-slate-400 text-center py-8">No service data available</p>
+            <p className="text-slate-500 text-center py-8">No service data available</p>
           )}
         </div>
       </div>
@@ -245,21 +245,21 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
 
 function MetricCard({ title, value, icon, color }: any) {
   const colorClasses = {
-    blue: 'bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400',
-    green: 'bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400',
-    purple: 'bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400',
-    amber: 'bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400',
+    blue: 'bg-blue-100 text-blue-600',
+    green: 'bg-green-100 text-green-600',
+    purple: 'bg-purple-100 text-purple-600',
+    amber: 'bg-amber-100 text-amber-600'
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 p-3 md:p-4">
+    <div className="bg-white rounded-xl shadow-sm border p-3 md:p-4">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs md:text-sm font-medium text-slate-600 dark:text-slate-400">{title}</span>
+        <span className="text-xs md:text-sm font-medium text-slate-600">{title}</span>
         <div className={`p-1.5 md:p-2 rounded-lg ${colorClasses[color as keyof typeof colorClasses]}`}>
           {icon}
         </div>
       </div>
-      <p className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">{value}</p>
+      <p className="text-xl md:text-2xl font-bold text-slate-900">{value}</p>
     </div>
   );
 }

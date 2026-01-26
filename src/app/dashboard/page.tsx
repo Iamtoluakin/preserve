@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import ThemeToggle from '@/components/ThemeToggle';
 import {
   Home,
   FileText, 
@@ -42,9 +41,9 @@ export default function DashboardPage() {
     }
   }, []);
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-slate-50">
       {/* Dashboard Header */}
-      <header className="bg-white dark:bg-slate-800 border-b dark:border-slate-700 sticky top-0 z-40">
+      <header className="bg-white border-b sticky top-0 z-40">
         <div className="px-4 md:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 md:space-x-4">
@@ -52,10 +51,10 @@ export default function DashboardPage() {
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-xl md:text-2xl">P</span>
                 </div>
-                <span className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Preserve</span>
+                <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
               </Link>
-              <div className="hidden md:block border-l dark:border-slate-600 pl-4 ml-4">
-                <h1 className="text-lg font-semibold text-slate-900 dark:text-white">Property Dashboard</h1>
+              <div className="hidden md:block border-l pl-4 ml-4">
+                <h1 className="text-lg font-semibold text-slate-900">Property Dashboard</h1>
               </div>
             </div>
             <div className="flex items-center space-x-2 md:space-x-4">
@@ -64,15 +63,14 @@ export default function DashboardPage() {
                 <input
                   type="text"
                   placeholder="Search properties..."
-                  className="pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64 text-slate-900 dark:text-white dark:bg-slate-700"
+                  className="pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64 text-slate-900 bg-white"
                 />
               </div>
-              <ThemeToggle />
-              <button className="relative p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
+              <button className="relative p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
                 <Bell className="w-5 h-5 md:w-6 md:h-6" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
-              <button className="flex items-center space-x-2 p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
+              <button className="flex items-center space-x-2 p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
                 <User className="w-5 h-5 md:w-6 md:h-6" />
                 <span className="hidden md:block">Bank Admin</span>
               </button>
@@ -83,7 +81,7 @@ export default function DashboardPage() {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-white dark:bg-slate-800 border-r dark:border-slate-700 min-h-screen hidden lg:block">
+        <aside className="w-64 bg-white border-r min-h-screen hidden lg:block">
           <nav className="p-4 space-y-2">
             <Link href="/dashboard">
               <NavItem icon={<Home />} label="Dashboard" active />
@@ -134,13 +132,13 @@ export default function DashboardPage() {
           </div>
 
           {/* Actions Bar */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border dark:border-slate-700 p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+          <div className="bg-white rounded-lg shadow-sm border p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2 md:gap-4 flex-wrap">
               <Link href="/dashboard/properties/add" className="bg-blue-600 text-white px-3 md:px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2 text-sm md:text-base">
                 <Plus className="w-4 h-4 md:w-5 md:h-5" />
                 Add Property
               </Link>
-              <Link href="/dashboard/work-orders/create" className="border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 px-3 md:px-4 py-2 rounded-lg hover:border-blue-600 hover:text-blue-600 dark:hover:border-blue-500 dark:hover:text-blue-400 transition text-sm md:text-base">
+              <Link href="/dashboard/work-orders/create" className="border border-slate-300 text-slate-700 px-3 md:px-4 py-2 rounded-lg hover:border-blue-600 hover:text-blue-600 transition text-sm md:text-base">
                 Create Work Order
               </Link>
             </div>
@@ -148,7 +146,7 @@ export default function DashboardPage() {
               <button
                 onClick={() => setShowAnalytics(!showAnalytics)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
-                  showAnalytics ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  showAnalytics ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
                 <BarChart3 className="w-4 h-4" />
@@ -157,7 +155,7 @@ export default function DashboardPage() {
               <button
                 onClick={() => setShowCalendar(!showCalendar)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
-                  showCalendar ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  showCalendar ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
                 <Calendar className="w-4 h-4" />
@@ -181,12 +179,12 @@ export default function DashboardPage() {
           )}
 
           {/* Properties Table */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border dark:border-slate-700 overflow-hidden">
-            <div className="p-4 border-b dark:border-slate-700 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Your Properties</h2>
+          <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+            <div className="p-4 border-b flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-slate-900">Your Properties</h2>
               <Link 
                 href="/dashboard/properties"
-                className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm flex items-center gap-1"
+                className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1"
               >
                 View All Properties
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -196,34 +194,34 @@ export default function DashboardPage() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-slate-50 dark:bg-slate-700 border-b dark:border-slate-600">
+                <thead className="bg-slate-50 border-b">
                   <tr>
-                    <th className="px-4 md:px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                    <th className="px-4 md:px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
                       Property Address
                     </th>
-                    <th className="px-4 md:px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider hidden sm:table-cell">
+                    <th className="px-4 md:px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider hidden sm:table-cell">
                       County
                     </th>
-                    <th className="px-4 md:px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                    <th className="px-4 md:px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-4 md:px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider hidden lg:table-cell">
+                    <th className="px-4 md:px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider hidden lg:table-cell">
                       Last Inspection
                     </th>
-                    <th className="px-4 md:px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider hidden lg:table-cell">
+                    <th className="px-4 md:px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider hidden lg:table-cell">
                       Next Service
                     </th>
-                    <th className="px-4 md:px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                    <th className="px-4 md:px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                <tbody className="divide-y divide-slate-200">
                   {properties.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="px-6 py-12 text-center">
-                        <Home className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                        <p className="text-slate-600 dark:text-slate-400 mb-4">No properties added yet</p>
+                        <Home className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                        <p className="text-slate-600 mb-4">No properties added yet</p>
                         <Link 
                           href="/dashboard/properties/add"
                           className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
@@ -251,8 +249,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Activity */}
-          <div className="mt-6 bg-white dark:bg-slate-800 rounded-lg shadow-sm border dark:border-slate-700 p-4 md:p-6">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Recent Activity</h2>
+          <div className="mt-6 bg-white rounded-lg shadow-sm border p-4 md:p-6">
+            <h2 className="text-xl font-semibold text-slate-900 mb-4">Recent Activity</h2>
             <div className="space-y-4">
               <ActivityItem
                 icon={<Camera className="w-5 h-5 text-blue-600" />}
@@ -285,8 +283,8 @@ function NavItem({ icon, label, active = false }: { icon: React.ReactNode; label
     <button
       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition ${
         active
-          ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-medium'
-          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+          ? 'bg-blue-50 text-blue-600 font-medium'
+          : 'text-slate-600 hover:bg-slate-50'
       }`}
     >
       {icon}
@@ -309,16 +307,16 @@ function StatCard({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border dark:border-slate-700 p-4 md:p-6">
+    <div className="bg-white rounded-lg shadow-sm border p-4 md:p-6">
       <div className="flex items-center justify-between mb-4">
-        <div className="text-slate-600 dark:text-slate-400 text-sm md:text-base">{title}</div>
-        <div className="text-slate-400 dark:text-slate-500">{icon}</div>
+        <div className="text-slate-600 text-sm md:text-base">{title}</div>
+        <div className="text-slate-400">{icon}</div>
       </div>
-      <div className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">{value}</div>
+      <div className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">{value}</div>
       <div className={`text-sm font-medium ${
-        trend === 'up' ? 'text-green-600 dark:text-green-400' :
-        trend === 'down' ? 'text-red-600 dark:text-red-400' :
-        'text-slate-600 dark:text-slate-400'
+        trend === 'up' ? 'text-green-600' :
+        trend === 'down' ? 'text-red-600' :
+        'text-slate-600'
       }`}>
         {change} from last month
       </div>
@@ -340,34 +338,34 @@ function PropertyRow({
   nextService: string;
 }) {
   const statusColors = {
-    active: 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300',
-    pending: 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300',
-    attention: 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300',
+    active: 'bg-green-100 text-green-800',
+    pending: 'bg-yellow-100 text-yellow-800',
+    attention: 'bg-red-100 text-red-800'
   };
 
   return (
-    <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+    <tr className="hover:bg-slate-50">
       <td className="px-4 md:px-6 py-4">
         <div className="flex items-center gap-2">
-          <MapPin className="w-4 h-4 text-slate-400 dark:text-slate-500" />
-          <span className="font-medium text-slate-900 dark:text-white text-sm md:text-base">{address}</span>
+          <MapPin className="w-4 h-4 text-slate-400" />
+          <span className="font-medium text-slate-900 text-sm md:text-base">{address}</span>
         </div>
       </td>
-      <td className="px-4 md:px-6 py-4 text-slate-600 dark:text-slate-400 hidden sm:table-cell">{county}</td>
+      <td className="px-4 md:px-6 py-4 text-slate-600 hidden sm:table-cell">{county}</td>
       <td className="px-4 md:px-6 py-4">
         <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-semibold ${statusColors[status]}`}>
           {status.charAt(0).toUpperCase() + status.slice(1)}
         </span>
       </td>
-      <td className="px-4 md:px-6 py-4 text-slate-600 dark:text-slate-400 hidden lg:table-cell">
+      <td className="px-4 md:px-6 py-4 text-slate-600 hidden lg:table-cell">
         <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+          <Calendar className="w-4 h-4 text-slate-400" />
           {lastInspection}
         </div>
       </td>
-      <td className="px-4 md:px-6 py-4 text-slate-600 dark:text-slate-400 hidden lg:table-cell">{nextService}</td>
+      <td className="px-4 md:px-6 py-4 text-slate-600 hidden lg:table-cell">{nextService}</td>
       <td className="px-4 md:px-6 py-4">
-        <button className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium text-sm">
+        <button className="text-blue-600 hover:text-blue-800 font-medium text-sm">
           View Details
         </button>
       </td>
@@ -387,14 +385,14 @@ function ActivityItem({
   time: string;
 }) {
   return (
-    <div className="flex gap-4 pb-4 border-b dark:border-slate-700 last:border-b-0 last:pb-0">
-      <div className="flex-shrink-0 w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center">
+    <div className="flex gap-4 pb-4 border-b last:border-b-0 last:pb-0">
+      <div className="flex-shrink-0 w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
         {icon}
       </div>
       <div className="flex-1">
-        <h3 className="font-medium text-slate-900 dark:text-white">{title}</h3>
-        <p className="text-sm text-slate-600 dark:text-slate-400">{description}</p>
-        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{time}</p>
+        <h3 className="font-medium text-slate-900">{title}</h3>
+        <p className="text-sm text-slate-600">{description}</p>
+        <p className="text-xs text-slate-400 mt-1">{time}</p>
       </div>
     </div>
   );

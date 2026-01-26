@@ -242,9 +242,9 @@ export default function CreateWorkOrderV2Page() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="bg-white dark:bg-slate-800 border-b dark:border-slate-700 sticky top-0 z-40">
+      <header className="bg-white border-b sticky top-0 z-40">
         <div className="px-4 md:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -252,10 +252,10 @@ export default function CreateWorkOrderV2Page() {
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-2xl">P</span>
                 </div>
-                <span className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Preserve</span>
+                <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
               </Link>
             </div>
-            <Link href="/dashboard" className="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
+            <Link href="/dashboard" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition">
               <ArrowLeft className="w-5 h-5" />
               <span className="hidden sm:inline">Back to Dashboard</span>
             </Link>
@@ -266,8 +266,8 @@ export default function CreateWorkOrderV2Page() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-8">
         <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">Request Preservation Services</h1>
-          <p className="text-slate-600 dark:text-slate-400">Select the services you need to maintain your property</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Request Preservation Services</h1>
+          <p className="text-slate-600">Select the services you need to maintain your property</p>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -275,14 +275,14 @@ export default function CreateWorkOrderV2Page() {
             {/* Left Column - Service Selection */}
             <div className="lg:col-span-2 space-y-6">
               {/* Property Selection */}
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 p-4 md:p-6">
+              <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center">
-                    <Home className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Home className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <h2 className="text-lg md:text-xl font-semibold text-slate-900 dark:text-white">Select Property</h2>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">Choose the property that needs service</p>
+                    <h2 className="text-lg md:text-xl font-semibold text-slate-900">Select Property</h2>
+                    <p className="text-sm text-slate-600">Choose the property that needs service</p>
                   </div>
                 </div>
 
@@ -291,7 +291,7 @@ export default function CreateWorkOrderV2Page() {
                   value={formData.propertyId}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white dark:bg-slate-700"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                 >
                   <option value="">Select a property</option>
                   {properties.length === 0 ? (
@@ -305,22 +305,22 @@ export default function CreateWorkOrderV2Page() {
                   )}
                 </select>
                 {properties.length === 0 && (
-                  <p className="mt-2 text-sm text-amber-600 dark:text-amber-400">
+                  <p className="mt-2 text-sm text-amber-600">
                     ⚠️ You need to <Link href="/dashboard/properties/add" className="underline font-semibold">add a property</Link> before creating a work order.
                   </p>
                 )}
               </div>
 
               {/* Service Catalog */}
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 p-4 md:p-6">
+              <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center">
-                      <ShoppingCart className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <ShoppingCart className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h2 className="text-lg md:text-xl font-semibold text-slate-900 dark:text-white">Select Services (Multiple)</h2>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">Click to add multiple services - they&apos;ll appear in your cart</p>
+                      <h2 className="text-lg md:text-xl font-semibold text-slate-900">Select Services (Multiple)</h2>
+                      <p className="text-sm text-slate-600">Click to add multiple services - they&apos;ll appear in your cart</p>
                     </div>
                   </div>
                   <button
@@ -335,20 +335,20 @@ export default function CreateWorkOrderV2Page() {
                 </div>
 
                 {/* Full Package Info Banner */}
-                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <CheckCircle2 className="w-6 h-6 text-green-600" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-green-900 dark:text-green-300 mb-1">Full Preservation Package</h3>
-                      <p className="text-sm text-green-800 dark:text-green-400 mb-2">
+                      <h3 className="font-semibold text-green-900 mb-1">Full Preservation Package</h3>
+                      <p className="text-sm text-green-800 mb-2">
                         Get all recurring maintenance services at once! Includes lawn care, cleaning, inspections, and regular maintenance.
                       </p>
                       <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm">
-                        <span className="text-green-700 dark:text-green-300 font-medium">💰 Best Value</span>
-                        <span className="text-green-700 dark:text-green-300 font-medium">🏠 Complete Protection</span>
-                        <span className="text-green-700 dark:text-green-300 font-medium">📅 Recurring Services</span>
+                        <span className="text-green-700 font-medium">💰 Best Value</span>
+                        <span className="text-green-700 font-medium">🏠 Complete Protection</span>
+                        <span className="text-green-700 font-medium">📅 Recurring Services</span>
                       </div>
                     </div>
                   </div>
@@ -356,8 +356,8 @@ export default function CreateWorkOrderV2Page() {
 
                 {/* Helper Text */}
                 {selectedServices.length > 0 && (
-                  <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                    <p className="text-sm text-blue-800 dark:text-blue-300">
+                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-800">
                       ✓ <strong>{selectedServices.length} service{selectedServices.length > 1 ? 's' : ''}</strong> added to cart. 
                       Keep clicking to add more!
                     </p>
@@ -368,9 +368,9 @@ export default function CreateWorkOrderV2Page() {
                   const categoryServices = serviceCatalog.filter(s => s.category === category);
                   return (
                     <div key={category} className="mb-6 last:mb-0">
-                      <h3 className="font-semibold text-slate-900 dark:text-white mb-3 pb-2 border-b dark:border-slate-700 flex items-center justify-between">
+                      <h3 className="font-semibold text-slate-900 mb-3 pb-2 border-b flex items-center justify-between">
                         <span>{category}</span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">Click any service to add</span>
+                        <span className="text-xs text-slate-500 font-normal">Click any service to add</span>
                       </h3>
                       <div className="space-y-2">
                         {categoryServices.map(service => {
@@ -383,22 +383,22 @@ export default function CreateWorkOrderV2Page() {
                               onClick={() => addService(service)}
                               className={`w-full text-left p-4 rounded-lg border-2 transition relative ${
                                 isSelected
-                                  ? 'border-green-500 dark:border-green-600 bg-green-50 dark:bg-green-900/20 shadow-lg'
-                                  : 'border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md bg-white dark:bg-slate-700/50'
+                                  ? 'border-green-500 bg-green-50 shadow-lg'
+                                  : 'border-slate-200 hover:border-blue-400 hover:shadow-md bg-white'
                               }`}
                             >
                               <div className="flex items-start justify-between gap-4">
                                 {/* Left Content */}
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-start gap-2 mb-1">
-                                    <h4 className={`font-semibold flex-1 ${isSelected ? 'text-green-900 dark:text-green-300' : 'text-slate-900 dark:text-white'}`}>
+                                    <h4 className={`font-semibold flex-1 ${isSelected ? 'text-green-900' : 'text-slate-900'}`}>
                                       {service.name}
                                     </h4>
                                     {/* Status Badge - Inline with title */}
                                     <div className={`px-2.5 py-0.5 rounded-full text-xs font-bold flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${
                                       isSelected 
                                         ? 'bg-green-600 text-white' 
-                                        : 'bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300'
+                                        : 'bg-slate-200 text-slate-600'
                                     }`}>
                                       {isSelected ? (
                                         <>
@@ -413,22 +413,22 @@ export default function CreateWorkOrderV2Page() {
                                       )}
                                     </div>
                                   </div>
-                                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">{service.description}</p>
+                                  <p className="text-sm text-slate-600 mb-2">{service.description}</p>
                                   <div className="flex items-center gap-4 text-sm">
-                                    <span className="text-slate-500 dark:text-slate-400">
+                                    <span className="text-slate-500">
                                       {service.frequency === 'as-needed' ? 'As Needed' : 
                                        service.frequency.charAt(0).toUpperCase() + service.frequency.slice(1)}
                                     </span>
-                                    <span className="text-slate-400 dark:text-slate-500">•</span>
-                                    <span className="text-slate-500 dark:text-slate-400">{service.unit}</span>
+                                    <span className="text-slate-400">•</span>
+                                    <span className="text-slate-500">{service.unit}</span>
                                   </div>
                                 </div>
                                 {/* Right Price - Always visible */}
                                 <div className="text-right flex-shrink-0 ml-2">
-                                  <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400 whitespace-nowrap">
+                                  <div className="text-xl md:text-2xl font-bold text-blue-600 whitespace-nowrap">
                                     ${service.basePrice}
                                   </div>
-                                  <div className="text-xs text-slate-500 dark:text-slate-400">{service.unit}</div>
+                                  <div className="text-xs text-slate-500">{service.unit}</div>
                                 </div>
                               </div>
                             </button>
@@ -441,13 +441,13 @@ export default function CreateWorkOrderV2Page() {
               </div>
 
               {/* Schedule & Details */}
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 p-4 md:p-6">
+              <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Calendar className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <h2 className="text-lg md:text-xl font-semibold text-slate-900 dark:text-white">Schedule & Details</h2>
+                    <h2 className="text-lg md:text-xl font-semibold text-slate-900">Schedule & Details</h2>
                     <p className="text-sm text-slate-600">When should we start?</p>
                   </div>
                 </div>
@@ -455,7 +455,7 @@ export default function CreateWorkOrderV2Page() {
                 <div className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
                         Priority Level *
                       </label>
                       <select
@@ -463,7 +463,7 @@ export default function CreateWorkOrderV2Page() {
                         value={formData.priority}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white dark:bg-slate-700"
+                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                       >
                         <option value="low">Low - Routine maintenance</option>
                         <option value="normal">Normal - Standard service</option>
@@ -473,7 +473,7 @@ export default function CreateWorkOrderV2Page() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
                         Start Date *
                       </label>
                       <div className="relative">
@@ -484,17 +484,17 @@ export default function CreateWorkOrderV2Page() {
                           onChange={handleChange}
                           required
                           min={new Date().toISOString().split('T')[0]}
-                          className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white dark:bg-slate-700 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 transition"
+                          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 cursor-pointer hover:border-blue-400 transition"
                           style={{ colorScheme: 'dark' }}
                         />
-                        <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500 pointer-events-none" />
+                        <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Click the calendar icon or input field to select a date</p>
+                      <p className="text-xs text-slate-500 mt-1">Click the calendar icon or input field to select a date</p>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
                       Additional Instructions
                     </label>
                     <textarea
@@ -502,13 +502,13 @@ export default function CreateWorkOrderV2Page() {
                       value={formData.description}
                       onChange={handleChange}
                       rows={3}
-                      className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white dark:bg-slate-700"
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                       placeholder="Any special requests or areas of concern..."
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
                       Property Access Instructions
                     </label>
                     <textarea
@@ -516,7 +516,7 @@ export default function CreateWorkOrderV2Page() {
                       value={formData.accessInstructions}
                       onChange={handleChange}
                       rows={2}
-                      className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white dark:bg-slate-700"
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
                       placeholder="Gate codes, lockbox location, key pickup instructions..."
                     />
                   </div>
@@ -527,56 +527,56 @@ export default function CreateWorkOrderV2Page() {
             {/* Right Column - Order Summary (Sticky) */}
             <div className="lg:col-span-1">
               <div className="sticky top-24">
-                <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border dark:border-slate-700 p-4 md:p-6">
+                <div className="bg-white rounded-xl shadow-lg border p-4 md:p-6">
                   <div className="flex items-center gap-3 mb-6">
-                    <DollarSign className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                    <h2 className="text-lg md:text-xl font-semibold text-slate-900 dark:text-white">Order Summary</h2>
+                    <DollarSign className="w-6 h-6 text-blue-600" />
+                    <h2 className="text-lg md:text-xl font-semibold text-slate-900">Order Summary</h2>
                   </div>
 
                   {selectedServices.length === 0 ? (
                     <div className="text-center py-8">
-                      <ShoppingCart className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                      <p className="text-slate-500 dark:text-slate-400 text-sm">No services selected yet</p>
-                      <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">Choose services from the left</p>
+                      <ShoppingCart className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                      <p className="text-slate-500 text-sm">No services selected yet</p>
+                      <p className="text-slate-400 text-xs mt-1">Choose services from the left</p>
                     </div>
                   ) : (
                     <>
                       <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
                         {selectedServices.map(service => (
-                          <div key={service.id} className="border-b dark:border-slate-700 pb-4 last:border-b-0">
+                          <div key={service.id} className="border-b pb-4 last:border-b-0">
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex-1 pr-2">
-                                <h4 className="font-medium text-slate-900 dark:text-white text-sm">{service.name}</h4>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                <h4 className="font-medium text-slate-900 text-sm">{service.name}</h4>
+                                <p className="text-xs text-slate-500">
                                   ${service.basePrice} × {service.quantity}
                                 </p>
                               </div>
                               <div className="text-right">
-                                <p className="font-semibold text-slate-900 dark:text-white">${service.total}</p>
+                                <p className="font-semibold text-slate-900">${service.total}</p>
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
                               <button
                                 type="button"
                                 onClick={() => updateQuantity(service.id, -1)}
-                                className="w-7 h-7 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded flex items-center justify-center transition"
+                                className="w-7 h-7 bg-slate-100 hover:bg-slate-200 rounded flex items-center justify-center transition"
                               >
-                                <Minus className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+                                <Minus className="w-4 h-4 text-slate-600" />
                               </button>
-                              <span className="text-sm font-medium text-slate-700 dark:text-slate-300 w-8 text-center">
+                              <span className="text-sm font-medium text-slate-700 w-8 text-center">
                                 {service.quantity}
                               </span>
                               <button
                                 type="button"
                                 onClick={() => updateQuantity(service.id, 1)}
-                                className="w-7 h-7 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded flex items-center justify-center transition"
+                                className="w-7 h-7 bg-slate-100 hover:bg-slate-200 rounded flex items-center justify-center transition"
                               >
-                                <Plus className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+                                <Plus className="w-4 h-4 text-slate-600" />
                               </button>
                               <button
                                 type="button"
                                 onClick={() => removeService(service.id)}
-                                className="ml-auto text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm font-medium"
+                                className="ml-auto text-red-600 hover:text-red-700 text-sm font-medium"
                               >
                                 Remove
                               </button>
@@ -586,8 +586,8 @@ export default function CreateWorkOrderV2Page() {
                       </div>
 
                       {/* Billing Frequency Selector */}
-                      <div className="border-t dark:border-slate-700 pt-4 mb-4">
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
+                      <div className="border-t pt-4 mb-4">
+                        <label className="block text-sm font-medium text-slate-700 mb-3">
                           Billing Frequency
                         </label>
                         <div className="space-y-2">
@@ -596,16 +596,16 @@ export default function CreateWorkOrderV2Page() {
                             onClick={() => setBillingFrequency('one-time')}
                             className={`w-full p-3 rounded-lg border-2 transition text-left ${
                               billingFrequency === 'one-time'
-                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                                ? 'border-blue-500 bg-blue-50'
+                                : 'border-slate-200 hover:border-slate-300'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <div className="font-semibold text-slate-900 dark:text-white text-sm">One-Time</div>
-                                <div className="text-xs text-slate-600 dark:text-slate-400">Pay once for all services</div>
+                                <div className="font-semibold text-slate-900 text-sm">One-Time</div>
+                                <div className="text-xs text-slate-600">Pay once for all services</div>
                               </div>
-                              <div className="text-base md:text-lg font-bold text-slate-900 dark:text-white">
+                              <div className="text-base md:text-lg font-bold text-slate-900">
                                 ${getTotalCost().toLocaleString()}
                               </div>
                             </div>
@@ -616,16 +616,16 @@ export default function CreateWorkOrderV2Page() {
                             onClick={() => setBillingFrequency('weekly')}
                             className={`w-full p-3 rounded-lg border-2 transition text-left ${
                               billingFrequency === 'weekly'
-                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                                ? 'border-blue-500 bg-blue-50'
+                                : 'border-slate-200 hover:border-slate-300'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <div className="font-semibold text-slate-900 dark:text-white text-sm">Weekly Subscription</div>
-                                <div className="text-xs text-slate-600 dark:text-slate-400">Automatic weekly billing</div>
+                                <div className="font-semibold text-slate-900 text-sm">Weekly Subscription</div>
+                                <div className="text-xs text-slate-600">Automatic weekly billing</div>
                               </div>
-                              <div className="text-base md:text-lg font-bold text-blue-600 dark:text-blue-400">
+                              <div className="text-base md:text-lg font-bold text-blue-600">
                                 ${(getMonthlyEstimate() / 4).toFixed(0)}/wk
                               </div>
                             </div>
@@ -636,16 +636,16 @@ export default function CreateWorkOrderV2Page() {
                             onClick={() => setBillingFrequency('monthly')}
                             className={`w-full p-3 rounded-lg border-2 transition text-left ${
                               billingFrequency === 'monthly'
-                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                                ? 'border-blue-500 bg-blue-50'
+                                : 'border-slate-200 hover:border-slate-300'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <div className="font-semibold text-slate-900 dark:text-white text-sm">Monthly Subscription</div>
-                                <div className="text-xs text-slate-600 dark:text-slate-400">Automatic monthly billing</div>
+                                <div className="font-semibold text-slate-900 text-sm">Monthly Subscription</div>
+                                <div className="text-xs text-slate-600">Automatic monthly billing</div>
                               </div>
-                              <div className="text-base md:text-lg font-bold text-green-600 dark:text-green-400">
+                              <div className="text-base md:text-lg font-bold text-green-600">
                                 ${getMonthlyEstimate().toFixed(0)}/mo
                               </div>
                             </div>

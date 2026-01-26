@@ -71,36 +71,36 @@ export default function WorkOrderCalendar({ workOrders }: WorkOrderCalendarProps
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'completed':
-        return 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300';
+        return 'bg-green-100 text-green-800';
       case 'in-progress':
-        return 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300';
+        return 'bg-blue-100 text-blue-800';
       case 'pending':
-        return 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300';
+        return 'bg-yellow-100 text-yellow-800';
       case 'scheduled':
-        return 'bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300';
+        return 'bg-purple-100 text-purple-800';
       default:
-        return 'bg-gray-100 dark:bg-gray-900/50 text-gray-800 dark:text-gray-300';
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority.toLowerCase()) {
       case 'high':
-        return 'text-red-600 dark:text-red-400';
+        return 'text-red-600';
       case 'medium':
-        return 'text-orange-600 dark:text-orange-400';
+        return 'text-orange-600';
       case 'low':
-        return 'text-green-600 dark:text-green-400';
+        return 'text-green-600';
       default:
-        return 'text-gray-600 dark:text-gray-400';
+        return 'text-gray-600';
     }
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border dark:border-slate-700 p-4 md:p-6">
+    <div className="bg-white rounded-lg shadow-sm border p-4 md:p-6">
       <div className="flex items-center gap-2 mb-6">
-        <CalendarIcon className="w-5 h-5 md:w-6 md:h-6 text-blue-600 dark:text-blue-400" />
-        <h2 className="text-lg md:text-xl font-semibold text-slate-900 dark:text-white">Work Order Calendar</h2>
+        <CalendarIcon className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
+        <h2 className="text-lg md:text-xl font-semibold text-slate-900">Work Order Calendar</h2>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
@@ -172,10 +172,10 @@ export default function WorkOrderCalendar({ workOrders }: WorkOrderCalendarProps
             onChange={(value) => setDate(value as Date)}
             value={date}
             tileClassName={tileClassName}
-            className="rounded-lg border dark:border-slate-600 shadow-sm"
+            className="rounded-lg border shadow-sm"
           />
-          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
-            <p className="text-xs md:text-sm text-blue-900 dark:text-blue-200">
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+            <p className="text-xs md:text-sm text-blue-900">
               <strong>Tip:</strong> Dates with blue dots have scheduled work orders. Click a date to view details.
             </p>
           </div>
@@ -183,33 +183,33 @@ export default function WorkOrderCalendar({ workOrders }: WorkOrderCalendarProps
 
         {/* Selected Date Details */}
         <div>
-          <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-4 mb-4">
-            <h3 className="font-semibold text-slate-900 dark:text-white mb-1 text-sm md:text-base">
+          <div className="bg-slate-50 rounded-lg p-4 mb-4">
+            <h3 className="font-semibold text-slate-900 mb-1 text-sm md:text-base">
               {format(date, 'EEEE, MMMM d, yyyy')}
             </h3>
-            <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-xs md:text-sm text-slate-600">
               {selectedDateOrders.length} work order{selectedDateOrders.length !== 1 ? 's' : ''} scheduled
             </p>
           </div>
 
           <div className="space-y-3 max-h-80 md:max-h-96 overflow-y-auto">
             {selectedDateOrders.length === 0 ? (
-              <div className="text-center py-8 text-slate-500 dark:text-slate-400">
-                <CalendarIcon className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+              <div className="text-center py-8 text-slate-500">
+                <CalendarIcon className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-3 text-slate-300" />
                 <p className="text-xs md:text-sm">No work orders scheduled for this date</p>
               </div>
             ) : (
               selectedDateOrders.map((order) => (
                 <div
                   key={order.id}
-                  className="border border-slate-200 dark:border-slate-600 rounded-lg p-3 md:p-4 hover:border-blue-300 dark:hover:border-blue-500 transition"
+                  className="border border-slate-200 rounded-lg p-3 md:p-4 hover:border-blue-300 transition"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-slate-900 dark:text-white mb-1 text-sm md:text-base truncate">
+                      <h4 className="font-semibold text-slate-900 mb-1 text-sm md:text-base truncate">
                         {order.serviceType}
                       </h4>
-                      <div className="flex items-center gap-2 text-xs md:text-sm text-slate-600 dark:text-slate-400 mb-2">
+                      <div className="flex items-center gap-2 text-xs md:text-sm text-slate-600 mb-2">
                         <MapPin className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                         <span className="truncate">{order.propertyAddress}</span>
                       </div>
@@ -220,7 +220,7 @@ export default function WorkOrderCalendar({ workOrders }: WorkOrderCalendarProps
                   </div>
                   
                   <div className="flex items-center gap-4 text-xs md:text-sm flex-wrap">
-                    <div className="flex items-center gap-1 text-slate-600 dark:text-slate-400">
+                    <div className="flex items-center gap-1 text-slate-600">
                       <Clock className="w-3 h-3 md:w-4 md:h-4" />
                       <span>{order.scheduledDate ? format(new Date(order.scheduledDate), 'h:mm a') : 'TBD'}</span>
                     </div>
