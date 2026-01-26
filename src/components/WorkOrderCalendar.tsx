@@ -118,15 +118,9 @@ export default function WorkOrderCalendar({ workOrders }: WorkOrderCalendarProps
               font-size: 1rem;
               font-weight: 600;
             }
-            .dark .react-calendar__navigation button {
-              color: rgb(226, 232, 240);
-            }
             .react-calendar__tile {
               color: rgb(30, 41, 59);
               padding: 0.75rem 0.5rem;
-            }
-            .dark .react-calendar__tile {
-              color: rgb(226, 232, 240);
             }
             .react-calendar__tile--active {
               background: #0ea5e9 !important;
@@ -135,20 +129,11 @@ export default function WorkOrderCalendar({ workOrders }: WorkOrderCalendarProps
             .react-calendar__tile--now {
               background: #e0f2fe;
             }
-            .dark .react-calendar__tile--now {
-              background: rgba(14, 165, 233, 0.2);
-            }
             .react-calendar__tile:enabled:hover {
               background-color: #f0f9ff;
             }
-            .dark .react-calendar__tile:enabled:hover {
-              background-color: rgba(14, 165, 233, 0.1);
-            }
             .react-calendar__month-view__days__day--weekend {
               color: #ef4444;
-            }
-            .dark .react-calendar__month-view__days__day--weekend {
-              color: #f87171;
             }
             .has-work-orders {
               position: relative;
