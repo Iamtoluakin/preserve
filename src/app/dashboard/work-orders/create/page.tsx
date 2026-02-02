@@ -166,14 +166,41 @@ export default function CreateWorkOrderV2Page() {
     const woNumber = `WO-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
     setOrderNumber(woNumber);
     
-    // In production, save to Supabase here
-    console.log('Work Order submitted:', {
-      ...formData,
+    // Create the work order object
+    const newWorkOrder = {
+      id: Date.now().toString(),
+      orderNumber: woNumber,
+      propertyId: formData.propertyId,
+      propertyAddress: properties.find(p => p.id === formData.propertyId)?.address || '',
+      serviceType: selectedServices.map(s => s.name).join(', '),
       services: selectedServices,
+      status: 'pending',
+      priority: formData.priority || 'medium',
+      scheduledDate: formData.scheduledDate || new Date().toISOString(),
       billingFrequency,
       totalCost: getTotalCost(),
-      billingAmount: getBillingAmount()
-    });
+      billingAmount: getBillingAmount(),
+      description: formData.description || '',
+      accessInstructions: formData.accessInstructions || '',
+      createdAt: new Date().toISOString(),
+    };
+    
+    // Save to localStorage
+    const stored = localStorage.getItem('workOrders');
+    let workOrders = [];
+    if (stored) {
+      try {
+        workOrders = JSON.parse(stored);
+      } catch (e) {
+        console.error('Error parsing stored work orders:', e);
+      }
+    }
+    
+    // Add new work order at the beginning
+    workOrders.unshift(newWorkOrder);
+    localStorage.setItem('workOrders', JSON.stringify(workOrders));
+    
+    console.log('Work Order saved to localStorage:', newWorkOrder);
     
     setSubmitted(true);
     setTimeout(() => {

@@ -27,18 +27,47 @@ export default function DashboardPage() {
   const [showAnalytics, setShowAnalytics] = useState(true);
   const [showCalendar, setShowCalendar] = useState(true);
 
-  useEffect(() => {
+  const loadData = () => {
     // Load work orders from localStorage
     const storedWorkOrders = localStorage.getItem('workOrders');
     if (storedWorkOrders) {
       setWorkOrders(JSON.parse(storedWorkOrders));
+    } else {
+      setWorkOrders([]);
     }
 
     // Load properties from localStorage
-    const storedProperties = localStorage.getItem('properties');
+    const storedProperties = localStorage.getItem('preserve_properties');
     if (storedProperties) {
       setProperties(JSON.parse(storedProperties));
+    } else {
+      setProperties([]);
     }
+  };
+
+  useEffect(() => {
+    loadData();
+
+    // Reload data when window gains focus (user returns to tab)
+    const handleFocus = () => loadData();
+    window.addEventListener('focus', handleFocus);
+
+    // Reload data on storage events (changes in other tabs)
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'workOrders' || e.key === 'preserve_properties') {
+        loadData();
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+
+    // Set up interval to check for changes every 2 seconds
+    const interval = setInterval(loadData, 2000);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('storage', handleStorage);
+      clearInterval(interval);
+    };
   }, []);
   return (
     <div className="min-h-screen bg-slate-50">
