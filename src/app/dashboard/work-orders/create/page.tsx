@@ -511,8 +511,8 @@ export default function CreateWorkOrderV2Page() {
                           onChange={handleChange}
                           required
                           min={new Date().toISOString().split('T')[0]}
-                          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 cursor-pointer hover:border-blue-400 transition"
-                          style={{ colorScheme: 'dark' }}
+                          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 cursor-pointer hover:border-blue-400 transition bg-white"
+                          style={{ colorScheme: 'light' }}
                         />
                         <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
                       </div>
