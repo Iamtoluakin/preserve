@@ -482,6 +482,7 @@ export default function HomePage() {
 
               {/* Image Gallery */}
               <div className="relative h-80 bg-slate-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={service.images[currentImageIndex]}
                   alt={service.title}
