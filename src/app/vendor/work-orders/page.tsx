@@ -13,10 +13,12 @@ import {
   DollarSign,
   Camera,
   MessageSquare,
-  Upload,
   Play,
-  Pause,
-  CheckCheck
+  CheckCheck,
+  Home,
+  FileText,
+  Settings,
+  ChevronRight
 } from 'lucide-react';
 
 // Work order interface
@@ -53,6 +55,154 @@ interface Photo {
   caption: string;
   timestamp: string;
   gpsCoordinates?: string;
+}
+
+// ─── Detail Panel (shared between mobile and desktop) ──────────────────────
+interface DetailPanelProps {
+  order: WorkOrder;
+  getStatusColor: (s: string) => string;
+  getPriorityColor: (p: string) => string;
+  onAccept: (id: string) => void;
+  onDecline: (id: string) => void;
+  onStart: (id: string) => void;
+  onComplete: (id: string) => void;
+  onAddProgress: () => void;
+  onUploadPhoto: () => void;
+}
+
+function DetailPanel({
+  order,
+  getStatusColor,
+  getPriorityColor,
+  onAccept,
+  onDecline,
+  onStart,
+  onComplete,
+  onAddProgress,
+  onUploadPhoto,
+}: DetailPanelProps) {
+  return (
+    <div className="bg-white rounded-xl shadow-sm border p-5 md:p-6">
+      {/* Header */}
+      <div className="flex items-start justify-between mb-5">
+        <div>
+          <h2 className="text-xl font-bold text-slate-900 mb-1">{order.id}</h2>
+          <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
+            {order.status.replace('_', ' ')}
+          </span>
+        </div>
+        <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold border ${getPriorityColor(order.priority)}`}>
+          {order.priority.toUpperCase()}
+        </span>
+      </div>
+
+      {/* Property Info */}
+      <div className="mb-5 pb-5 border-b space-y-2">
+        <h3 className="font-semibold text-slate-800 mb-3 text-sm uppercase tracking-wide text-slate-500">Property Details</h3>
+        <div className="text-sm"><span className="text-slate-500">Client:</span> <span className="font-medium text-slate-900">{order.client}</span></div>
+        <div className="text-sm"><span className="text-slate-500">Property ID:</span> <span className="font-medium text-slate-900">{order.property}</span></div>
+        <div className="text-sm"><span className="text-slate-500">Address:</span> <span className="font-medium text-slate-900">{order.address}, {order.city}</span></div>
+        <div className="text-sm"><span className="text-slate-500">Requested:</span> <span className="font-medium text-slate-900">{order.requestedDate}</span></div>
+        <div className="text-sm"><span className="text-slate-500">Total Cost:</span> <span className="font-semibold text-green-600">${order.totalCost.toFixed(2)}</span></div>
+      </div>
+
+      {/* Services */}
+      <div className="mb-5 pb-5 border-b">
+        <h3 className="font-semibold text-slate-800 mb-3 text-sm uppercase tracking-wide text-slate-500">Services</h3>
+        <div className="space-y-1.5">
+          {order.services.map((service, idx) => (
+            <div key={idx} className="flex items-center text-sm gap-2">
+              <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
+              <span className="text-slate-800">{service}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Notes */}
+      {order.notes && (
+        <div className="mb-5 pb-5 border-b">
+          <h3 className="font-semibold text-slate-800 mb-3 text-sm uppercase tracking-wide text-slate-500">Notes</h3>
+          <p className="text-sm text-slate-700 bg-amber-50 p-3 rounded-lg border border-amber-200">{order.notes}</p>
+        </div>
+      )}
+
+      {/* Progress Updates */}
+      {order.progressUpdates && order.progressUpdates.length > 0 && (
+        <div className="mb-5 pb-5 border-b">
+          <h3 className="font-semibold text-slate-800 mb-3 text-sm uppercase tracking-wide text-slate-500">Progress Updates</h3>
+          <div className="space-y-3">
+            {order.progressUpdates.map((update) => (
+              <div key={update.id} className="flex gap-3">
+                <div className="w-2 h-2 bg-sky-500 rounded-full mt-2 flex-shrink-0" />
+                <div>
+                  <p className="text-sm text-slate-800">{update.message}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">{update.timestamp}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className="space-y-3">
+        {order.status === 'new' && (
+          <>
+            <button
+              onClick={() => onAccept(order.id)}
+              className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2"
+            >
+              <CheckCircle2 className="w-5 h-5" /> Accept Work Order
+            </button>
+            <button
+              onClick={() => onDecline(order.id)}
+              className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2"
+            >
+              <XCircle className="w-5 h-5" /> Decline Work Order
+            </button>
+          </>
+        )}
+        {order.status === 'accepted' && (
+          <button
+            onClick={() => onStart(order.id)}
+            className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2"
+          >
+            <Play className="w-5 h-5" /> Start Work
+          </button>
+        )}
+        {order.status === 'in_progress' && (
+          <>
+            <button
+              onClick={onAddProgress}
+              className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2"
+            >
+              <MessageSquare className="w-5 h-5" /> Add Progress Update
+            </button>
+            <button
+              onClick={onUploadPhoto}
+              className="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2"
+            >
+              <Camera className="w-5 h-5" /> Upload Photos
+            </button>
+            <button
+              onClick={() => onComplete(order.id)}
+              className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2"
+            >
+              <CheckCheck className="w-5 h-5" /> Mark as Complete
+            </button>
+          </>
+        )}
+        {order.status === 'completed' && (
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+            <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
+            <p className="text-green-800 font-semibold">Work Order Completed</p>
+            {order.completedDate && <p className="text-sm text-green-600 mt-1">Completed: {order.completedDate}</p>}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default function VendorWorkOrdersPage() {
@@ -301,275 +451,196 @@ export default function VendorWorkOrdersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <Link 
-            href="/vendor/dashboard"
-            className="inline-flex items-center text-sky-600 hover:text-sky-700 mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
-          </Link>
-          <h1 className="text-4xl font-bold text-slate-800 mb-2">Work Order Management</h1>
-          <p className="text-slate-600">Manage incoming work orders and track job progress</p>
-        </div>
-
-        {/* Filter Tabs */}
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-          <div className="flex flex-wrap gap-2">
-            {['all', 'new', 'accepted', 'in_progress', 'completed'].map((status) => (
+    <div className="min-h-screen bg-slate-50">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white border-b sticky top-0 z-40">
+        <div className="px-4 md:px-6 py-4">
+          <div className="flex items-center gap-3">
+            {selectedOrder ? (
               <button
-                key={status}
-                onClick={() => setFilter(status as any)}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  filter === status
-                    ? 'bg-sky-500 text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
+                onClick={() => setSelectedOrder(null)}
+                className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition text-sm"
               >
-                {status === 'all' ? 'All Orders' : status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                <span className="ml-2 text-sm">
-                  ({status === 'all' ? workOrders.length : workOrders.filter(o => o.status === status).length})
-                </span>
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back</span>
               </button>
-            ))}
+            ) : (
+              <Link
+                href="/vendor/dashboard"
+                className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition text-sm"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </Link>
+            )}
+            <div>
+              <h1 className="text-lg md:text-xl font-bold leading-tight">
+                {selectedOrder ? selectedOrder.id : 'Work Orders'}
+              </h1>
+              <p className="text-blue-100 text-xs">
+                {selectedOrder ? selectedOrder.client : 'Manage incoming jobs'}
+              </p>
+            </div>
           </div>
         </div>
+      </header>
 
-        <div className="grid lg:grid-cols-2 gap-6">
-          {/* Work Orders List */}
-          <div className="space-y-4">
-            {filteredOrders.length === 0 ? (
-              <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-                <AlertCircle className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <p className="text-slate-600">No work orders in this category</p>
-              </div>
-            ) : (
-              filteredOrders.map((order) => (
-                <div
-                  key={order.id}
-                  onClick={() => setSelectedOrder(order)}
-                  className={`bg-white rounded-xl shadow-sm p-6 cursor-pointer transition-all hover:shadow-md ${
-                    selectedOrder?.id === order.id ? 'ring-2 ring-sky-500' : ''
+      {/* MOBILE: List view hidden when detail is shown */}
+      <div className={`${selectedOrder ? 'hidden lg:block' : 'block'} pb-24 lg:pb-8`}>
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
+          {/* Filter Tabs */}
+          <div className="bg-white rounded-xl shadow-sm border p-3 md:p-4 mb-4 md:mb-6 overflow-x-auto">
+            <div className="flex gap-2 min-w-max">
+              {(['all', 'new', 'accepted', 'in_progress', 'completed'] as const).map((status) => (
+                <button
+                  key={status}
+                  onClick={() => setFilter(status)}
+                  className={`px-3 md:px-4 py-2 rounded-lg font-medium transition text-sm whitespace-nowrap ${
+                    filter === status
+                      ? 'bg-sky-500 text-white'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg font-bold text-slate-800">{order.id}</span>
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
-                          {order.status.replace('_', ' ')}
-                        </span>
-                      </div>
-                      <p className="text-slate-600 font-medium">{order.client}</p>
-                    </div>
-                    <span className={`px-3 py-1 rounded-lg text-xs font-semibold border ${getPriorityColor(order.priority)}`}>
-                      {order.priority.toUpperCase()}
-                    </span>
-                  </div>
-
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-start text-sm text-slate-600">
-                      <MapPin className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <div className="font-medium">{order.address}</div>
-                        <div>{order.city}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center text-sm text-slate-600">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Requested: {order.requestedDate}
-                    </div>
-                    <div className="flex items-center text-sm text-slate-600">
-                      <DollarSign className="w-4 h-4 mr-2" />
-                      ${order.totalCost.toFixed(2)}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {order.services.map((service, idx) => (
-                      <span key={idx} className="px-3 py-1 bg-sky-50 text-sky-700 rounded-lg text-sm">
-                        {service}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))
-            )}
+                  {status === 'all' ? 'All' : status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  <span className="ml-1.5 text-xs opacity-75">
+                    ({status === 'all' ? workOrders.length : workOrders.filter(o => o.status === status).length})
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Work Order Details */}
-          <div className="lg:sticky lg:top-4 h-fit">
-            {selectedOrder ? (
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex items-start justify-between mb-6">
-                  <div>
-                    <h2 className="text-2xl font-bold text-slate-800 mb-1">{selectedOrder.id}</h2>
-                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(selectedOrder.status)}`}>
-                      {selectedOrder.status.replace('_', ' ')}
-                    </span>
-                  </div>
-                  <span className={`px-3 py-1 rounded-lg text-sm font-semibold border ${getPriorityColor(selectedOrder.priority)}`}>
-                    {selectedOrder.priority.toUpperCase()}
-                  </span>
+          {/* Work Orders List + Desktop Detail */}
+          <div className="lg:grid lg:grid-cols-2 lg:gap-6">
+            {/* List */}
+            <div className="space-y-3 md:space-y-4">
+              {filteredOrders.length === 0 ? (
+                <div className="bg-white rounded-xl shadow-sm border p-10 text-center">
+                  <AlertCircle className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                  <p className="text-slate-600 font-medium">No work orders in this category</p>
                 </div>
-
-                {/* Property Info */}
-                <div className="mb-6 pb-6 border-b">
-                  <h3 className="font-semibold text-slate-800 mb-3">Property Details</h3>
-                  <div className="space-y-2 text-sm">
-                    <div><span className="text-slate-600">Client:</span> <span className="font-medium">{selectedOrder.client}</span></div>
-                    <div><span className="text-slate-600">Property ID:</span> <span className="font-medium">{selectedOrder.property}</span></div>
-                    <div><span className="text-slate-600">Address:</span> <span className="font-medium">{selectedOrder.address}, {selectedOrder.city}</span></div>
-                    <div><span className="text-slate-600">Requested Date:</span> <span className="font-medium">{selectedOrder.requestedDate}</span></div>
-                    <div><span className="text-slate-600">Total Cost:</span> <span className="font-medium text-green-600">${selectedOrder.totalCost.toFixed(2)}</span></div>
-                  </div>
-                </div>
-
-                {/* Services */}
-                <div className="mb-6 pb-6 border-b">
-                  <h3 className="font-semibold text-slate-800 mb-3">Services Requested</h3>
-                  <div className="space-y-2">
-                    {selectedOrder.services.map((service, idx) => (
-                      <div key={idx} className="flex items-center text-sm">
-                        <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
-                        <span>{service}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Notes */}
-                {selectedOrder.notes && (
-                  <div className="mb-6 pb-6 border-b">
-                    <h3 className="font-semibold text-slate-800 mb-3">Notes</h3>
-                    <p className="text-sm text-slate-600 bg-amber-50 p-3 rounded-lg border border-amber-200">
-                      {selectedOrder.notes}
-                    </p>
-                  </div>
-                )}
-
-                {/* Progress Updates */}
-                {selectedOrder.progressUpdates && selectedOrder.progressUpdates.length > 0 && (
-                  <div className="mb-6 pb-6 border-b">
-                    <h3 className="font-semibold text-slate-800 mb-3">Progress Updates</h3>
-                    <div className="space-y-3">
-                      {selectedOrder.progressUpdates.map((update) => (
-                        <div key={update.id} className="flex gap-3">
-                          <div className="w-2 h-2 bg-sky-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <div className="flex-1">
-                            <p className="text-sm text-slate-800">{update.message}</p>
-                            <p className="text-xs text-slate-500 mt-1">{update.timestamp}</p>
+              ) : (
+                filteredOrders.map((order) => (
+                  <div
+                    key={order.id}
+                    onClick={() => setSelectedOrder(order)}
+                    className={`bg-white rounded-xl shadow-sm border cursor-pointer transition-all hover:shadow-md ${
+                      selectedOrder?.id === order.id ? 'ring-2 ring-sky-500 border-sky-300' : ''
+                    }`}
+                  >
+                    <div className="p-4 md:p-5">
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                            <span className="text-base font-bold text-slate-900">{order.id}</span>
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
+                              {order.status.replace('_', ' ')}
+                            </span>
                           </div>
+                          <p className="text-slate-700 font-medium text-sm truncate">{order.client}</p>
                         </div>
-                      ))}
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <span className={`px-2 py-1 rounded-lg text-xs font-semibold border ${getPriorityColor(order.priority)}`}>
+                            {order.priority.toUpperCase()}
+                          </span>
+                          <ChevronRight className="w-4 h-4 text-slate-400 lg:hidden" />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5 mb-3">
+                        <div className="flex items-start text-sm text-slate-600 gap-2">
+                          <MapPin className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-slate-400" />
+                          <span className="truncate">{order.address}, {order.city}</span>
+                        </div>
+                        <div className="flex items-center text-sm text-slate-600 gap-2">
+                          <Calendar className="w-3.5 h-3.5 flex-shrink-0 text-slate-400" />
+                          <span>Requested: {order.requestedDate}</span>
+                        </div>
+                        <div className="flex items-center text-sm font-semibold text-green-600 gap-2">
+                          <DollarSign className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span>${order.totalCost.toFixed(2)}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1.5">
+                        {order.services.map((service, idx) => (
+                          <span key={idx} className="px-2 py-1 bg-sky-50 text-sky-700 rounded-lg text-xs font-medium">
+                            {service}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                )}
+                ))
+              )}
+            </div>
 
-                {/* Action Buttons */}
-                <div className="space-y-3">
-                  {selectedOrder.status === 'new' && (
-                    <>
-                      <button
-                        onClick={() => acceptOrder(selectedOrder.id)}
-                        className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
-                      >
-                        <CheckCircle2 className="w-5 h-5 mr-2" />
-                        Accept Work Order
-                      </button>
-                      <button
-                        onClick={() => declineOrder(selectedOrder.id)}
-                        className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
-                      >
-                        <XCircle className="w-5 h-5 mr-2" />
-                        Decline Work Order
-                      </button>
-                    </>
-                  )}
-
-                  {selectedOrder.status === 'accepted' && (
-                    <button
-                      onClick={() => startWork(selectedOrder.id)}
-                      className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
-                    >
-                      <Play className="w-5 h-5 mr-2" />
-                      Start Work
-                    </button>
-                  )}
-
-                  {selectedOrder.status === 'in_progress' && (
-                    <>
-                      <button
-                        onClick={() => setShowProgressModal(true)}
-                        className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
-                      >
-                        <MessageSquare className="w-5 h-5 mr-2" />
-                        Add Progress Update
-                      </button>
-                      <button
-                        onClick={() => setShowPhotoModal(true)}
-                        className="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
-                      >
-                        <Camera className="w-5 h-5 mr-2" />
-                        Upload Photos
-                      </button>
-                      <button
-                        onClick={() => completeOrder(selectedOrder.id)}
-                        className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
-                      >
-                        <CheckCheck className="w-5 h-5 mr-2" />
-                        Mark as Complete
-                      </button>
-                    </>
-                  )}
-
-                  {selectedOrder.status === 'completed' && (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-                      <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                      <p className="text-green-800 font-semibold">Work Order Completed</p>
-                      <p className="text-sm text-green-600 mt-1">Completed on {selectedOrder.completedDate}</p>
-                    </div>
-                  )}
+            {/* Desktop Detail Panel */}
+            <div className="hidden lg:block lg:sticky lg:top-4 h-fit">
+              {selectedOrder ? (
+                <DetailPanel
+                  order={selectedOrder}
+                  getStatusColor={getStatusColor}
+                  getPriorityColor={getPriorityColor}
+                  onAccept={acceptOrder}
+                  onDecline={declineOrder}
+                  onStart={startWork}
+                  onComplete={completeOrder}
+                  onAddProgress={() => setShowProgressModal(true)}
+                  onUploadPhoto={() => setShowPhotoModal(true)}
+                />
+              ) : (
+                <div className="bg-white rounded-xl shadow-sm border p-12 text-center">
+                  <AlertCircle className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-slate-800 mb-2">Select a Work Order</h3>
+                  <p className="text-slate-600 text-sm">Choose a work order from the list to view details</p>
                 </div>
-              </div>
-            ) : (
-              <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-                <AlertCircle className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-800 mb-2">Select a Work Order</h3>
-                <p className="text-slate-600">Choose a work order from the list to view details and take action</p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
 
+      {/* MOBILE: Detail view */}
+      {selectedOrder && (
+        <div className="lg:hidden pb-24">
+          <div className="px-4 py-4">
+            <DetailPanel
+              order={selectedOrder}
+              getStatusColor={getStatusColor}
+              getPriorityColor={getPriorityColor}
+              onAccept={acceptOrder}
+              onDecline={declineOrder}
+              onStart={startWork}
+              onComplete={completeOrder}
+              onAddProgress={() => setShowProgressModal(true)}
+              onUploadPhoto={() => setShowPhotoModal(true)}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Progress Update Modal */}
       {showProgressModal && selectedOrder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6">
-            <h3 className="text-xl font-bold text-slate-800 mb-4">Add Progress Update</h3>
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+          <div className="bg-white rounded-t-2xl sm:rounded-xl w-full sm:max-w-md p-6">
+            <h3 className="text-lg font-bold text-slate-800 mb-4">Add Progress Update</h3>
             <textarea
               value={progressMessage}
               onChange={(e) => setProgressMessage(e.target.value)}
               placeholder="Enter progress update for client..."
-              className="w-full border border-slate-300 rounded-lg p-3 h-32 text-slate-900 focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="w-full border border-slate-300 rounded-lg p-3 h-28 text-slate-900 focus:ring-2 focus:ring-sky-500 focus:border-transparent resize-none text-sm"
             />
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => addProgressUpdate(selectedOrder.id)}
-                className="flex-1 bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2.5 px-4 rounded-lg transition"
               >
                 Send Update
               </button>
               <button
-                onClick={() => {
-                  setShowProgressModal(false);
-                  setProgressMessage('');
-                }}
-                className="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold py-2 px-4 rounded-lg transition-colors"
+                onClick={() => { setShowProgressModal(false); setProgressMessage(''); }}
+                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2.5 px-4 rounded-lg transition"
               >
                 Cancel
               </button>
@@ -580,23 +651,43 @@ export default function VendorWorkOrdersPage() {
 
       {/* Photo Upload Modal */}
       {showPhotoModal && selectedOrder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6">
-            <h3 className="text-xl font-bold text-slate-800 mb-4">Upload Photos</h3>
-            <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center">
-              <Camera className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-              <p className="text-slate-600 mb-4">Photo upload feature</p>
-              <p className="text-sm text-slate-500">Will integrate with camera/file upload and GPS stamping</p>
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
+          <div className="bg-white rounded-t-2xl sm:rounded-xl w-full sm:max-w-md p-6">
+            <h3 className="text-lg font-bold text-slate-800 mb-4">Upload Photos</h3>
+            <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center">
+              <Camera className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+              <p className="text-slate-600 font-medium mb-1">Photo Upload</p>
+              <p className="text-sm text-slate-500">Camera & GPS stamping coming soon</p>
             </div>
             <button
               onClick={() => setShowPhotoModal(false)}
-              className="w-full mt-4 bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold py-2 px-4 rounded-lg transition-colors"
+              className="w-full mt-4 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2.5 px-4 rounded-lg transition"
             >
               Close
             </button>
           </div>
         </div>
       )}
+
+      {/* Mobile Bottom Nav */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50 flex items-center justify-around px-2 py-2">
+        <Link href="/vendor/dashboard" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+          <Home className="w-5 h-5" />
+          <span className="text-xs font-medium">Home</span>
+        </Link>
+        <Link href="/vendor/work-orders" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600">
+          <FileText className="w-5 h-5" />
+          <span className="text-xs font-medium">Orders</span>
+        </Link>
+        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+          <Home className="w-5 h-5" />
+          <span className="text-xs font-medium">Client View</span>
+        </Link>
+        <button className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500">
+          <Settings className="w-5 h-5" />
+          <span className="text-xs font-medium">Settings</span>
+        </button>
+      </nav>
     </div>
   );
 }
