@@ -93,34 +93,34 @@ export default function AddPropertyPage() {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="bg-white border-b sticky top-0 z-40">
-        <div className="px-6 py-4">
+        <div className="px-4 md:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link href="/dashboard" className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-2xl">P</span>
                 </div>
-                <span className="text-2xl font-bold text-slate-900">Preserve</span>
+                <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
               </Link>
             </div>
-            <Link href="/dashboard" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition">
+            <Link href="/dashboard" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition text-sm">
               <ArrowLeft className="w-5 h-5" />
-              Back to Dashboard
+              <span className="hidden sm:inline">Back to Dashboard</span>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main className="max-w-4xl mx-auto px-4 md:px-6 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Add New Property</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Add New Property</h1>
           <p className="text-slate-600">Submit a foreclosed or REO property for preservation services</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Property Address Section */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <MapPin className="w-6 h-6 text-blue-600" />
@@ -310,7 +310,7 @@ export default function AddPropertyPage() {
           </div>
 
           {/* Property Details Section */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <Home className="w-6 h-6 text-blue-600" />
@@ -384,7 +384,7 @@ export default function AddPropertyPage() {
           </div>
 
           {/* Additional Information */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <FileText className="w-6 h-6 text-blue-600" />
@@ -411,7 +411,7 @@ export default function AddPropertyPage() {
           </div>
 
           {/* Documents Upload (UI Only) */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <Upload className="w-6 h-6 text-blue-600" />
@@ -422,13 +422,13 @@ export default function AddPropertyPage() {
               </div>
             </div>
 
-            <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-blue-400 transition">
-              <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-              <p className="text-slate-600 mb-2">Drag and drop files here, or click to browse</p>
+            <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 md:p-8 text-center hover:border-blue-400 transition">
+              <Upload className="w-10 h-10 md:w-12 md:h-12 text-slate-400 mx-auto mb-3" />
+              <p className="text-slate-600 mb-2 text-sm md:text-base">Drag and drop files here, or click to browse</p>
               <p className="text-sm text-slate-500">Supported: PDF, JPG, PNG (Max 10MB)</p>
               <button
                 type="button"
-                className="mt-4 px-6 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition"
+                className="mt-4 px-6 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition text-sm"
               >
                 Choose Files
               </button>
@@ -436,16 +436,16 @@ export default function AddPropertyPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-between pt-6">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 pb-8">
             <Link
               href="/dashboard"
-              className="px-6 py-3 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition"
+              className="px-6 py-3 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition text-center"
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+              className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-center"
             >
               Add Property & Request Service
             </button>

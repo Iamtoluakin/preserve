@@ -127,7 +127,7 @@ export default function DashboardPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-4 md:p-6">
+        <main className="flex-1 p-4 md:p-6 pb-24 lg:pb-6">
           {/* Stats Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <StatCard
@@ -278,8 +278,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Activity */}
-          <div className="mt-6 bg-white rounded-lg shadow-sm border p-4 md:p-6">
-            <h2 className="text-xl font-semibold text-slate-900 mb-4">Recent Activity</h2>
+          <div className="mt-6 bg-white rounded-lg shadow-sm border p-4 md:p-6">            <h2 className="text-xl font-semibold text-slate-900 mb-4">Recent Activity</h2>
             <div className="space-y-4">
               <ActivityItem
                 icon={<Camera className="w-5 h-5 text-blue-600" />}
@@ -303,6 +302,32 @@ export default function DashboardPage() {
           </div>
         </main>
       </div>
+
+      {/* Mobile Bottom Nav */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50 flex items-center justify-around px-2 py-2">
+        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600">
+          <Home className="w-5 h-5" />
+          <span className="text-xs font-medium">Home</span>
+        </Link>
+        <Link href="/dashboard/properties" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+          <MapPin className="w-5 h-5" />
+          <span className="text-xs font-medium">Properties</span>
+        </Link>
+        <Link href="/dashboard/work-orders/create" className="flex flex-col items-center gap-0.5">
+          <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center shadow-lg -mt-5">
+            <Plus className="w-6 h-6 text-white" />
+          </div>
+          <span className="text-xs font-medium text-slate-500 mt-0.5">New</span>
+        </Link>
+        <Link href="/dashboard/work-orders" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+          <FileText className="w-5 h-5" />
+          <span className="text-xs font-medium">Orders</span>
+        </Link>
+        <button className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500">
+          <Settings className="w-5 h-5" />
+          <span className="text-xs font-medium">Settings</span>
+        </button>
+      </nav>
     </div>
   );
 }

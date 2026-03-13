@@ -14,6 +14,7 @@ import {
   FileText,
   Trash2,
   RefreshCw,
+  Settings,
 } from 'lucide-react';
 
 type Property = {
@@ -121,7 +122,7 @@ export default function PropertiesPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-8">
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 pb-24 lg:pb-8">
         {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-1">
@@ -327,6 +328,32 @@ export default function PropertiesPage() {
           </div>
         )}
       </main>
+
+      {/* Mobile Bottom Nav */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50 flex items-center justify-around px-2 py-2">
+        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+          <Home className="w-5 h-5" />
+          <span className="text-xs font-medium">Home</span>
+        </Link>
+        <Link href="/dashboard/properties" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600">
+          <MapPin className="w-5 h-5" />
+          <span className="text-xs font-medium">Properties</span>
+        </Link>
+        <Link href="/dashboard/work-orders/create" className="flex flex-col items-center gap-0.5">
+          <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center shadow-lg -mt-5">
+            <Plus className="w-6 h-6 text-white" />
+          </div>
+          <span className="text-xs font-medium text-slate-500 mt-0.5">New</span>
+        </Link>
+        <Link href="/dashboard/work-orders" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+          <FileText className="w-5 h-5" />
+          <span className="text-xs font-medium">Orders</span>
+        </Link>
+        <button className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500">
+          <Settings className="w-5 h-5" />
+          <span className="text-xs font-medium">Settings</span>
+        </button>
+      </nav>
     </div>
   );
 }

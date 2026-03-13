@@ -297,7 +297,34 @@ export default function CreateWorkOrderV2Page() {
           <p className="text-slate-600">Select the services you need to maintain your property</p>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        {/* Mobile Order Summary Bar */}
+        {selectedServices.length > 0 && (
+          <div className="lg:hidden sticky top-16 z-30 bg-white border-b shadow-sm px-4 py-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-xs font-bold">{selectedServices.length}</span>
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-slate-900 truncate">
+                  {selectedServices.length} service{selectedServices.length !== 1 ? 's' : ''} selected
+                </p>
+                <p className="text-xs text-slate-500">
+                  ${getBillingAmount().toFixed(0)}{getBillingSuffix()} · {billingFrequency}
+                </p>
+              </div>
+            </div>
+            <button
+              type="submit"
+              form="work-order-form"
+              disabled={!formData.propertyId}
+              className="flex-shrink-0 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Submit
+            </button>
+          </div>
+        )}
+
+        <form id="work-order-form" onSubmit={handleSubmit}>
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Left Column - Service Selection */}
             <div className="lg:col-span-2 space-y-6">
@@ -549,10 +576,86 @@ export default function CreateWorkOrderV2Page() {
                   </div>
                 </div>
               </div>
+
+              {/* Mobile-only Order Summary Card */}
+              <div className="lg:hidden bg-white rounded-xl shadow-sm border p-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <DollarSign className="w-5 h-5 text-blue-600" />
+                  <h2 className="text-lg font-semibold text-slate-900">Order Summary</h2>
+                </div>
+
+                {selectedServices.length === 0 ? (
+                  <div className="text-center py-6">
+                    <ShoppingCart className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+                    <p className="text-slate-500 text-sm">No services selected yet</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-3 mb-4">
+                      {selectedServices.map(service => (
+                        <div key={service.id} className="flex items-center justify-between gap-2 py-2 border-b last:border-b-0">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-slate-900 truncate">{service.name}</p>
+                            <p className="text-xs text-slate-500">${service.basePrice} × {service.quantity}</p>
+                          </div>
+                          <div className="flex items-center gap-1.5 flex-shrink-0">
+                            <button type="button" onClick={() => updateQuantity(service.id, -1)}
+                              className="w-6 h-6 bg-slate-100 rounded flex items-center justify-center">
+                              <Minus className="w-3 h-3 text-slate-600" />
+                            </button>
+                            <span className="text-sm font-medium w-5 text-center">{service.quantity}</span>
+                            <button type="button" onClick={() => updateQuantity(service.id, 1)}
+                              className="w-6 h-6 bg-slate-100 rounded flex items-center justify-center">
+                              <Plus className="w-3 h-3 text-slate-600" />
+                            </button>
+                            <button type="button" onClick={() => removeService(service.id)}
+                              className="text-red-500 text-xs ml-1">✕</button>
+                          </div>
+                          <p className="font-semibold text-slate-900 text-sm flex-shrink-0">${service.total}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Billing Frequency - Mobile */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Billing Frequency</label>
+                      <select
+                        value={billingFrequency}
+                        onChange={e => setBillingFrequency(e.target.value as BillingFrequency)}
+                        className="w-full px-3 py-2.5 border border-slate-300 rounded-lg text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="one-time">One-Time — ${getTotalCost().toLocaleString()}</option>
+                        <option value="weekly">Weekly — ${(getMonthlyEstimate() / 4).toFixed(0)}/wk</option>
+                        <option value="monthly">Monthly — ${getMonthlyEstimate().toFixed(0)}/mo</option>
+                        <option value="quarterly">Quarterly — ${getQuarterlyEstimate().toFixed(0)}/qtr (Save 5%)</option>
+                        <option value="yearly">Yearly — ${(getMonthlyEstimate() * 12 * 0.9).toFixed(0)}/yr (Save 10%)</option>
+                      </select>
+                    </div>
+
+                    <div className="flex items-center justify-between mb-4 p-3 bg-blue-50 rounded-lg">
+                      <span className="font-semibold text-slate-900 text-sm">{getBillingLabel()}</span>
+                      <span className="text-xl font-bold text-blue-600">
+                        ${getBillingAmount().toFixed(0)}{getBillingSuffix()}
+                      </span>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={selectedServices.length === 0 || !formData.propertyId}
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3.5 rounded-lg font-bold text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {billingFrequency === 'one-time' ? '🛒 Submit Order' : '✅ Subscribe & Submit'}
+                    </button>
+                    {!formData.propertyId && (
+                      <p className="text-xs text-center text-amber-600 mt-2">⚠️ Please select a property first</p>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
 
-            {/* Right Column - Order Summary (Sticky) */}
-            <div className="lg:col-span-1">
+            {/* Right Column - Order Summary (Desktop Sticky, already in code below) */}
+            <div className="lg:col-span-1 hidden lg:block">
               <div className="sticky top-24">
                 <div className="bg-white rounded-xl shadow-lg border p-4 md:p-6">
                   <div className="flex items-center gap-3 mb-6">
