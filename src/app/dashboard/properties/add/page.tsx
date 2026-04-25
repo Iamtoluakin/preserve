@@ -82,7 +82,7 @@ export default function AddPropertyPage() {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Property Added Successfully!</h2>
-          <p className="text-slate-600 mb-6">Your property has been added to the system and assigned for service.</p>
+          <p className="text-slate-600 mb-6">Your property has been added. You can now schedule services for it.</p>
           <div className="text-sm text-slate-500">Redirecting to dashboard...</div>
         </div>
       </div>
@@ -114,8 +114,8 @@ export default function AddPropertyPage() {
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 md:px-6 py-8">
         <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Add New Property</h1>
-          <p className="text-slate-600">Submit a foreclosed or REO property for preservation services</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Add a Property</h1>
+          <p className="text-slate-600">Enter your property details to start managing and scheduling services</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -356,7 +356,7 @@ export default function AddPropertyPage() {
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Acquisition Date
+                  Date Added to Portfolio
                 </label>
                 <input
                   type="date"
@@ -369,7 +369,7 @@ export default function AddPropertyPage() {
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Bank Reference / Loan Number
+                  Property Nickname / Reference (Optional)
                 </label>
                 <input
                   type="text"
@@ -377,7 +377,7 @@ export default function AddPropertyPage() {
                   value={formData.bankReference}
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
-                  placeholder="REF-2025-001234"
+                  placeholder="e.g. Beach House, Rental Unit A"
                 />
               </div>
             </div>

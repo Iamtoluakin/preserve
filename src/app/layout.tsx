@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Preserve - Property Preservation Services",
-  description: "Professional property preservation services for foreclosed and REO properties in North Carolina",
+  title: "Preserve — Property Care Made Simple",
+  description: "Manage lawn care, inspections, winterization, and maintenance for all your properties in one place. Built for homeowners, landlords, and property investors.",
 };
 
 export default function RootLayout({

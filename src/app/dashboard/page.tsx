@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Home,
   FileText, 
@@ -16,14 +17,29 @@ import {
   TrendingUp,
   AlertCircle,
   CheckCircle2,
-  BarChart3
+  BarChart3,
+  LogOut,
 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 import WorkOrderAnalytics from '@/components/WorkOrderAnalytics';
 import WorkOrderCalendar from '@/components/WorkOrderCalendar';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [workOrders, setWorkOrders] = useState<any[]>([]);
   const [properties, setProperties] = useState<any[]>([]);
+  const [userEmail, setUserEmail] = useState('');
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/login');
+  };
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) setUserEmail(data.user.email || '');
+    });
+  }, []);
   const [showAnalytics, setShowAnalytics] = useState(true);
   const [showCalendar, setShowCalendar] = useState(true);
 
@@ -99,10 +115,20 @@ export default function DashboardPage() {
                 <Bell className="w-5 h-5 md:w-6 md:h-6" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
-              <button className="flex items-center space-x-2 p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-                <User className="w-5 h-5 md:w-6 md:h-6" />
-                <span className="hidden md:block">Bank Admin</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center space-x-2 p-2 text-slate-600 rounded-lg">
+                  <User className="w-5 h-5" />
+                  <span className="hidden md:block text-sm truncate max-w-[150px]">{userEmail}</span>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-1.5 px-3 py-2 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition text-sm"
+                  title="Sign out"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden md:inline">Sign Out</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
