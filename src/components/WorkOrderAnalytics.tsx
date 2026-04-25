@@ -98,7 +98,7 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
       .slice(0, 5);
   };
 
-  const calculateTotalRevenue = () => {
+  const calculateTotalServiceSpend = () => {
     return workOrders.reduce((sum, order) => {
       return sum + (order.totalCost || 0);
     }, 0);
@@ -140,8 +140,8 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
           color="blue"
         />
         <MetricCard
-          title="Total Revenue"
-          value={`$${calculateTotalRevenue().toLocaleString()}`}
+          title="Service Spend"
+          value={`$${calculateTotalServiceSpend().toLocaleString()}`}
           icon={<DollarSign className="w-5 h-5" />}
           color="green"
         />

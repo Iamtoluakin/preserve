@@ -252,7 +252,7 @@ export default function WorkOrderDetailPage() {
             </section>
 
             <section className="bg-white rounded-xl shadow-sm border p-5">
-              <h2 className="font-semibold text-slate-900 mb-4">Financials</h2>
+              <h2 className="font-semibold text-slate-900 mb-4">Service Cost</h2>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between gap-4">
                   <span className="text-slate-500">Service total</span>
