@@ -23,11 +23,12 @@ import {
 import { supabase } from '@/lib/supabase';
 import WorkOrderAnalytics from '@/components/WorkOrderAnalytics';
 import WorkOrderCalendar from '@/components/WorkOrderCalendar';
+import { readProperties, readWorkOrders, type PreserveProperty, type PreserveWorkOrder } from '@/lib/localData';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [workOrders, setWorkOrders] = useState<any[]>([]);
-  const [properties, setProperties] = useState<any[]>([]);
+  const [workOrders, setWorkOrders] = useState<PreserveWorkOrder[]>([]);
+  const [properties, setProperties] = useState<PreserveProperty[]>([]);
   const [userEmail, setUserEmail] = useState('');
 
   const handleLogout = async () => {
@@ -44,21 +45,8 @@ export default function DashboardPage() {
   const [showCalendar, setShowCalendar] = useState(true);
 
   const loadData = () => {
-    // Load work orders from localStorage
-    const storedWorkOrders = localStorage.getItem('workOrders');
-    if (storedWorkOrders) {
-      setWorkOrders(JSON.parse(storedWorkOrders));
-    } else {
-      setWorkOrders([]);
-    }
-
-    // Load properties from localStorage
-    const storedProperties = localStorage.getItem('preserve_properties');
-    if (storedProperties) {
-      setProperties(JSON.parse(storedProperties));
-    } else {
-      setProperties([]);
-    }
+    setWorkOrders(readWorkOrders());
+    setProperties(readProperties());
   };
 
   useEffect(() => {
@@ -290,7 +278,7 @@ export default function DashboardPage() {
                     properties.slice(0, 5).map((property) => (
                       <PropertyRow
                         key={property.id}
-                        address={property.address}
+                        address={property.address || 'Untitled property'}
                         county={property.county || 'N/A'}
                         status="active"
                         lastInspection="N/A"

@@ -3,11 +3,12 @@
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { TrendingUp, Calendar, DollarSign, Clock, FileText } from 'lucide-react';
+import { formatWorkOrderStatus, type PreserveWorkOrder } from '@/lib/localData';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 interface WorkOrderAnalyticsProps {
-  workOrders: any[];
+  workOrders: PreserveWorkOrder[];
 }
 
 export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsProps) {
@@ -31,7 +32,9 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
     }
   }, [workOrders]);
 
-  const calculateMonthlyTrends = (orders: any[]) => {
+  const getStatus = (status: string) => status.toLowerCase().replace('_', '-');
+
+  const calculateMonthlyTrends = (orders: PreserveWorkOrder[]) => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
@@ -46,9 +49,9 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
         return orderDate.getMonth() === monthIndex && orderDate.getFullYear() === year;
       });
 
-      const completed = monthOrders.filter(o => o.status === 'completed').length;
-      const pending = monthOrders.filter(o => o.status === 'pending').length;
-      const inProgress = monthOrders.filter(o => o.status === 'in_progress').length;
+      const completed = monthOrders.filter(o => getStatus(o.status) === 'completed').length;
+      const pending = monthOrders.filter(o => getStatus(o.status) === 'pending').length;
+      const inProgress = monthOrders.filter(o => getStatus(o.status) === 'in-progress').length;
 
       last6Months.push({
         month: months[monthIndex],
@@ -62,15 +65,15 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
     return last6Months;
   };
 
-  const calculateStatusDistribution = (orders: any[]) => {
-    const statusCounts: any = {};
+  const calculateStatusDistribution = (orders: PreserveWorkOrder[]) => {
+    const statusCounts: Record<string, number> = {};
     orders.forEach(order => {
-      const status = order.status || 'pending';
+      const status = formatWorkOrderStatus(order.status || 'pending');
       statusCounts[status] = (statusCounts[status] || 0) + 1;
     });
 
     return Object.keys(statusCounts).map(status => ({
-      name: status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      name: status.replace(/\b\w/g, l => l.toUpperCase()),
       value: statusCounts[status]
     }));
   };
@@ -102,10 +105,11 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
   };
 
   const calculateAvgCompletionTime = () => {
-    const completedOrders = workOrders.filter(o => o.status === 'completed' && o.completedDate && o.createdAt);
+    const completedOrders = workOrders.filter(o => getStatus(o.status) === 'completed' && o.completedDate && o.createdAt);
     if (completedOrders.length === 0) return 0;
 
     const totalDays = completedOrders.reduce((sum, order) => {
+      if (!order.completedDate) return sum;
       const start = new Date(order.createdAt);
       const end = new Date(order.completedDate);
       const days = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));

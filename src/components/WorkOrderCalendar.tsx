@@ -3,25 +3,17 @@
 import { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { format, isSameDay, parseISO } from 'date-fns';
+import { format, isSameDay } from 'date-fns';
 import { Calendar as CalendarIcon, Clock, MapPin, AlertCircle } from 'lucide-react';
-
-interface WorkOrder {
-  id: string;
-  propertyAddress: string;
-  serviceType: string;
-  status: string;
-  scheduledDate: string;
-  priority: string;
-}
+import { type PreserveWorkOrder } from '@/lib/localData';
 
 interface WorkOrderCalendarProps {
-  workOrders: WorkOrder[];
+  workOrders: PreserveWorkOrder[];
 }
 
 export default function WorkOrderCalendar({ workOrders }: WorkOrderCalendarProps) {
   const [date, setDate] = useState(new Date());
-  const [selectedDateOrders, setSelectedDateOrders] = useState<WorkOrder[]>([]);
+  const [selectedDateOrders, setSelectedDateOrders] = useState<PreserveWorkOrder[]>([]);
 
   useEffect(() => {
     // Filter work orders for the selected date
@@ -69,7 +61,7 @@ export default function WorkOrderCalendar({ workOrders }: WorkOrderCalendarProps
   };
 
   const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
+    switch (status.toLowerCase().replace('_', '-')) {
       case 'completed':
         return 'bg-green-100 text-green-800';
       case 'in-progress':
@@ -91,8 +83,10 @@ export default function WorkOrderCalendar({ workOrders }: WorkOrderCalendarProps
         return 'text-orange-600';
       case 'low':
         return 'text-green-600';
+      case 'emergency':
+        return 'text-red-600';
       default:
-        return 'text-gray-600';
+        return 'text-blue-600';
     }
   };
 

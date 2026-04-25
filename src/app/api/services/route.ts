@@ -1,3 +1,6 @@
 import { NextResponse } from 'next/server';
-export async function GET() { return NextResponse.json({ message: 'Not implemented' }, { status: 501 }); }
-export async function POST() { return NextResponse.json({ message: 'Not implemented' }, { status: 501 }); }
+import { serviceCatalog } from '@/lib/supabase';
+
+export async function GET() {
+  return NextResponse.json({ services: serviceCatalog });
+}

@@ -16,43 +16,24 @@ import {
   RefreshCw,
   Settings,
 } from 'lucide-react';
-
-type Property = {
-  id: string;
-  address: string;
-  city: string;
-  county: string;
-  state: string;
-  zip: string;
-  propertyType: string;
-  acquisitionDate: string;
-  status: string;
-  bankReference: string;
-  parcelId?: string;
-  notes?: string;
-};
+import {
+  readProperties,
+  readWorkOrders,
+  type PreserveProperty,
+  type PreserveWorkOrder,
+  writeProperties,
+} from '@/lib/localData';
 
 export default function PropertiesPage() {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [workOrders, setWorkOrders] = useState<any[]>([]);
+  const [properties, setProperties] = useState<PreserveProperty[]>([]);
+  const [workOrders, setWorkOrders] = useState<PreserveWorkOrder[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   const loadData = useCallback(() => {
-    const storedProps = localStorage.getItem('preserve_properties');
-    if (storedProps) {
-      try { setProperties(JSON.parse(storedProps)); } catch { setProperties([]); }
-    } else {
-      setProperties([]);
-    }
-
-    const storedWOs = localStorage.getItem('workOrders');
-    if (storedWOs) {
-      try { setWorkOrders(JSON.parse(storedWOs)); } catch { setWorkOrders([]); }
-    } else {
-      setWorkOrders([]);
-    }
+    setProperties(readProperties());
+    setWorkOrders(readWorkOrders());
   }, []);
 
   useEffect(() => {
@@ -64,7 +45,7 @@ export default function PropertiesPage() {
   const deleteProperty = (id: string) => {
     const updated = properties.filter(p => p.id !== id);
     setProperties(updated);
-    localStorage.setItem('preserve_properties', JSON.stringify(updated));
+    writeProperties(updated);
     setConfirmDelete(null);
   };
 

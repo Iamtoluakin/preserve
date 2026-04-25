@@ -4,24 +4,23 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { ArrowLeft, Home, MapPin, FileText, Calendar, Building2, Plus, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import {
+  formatWorkOrderStatus,
+  readProperties,
+  readWorkOrders,
+  type PreserveProperty,
+  type PreserveWorkOrder,
+} from '@/lib/localData';
 
 export default function PropertyDetailPage() {
   const params = useParams();
-  const [property, setProperty] = useState<any>(null);
-  const [workOrders, setWorkOrders] = useState<any[]>([]);
+  const [property, setProperty] = useState<PreserveProperty | null>(null);
+  const [workOrders, setWorkOrders] = useState<PreserveWorkOrder[]>([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem('preserve_properties');
-    if (stored) {
-      const props = JSON.parse(stored);
-      const found = props.find((p: any) => p.id === params.id);
-      setProperty(found || null);
-    }
-    const storedWOs = localStorage.getItem('workOrders');
-    if (storedWOs) {
-      const all = JSON.parse(storedWOs);
-      setWorkOrders(all.filter((wo: any) => wo.propertyId === params.id));
-    }
+    const propertyId = String(params.id);
+    setProperty(readProperties().find(p => p.id === propertyId) || null);
+    setWorkOrders(readWorkOrders().filter(wo => wo.propertyId === propertyId));
   }, [params.id]);
 
   const getStatusColor = (status: string) => {
@@ -158,7 +157,7 @@ export default function PropertyDetailPage() {
                     <div className="flex flex-wrap items-center gap-2 mb-1">
                       <span className="font-semibold text-slate-900 text-sm">{wo.orderNumber || `WO-${wo.id}`}</span>
                       <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${getStatusColor(wo.status)}`}>
-                        {wo.status?.replace('-', ' ').toUpperCase()}
+                        {formatWorkOrderStatus(wo.status).toUpperCase()}
                       </span>
                     </div>
                     <p className="text-sm text-slate-700 truncate">{wo.serviceType || 'Service not specified'}</p>

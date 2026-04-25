@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   ArrowLeft, 
   Home,
@@ -13,6 +14,13 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { serviceCatalog, calculateMonthlyCost } from '@/lib/supabase';
+import {
+  readProperties,
+  readWorkOrders,
+  type PreserveProperty,
+  type PreserveWorkOrder,
+  writeWorkOrders,
+} from '@/lib/localData';
 
 type SelectedService = {
   id: string;
@@ -27,6 +35,7 @@ type SelectedService = {
 type BillingFrequency = 'one-time' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
 
 export default function CreateWorkOrderV2Page() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     propertyId: '',
     priority: 'normal',
@@ -39,19 +48,15 @@ export default function CreateWorkOrderV2Page() {
   const [billingFrequency, setBillingFrequency] = useState<BillingFrequency>('monthly');
   const [submitted, setSubmitted] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
-  const [properties, setProperties] = useState<any[]>([]);
+  const [properties, setProperties] = useState<PreserveProperty[]>([]);
 
-  // Load properties from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem('preserve_properties');
-    if (stored) {
-      try {
-        const parsedProperties = JSON.parse(stored);
-        setProperties(parsedProperties);
-      } catch (e) {
-        console.error('Error loading properties:', e);
-        setProperties([]);
-      }
+    const storedProperties = readProperties();
+    const requestedPropertyId = new URLSearchParams(window.location.search).get('propertyId') || '';
+
+    setProperties(storedProperties);
+    if (requestedPropertyId && storedProperties.some(property => property.id === requestedPropertyId)) {
+      setFormData(current => ({ ...current, propertyId: requestedPropertyId }));
     }
   }, []);
 
@@ -166,12 +171,16 @@ export default function CreateWorkOrderV2Page() {
     const woNumber = `WO-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
     setOrderNumber(woNumber);
     
-    // Create the work order object
-    const newWorkOrder = {
+    const selectedProperty = properties.find(p => p.id === formData.propertyId);
+    const newWorkOrder: PreserveWorkOrder = {
       id: Date.now().toString(),
       orderNumber: woNumber,
       propertyId: formData.propertyId,
-      propertyAddress: properties.find(p => p.id === formData.propertyId)?.address || '',
+      propertyAddress: selectedProperty
+        ? [selectedProperty.address, selectedProperty.city, selectedProperty.state, selectedProperty.zip]
+            .filter(Boolean)
+            .join(', ')
+        : '',
       serviceType: selectedServices.map(s => s.name).join(', '),
       services: selectedServices,
       status: 'pending',
@@ -184,27 +193,12 @@ export default function CreateWorkOrderV2Page() {
       accessInstructions: formData.accessInstructions || '',
       createdAt: new Date().toISOString(),
     };
-    
-    // Save to localStorage
-    const stored = localStorage.getItem('workOrders');
-    let workOrders = [];
-    if (stored) {
-      try {
-        workOrders = JSON.parse(stored);
-      } catch (e) {
-        console.error('Error parsing stored work orders:', e);
-      }
-    }
-    
-    // Add new work order at the beginning
-    workOrders.unshift(newWorkOrder);
-    localStorage.setItem('workOrders', JSON.stringify(workOrders));
-    
-    console.log('Work Order saved to localStorage:', newWorkOrder);
+
+    writeWorkOrders([newWorkOrder, ...readWorkOrders()]);
     
     setSubmitted(true);
     setTimeout(() => {
-      window.location.href = '/dashboard/work-orders';
+      router.push('/dashboard/work-orders');
     }, 3000);
   };
 
@@ -351,7 +345,7 @@ export default function CreateWorkOrderV2Page() {
                   {properties.length === 0 ? (
                     <option value="" disabled>No properties available - Add a property first</option>
                   ) : (
-                    properties.map((property: any) => (
+                    properties.map((property) => (
                       <option key={property.id} value={property.id}>
                         {property.address}, {property.city}, {property.state} {property.zip}
                       </option>

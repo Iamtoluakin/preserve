@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowLeft, Home, MapPin, FileText, Upload } from 'lucide-react';
+import { readProperties, type PreserveProperty, writeProperties } from '@/lib/localData';
 
 export default function AddPropertyPage() {
   const [formData, setFormData] = useState({
@@ -24,7 +25,7 @@ export default function AddPropertyPage() {
     e.preventDefault();
     
     // Create new property object
-    const newProperty = {
+    const newProperty: PreserveProperty = {
       id: Date.now().toString(),
       address: formData.address,
       city: formData.city,
@@ -37,25 +38,9 @@ export default function AddPropertyPage() {
       bankReference: formData.bankReference || `REF-${Date.now()}`,
       parcelId: formData.parcelId,
       notes: formData.notes,
-      workOrders: 0
     };
-    
-    // Save to localStorage
-    const stored = localStorage.getItem('preserve_properties');
-    let properties = [];
-    if (stored) {
-      try {
-        properties = JSON.parse(stored);
-      } catch (e) {
-        console.error('Error parsing stored properties:', e);
-      }
-    }
-    
-    // Add new property at the beginning (most recent first)
-    properties.unshift(newProperty);
-    localStorage.setItem('preserve_properties', JSON.stringify(properties));
-    
-    console.log('Property saved to localStorage:', newProperty);
+
+    writeProperties([newProperty, ...readProperties()]);
     setSubmitted(true);
     
     // Redirect to properties list after 2 seconds

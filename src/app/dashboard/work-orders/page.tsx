@@ -19,40 +19,25 @@ import {
   Home,
   Settings,
 } from 'lucide-react';
-
-type WorkOrder = {
-  id: string;
-  orderNumber: string;
-  propertyAddress: string;
-  serviceType: string;
-  status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
-  priority: string;
-  scheduledDate: string;
-  billingFrequency: string;
-  totalCost: number;
-  createdAt: string;
-};
+import {
+  formatWorkOrderStatus,
+  readWorkOrders,
+  type PreserveWorkOrder,
+  type WorkOrderStatus,
+  writeWorkOrders,
+} from '@/lib/localData';
 
 const STATUS_OPTIONS = ['all', 'pending', 'in-progress', 'completed', 'cancelled'];
 
 export default function WorkOrdersPage() {
-  const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
+  const [workOrders, setWorkOrders] = useState<PreserveWorkOrder[]>([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
 
   const loadOrders = useCallback(() => {
-    const stored = localStorage.getItem('workOrders');
-    if (stored) {
-      try {
-        setWorkOrders(JSON.parse(stored));
-      } catch {
-        setWorkOrders([]);
-      }
-    } else {
-      setWorkOrders([]);
-    }
+    setWorkOrders(readWorkOrders());
   }, []);
 
   useEffect(() => {
@@ -61,19 +46,25 @@ export default function WorkOrdersPage() {
     return () => window.removeEventListener('focus', loadOrders);
   }, [loadOrders]);
 
-  const updateStatus = (id: string, newStatus: WorkOrder['status']) => {
+  const updateStatus = (id: string, newStatus: WorkOrderStatus) => {
     const updated = workOrders.map(wo =>
-      wo.id === id ? { ...wo, status: newStatus } : wo
+      wo.id === id
+        ? {
+            ...wo,
+            status: newStatus,
+            completedDate: newStatus === 'completed' ? wo.completedDate || new Date().toISOString() : undefined,
+          }
+        : wo
     );
     setWorkOrders(updated);
-    localStorage.setItem('workOrders', JSON.stringify(updated));
+    writeWorkOrders(updated);
     setUpdatingStatus(null);
   };
 
   const deleteOrder = (id: string) => {
     const updated = workOrders.filter(wo => wo.id !== id);
     setWorkOrders(updated);
-    localStorage.setItem('workOrders', JSON.stringify(updated));
+    writeWorkOrders(updated);
     setConfirmDelete(null);
   };
 
@@ -121,7 +112,7 @@ export default function WorkOrdersPage() {
     }
   };
 
-  const formatDate = (dateStr: string) => {
+  const formatDate = (dateStr?: string) => {
     if (!dateStr) return 'Not scheduled';
     try {
       return new Date(dateStr).toLocaleDateString('en-US', {
@@ -263,7 +254,7 @@ export default function WorkOrdersPage() {
                           {order.orderNumber || `WO-${order.id}`}
                         </span>
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
-                          {order.status?.replace('-', ' ').toUpperCase()}
+                          {formatWorkOrderStatus(order.status).toUpperCase()}
                         </span>
                         {order.priority && (
                           <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${getPriorityColor(order.priority)}`}>
@@ -316,7 +307,7 @@ export default function WorkOrdersPage() {
                     {updatingStatus === order.id ? (
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-xs text-slate-500 font-medium">Set status:</span>
-                        {(['pending', 'in-progress', 'completed', 'cancelled'] as WorkOrder['status'][]).map(s => (
+                        {(['pending', 'in-progress', 'completed', 'cancelled'] as WorkOrderStatus[]).map(s => (
                           <button
                             key={s}
                             onClick={() => updateStatus(order.id, s)}
