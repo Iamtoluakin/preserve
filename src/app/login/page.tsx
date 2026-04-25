@@ -25,7 +25,20 @@ export default function LoginPage() {
       if (mode === 'login') {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        router.push('/dashboard');
+
+        const { data: sessionData } = await supabase.auth.getSession();
+        const accessToken = sessionData.session?.access_token;
+        if (!accessToken) throw new Error('Could not create a login session. Please try again.');
+
+        const sessionResponse = await fetch('/api/auth/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accessToken }),
+        });
+        if (!sessionResponse.ok) throw new Error('Could not save your login session. Please try again.');
+
+        const next = new URLSearchParams(window.location.search).get('next') || '/dashboard';
+        router.push(next);
         router.refresh();
       } else {
         if (!name.trim()) { setError('Please enter your name.'); setLoading(false); return; }

@@ -33,6 +33,7 @@ export default function DashboardPage() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    await fetch('/api/auth/session', { method: 'DELETE' });
     router.push('/login');
   };
 
