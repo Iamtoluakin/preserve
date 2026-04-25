@@ -18,6 +18,7 @@ import {
   ChevronDown,
   Home,
   Settings,
+  Eye,
 } from 'lucide-react';
 import {
   formatWorkOrderStatus,
@@ -332,6 +333,14 @@ export default function WorkOrdersPage() {
                           <ChevronDown className="w-3.5 h-3.5" />
                           Update Status
                         </button>
+
+                        <Link
+                          href={`/dashboard/work-orders/${order.id}`}
+                          className="flex items-center gap-1.5 px-3 py-1.5 border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 transition text-sm font-medium"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          View Details
+                        </Link>
 
                         {order.status !== 'completed' && (
                           <button

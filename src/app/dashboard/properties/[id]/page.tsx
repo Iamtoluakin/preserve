@@ -151,7 +151,11 @@ export default function PropertyDetailPage() {
           ) : (
             <div className="divide-y divide-slate-100">
               {workOrders.map(wo => (
-                <div key={wo.id} className="px-6 py-4 flex items-start gap-3 hover:bg-slate-50">
+                <Link
+                  key={wo.id}
+                  href={`/dashboard/work-orders/${wo.id}`}
+                  className="px-6 py-4 flex items-start gap-3 hover:bg-slate-50 transition"
+                >
                   <div className="mt-0.5">{getStatusIcon(wo.status)}</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -166,7 +170,7 @@ export default function PropertyDetailPage() {
                       {wo.totalCost > 0 ? `$${wo.totalCost.toLocaleString()}` : ''}
                     </p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}
