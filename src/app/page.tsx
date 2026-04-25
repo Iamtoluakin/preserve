@@ -219,14 +219,14 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <div className="inline-block mb-4 px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
-                🏠 For homeowners, landlords &amp; property investors
+                First Property Preservation for remote owners, landlords &amp; investors
               </div>
               <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight">
-                Your Properties,<br />Always Cared For
+                Property preservation,<br />handled from anywhere
               </h1>
               <p className="text-xl text-slate-600 mb-8">
-                Preserve handles lawn care, inspections, winterization, and maintenance for all your properties — so you don&apos;t have to.
-                One dashboard. Total peace of mind.
+                Preserve coordinates lawn care, inspections, securing, winterization, repairs, and photo reports for every property you own.
+                Request service, track progress, and protect your asset without chasing contractors.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/login"
