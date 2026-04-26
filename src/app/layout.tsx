@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Preserve — Property Care Made Simple",
-  description: "Manage lawn care, inspections, winterization, and maintenance for all your properties in one place. Built for homeowners, landlords, and property investors.",
+  description: "Manage lawn care, house cleaning, inspections, winterization, and maintenance for all your properties in one place. Built for homeowners, landlords, and property investors.",
 };
 
 export default function RootLayout({

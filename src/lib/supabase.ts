@@ -117,6 +117,39 @@ export const serviceCatalog = [
     color: 'blue'
   },
   {
+    id: 'interior_house_cleaning',
+    name: 'Interior House Cleaning',
+    category: 'House Cleaning',
+    description: 'Kitchen, bathrooms, floors, dusting, and surface sanitizing',
+    basePrice: 250,
+    unit: 'per visit',
+    frequency: 'monthly',
+    icon: 'sparkles',
+    color: 'teal'
+  },
+  {
+    id: 'move_out_deep_clean',
+    name: 'Move-Out Deep Clean',
+    category: 'House Cleaning',
+    description: 'Full interior clean after vacancy, foreclosure, or tenant turnover',
+    basePrice: 450,
+    unit: 'one-time',
+    frequency: 'as-needed',
+    icon: 'home',
+    color: 'teal'
+  },
+  {
+    id: 'odor_sanitation',
+    name: 'Odor & Sanitation Treatment',
+    category: 'House Cleaning',
+    description: 'Deodorizing and sanitizing for stale, smoke, pet, or vacancy odors',
+    basePrice: 300,
+    unit: 'per treatment',
+    frequency: 'as-needed',
+    icon: 'spray',
+    color: 'teal'
+  },
+  {
     id: 'property_securing',
     name: 'Property Securing',
     category: 'Security',

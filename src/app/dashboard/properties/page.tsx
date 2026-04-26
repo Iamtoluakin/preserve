@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 import {
+  ArrowLeft,
   Home,
   Plus,
   MapPin,
@@ -84,6 +85,10 @@ export default function PropertiesPage() {
               <span className="text-2xl font-bold text-slate-900">Preserve</span>
             </Link>
             <div className="flex items-center gap-3">
+              <Link href="/dashboard" className="hidden sm:flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-blue-600 transition text-sm font-medium">
+                <ArrowLeft className="w-4 h-4" />
+                Dashboard
+              </Link>
               <button
                 onClick={loadData}
                 className="flex items-center gap-2 px-4 py-2 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 transition text-sm"
@@ -330,10 +335,10 @@ export default function PropertiesPage() {
           <FileText className="w-5 h-5" />
           <span className="text-xs font-medium">Orders</span>
         </Link>
-        <button className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500">
+        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <Settings className="w-5 h-5" />
           <span className="text-xs font-medium">Settings</span>
-        </button>
+        </Link>
       </nav>
     </div>
   );

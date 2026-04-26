@@ -21,6 +21,7 @@ import {
   CheckSquare,
   Star,
   Zap,
+  Sparkles,
 } from 'lucide-react';
 
 const serviceDetails = {
@@ -87,6 +88,22 @@ const serviceDetails = {
     frequency: 'Monthly, Bi-weekly, or Custom',
     timeline: '1–2 hours',
     team: 'Certified inspectors',
+  },
+  cleaning: {
+    title: 'Interior House Cleaning',
+    icon: Sparkles,
+    color: 'teal',
+    images: [
+      'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=800&h=600&fit=crop',
+    ],
+    description: 'Interior cleaning, move-out deep cleans, deodorizing, and sanitation for vacant or preserved homes.',
+    longDescription: 'Preservation is not only exterior upkeep. Preserve can clean the house itself after vacancy, turnover, weather events, or long periods away, then document the finished condition with photos.',
+    pricing: { base: 250, frequency: 'per visit', monthly: 'From $250/visit' },
+    includes: ['Kitchen & bathroom cleaning', 'Floor sweeping and mopping', 'Dusting and surface sanitizing', 'Move-out deep clean options', 'Odor treatment', 'Before/after photos'],
+    frequency: 'One-time, Monthly, or As-needed',
+    timeline: '2-6 hours',
+    team: 'Interior cleaning crew',
   },
   maintenance: {
     title: 'Maintenance & Repairs',
@@ -225,7 +242,7 @@ export default function HomePage() {
                 Property preservation,<br />handled from anywhere
               </h1>
               <p className="text-xl text-slate-600 mb-8">
-                Preserve coordinates lawn care, inspections, securing, winterization, repairs, and photo reports for every property you own.
+                Preserve coordinates lawn care, house cleaning, inspections, securing, winterization, repairs, and photo reports for every property you own.
                 Request service, track progress, and protect your asset without chasing contractors.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">

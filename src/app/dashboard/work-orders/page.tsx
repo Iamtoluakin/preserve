@@ -407,10 +407,10 @@ export default function WorkOrdersPage() {
           <FileText className="w-5 h-5" />
           <span className="text-xs font-medium">Orders</span>
         </Link>
-        <button className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500">
+        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <Settings className="w-5 h-5" />
           <span className="text-xs font-medium">Settings</span>
-        </button>
+        </Link>
       </nav>
     </div>
   );

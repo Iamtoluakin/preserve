@@ -11,9 +11,9 @@ import {
   Plus,
   Search,
   Bell,
-  User,
   MapPin,
   Calendar,
+  ChevronDown,
   TrendingUp,
   AlertCircle,
   CheckCircle2,
@@ -30,6 +30,7 @@ export default function DashboardPage() {
   const [workOrders, setWorkOrders] = useState<PreserveWorkOrder[]>([]);
   const [properties, setProperties] = useState<PreserveProperty[]>([]);
   const [userEmail, setUserEmail] = useState('');
+  const accountInitial = (userEmail?.trim()[0] || 'U').toUpperCase();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -77,47 +78,70 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Dashboard Header */}
-      <header className="bg-white border-b sticky top-0 z-40">
-        <div className="px-4 md:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 md:space-x-4">
-              <Link href="/" className="flex items-center space-x-2 md:space-x-3">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+      <header className="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-40">
+        <div className="px-4 md:px-6 py-3">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 md:gap-5 min-w-0">
+              <Link href="/" className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center shadow-sm">
                   <span className="text-white font-bold text-xl md:text-2xl">P</span>
                 </div>
                 <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
               </Link>
-              <div className="hidden md:block border-l pl-4 ml-4">
-                <h1 className="text-lg font-semibold text-slate-900">Property Dashboard</h1>
+              <div className="hidden md:block h-9 w-px bg-slate-200" />
+              <div className="hidden sm:block min-w-0">
+                <h1 className="text-base md:text-lg font-bold text-slate-950 leading-tight">Property Dashboard</h1>
+                <p className="text-xs text-slate-500 truncate">Track preservation services, cleaning, inspections, and work orders</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2 md:space-x-4">
+
+            <div className="flex items-center gap-2 md:gap-3">
               <div className="relative hidden lg:block">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Search properties..."
-                  className="pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64 text-slate-900 bg-white"
+                  placeholder="Search properties, orders, services..."
+                  className="h-11 w-[22rem] rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-sm text-slate-900 placeholder:text-slate-400 shadow-inner focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                 />
               </div>
-              <button className="relative p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-                <Bell className="w-5 h-5 md:w-6 md:h-6" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              <button
+                className="relative h-10 w-10 flex items-center justify-center text-slate-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-colors"
+                aria-label="Notifications"
+              >
+                <Bell className="w-5 h-5" />
+                <span className="absolute right-2.5 top-2.5 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full" />
               </button>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center space-x-2 p-2 text-slate-600 rounded-lg">
-                  <User className="w-5 h-5" />
-                  <span className="hidden md:block text-sm truncate max-w-[150px]">{userEmail}</span>
+              <div className="hidden md:flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 shadow-sm">
+                <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-sm">
+                  {accountInitial}
                 </div>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-1.5 px-3 py-2 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition text-sm"
-                  title="Sign out"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span className="hidden md:inline">Sign Out</span>
-                </button>
+                <div className="min-w-0 leading-tight">
+                  <p className="text-xs font-semibold text-slate-900 truncate max-w-[150px]">
+                    {userEmail || 'Signed in'}
+                  </p>
+                  <p className="text-[11px] text-slate-500">Owner account</p>
+                </div>
+                <ChevronDown className="w-4 h-4 text-slate-400" />
               </div>
+              <button
+                onClick={handleLogout}
+                className="h-10 flex items-center gap-2 rounded-xl border border-slate-200 px-3 text-sm font-semibold text-slate-600 hover:border-red-200 hover:bg-red-50 hover:text-red-600 transition"
+                title="Sign out"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden xl:inline">Sign Out</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-3 sm:hidden">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search properties..."
+                className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
+              />
             </div>
           </div>
         </div>
@@ -136,8 +160,12 @@ export default function DashboardPage() {
             <Link href="/dashboard/work-orders">
               <NavItem icon={<FileText />} label="Work Orders" />
             </Link>
-            <NavItem icon={<Camera />} label="Inspections" />
-            <NavItem icon={<Settings />} label="Settings" />
+            <Link href="/dashboard/inspections">
+              <NavItem icon={<Camera />} label="Inspections" />
+            </Link>
+            <Link href="/dashboard/settings">
+              <NavItem icon={<Settings />} label="Settings" />
+            </Link>
           </nav>
         </aside>
 
@@ -338,10 +366,10 @@ export default function DashboardPage() {
           <FileText className="w-5 h-5" />
           <span className="text-xs font-medium">Orders</span>
         </Link>
-        <button className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500">
+        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <Settings className="w-5 h-5" />
           <span className="text-xs font-medium">Settings</span>
-        </button>
+        </Link>
       </nav>
     </div>
   );

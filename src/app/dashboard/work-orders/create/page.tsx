@@ -391,7 +391,7 @@ export default function CreateWorkOrderV2Page() {
                     <div className="flex-1">
                       <h3 className="font-semibold text-green-900 mb-1">Full Preservation Package</h3>
                       <p className="text-sm text-green-800 mb-2">
-                        Get all recurring maintenance services at once! Includes lawn care, cleaning, inspections, and regular maintenance.
+                        Get all recurring preservation services at once. Includes lawn care, interior house cleaning, exterior cleaning, inspections, and regular maintenance.
                       </p>
                       <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm">
                         <span className="text-green-700 font-medium">💰 Best Value</span>
