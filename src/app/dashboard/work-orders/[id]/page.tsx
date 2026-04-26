@@ -130,22 +130,23 @@ export default function WorkOrderDetailPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="bg-white border-b sticky top-0 z-40">
-        <div className="px-4 md:px-6 py-4 flex items-center justify-between">
+        <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-3">
           <Link href="/dashboard/work-orders" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition text-sm">
             <ArrowLeft className="w-4 h-4" />
-            Back to Work Orders
+            <span className="hidden sm:inline">Back to Work Orders</span>
+            <span className="sm:hidden">Orders</span>
           </Link>
           <Link href="/dashboard" className="flex items-center space-x-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">P</span>
+            <div className="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg md:text-xl">P</span>
             </div>
-            <span className="text-xl font-bold text-slate-900">Preserve</span>
+            <span className="text-lg md:text-xl font-bold text-slate-900">Preserve</span>
           </Link>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 md:px-6 py-8 pb-24">
-        <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
+      <main className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8 pb-10">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <span className={`px-3 py-1 rounded-full border text-xs font-bold ${getStatusColor(workOrder.status)}`}>
@@ -155,16 +156,16 @@ export default function WorkOrderDetailPage() {
                 {workOrder.priority.toUpperCase()} PRIORITY
               </span>
             </div>
-            <h1 className="text-3xl font-bold text-slate-900">{workOrder.orderNumber || `WO-${workOrder.id}`}</h1>
-            <p className="text-slate-600 mt-1">{workOrder.serviceType || 'Service request'}</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 break-words">{workOrder.orderNumber || `WO-${workOrder.id}`}</h1>
+            <p className="text-sm md:text-base text-slate-600 mt-1 break-words">{workOrder.serviceType || 'Service request'}</p>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
             {STATUSES.map(status => (
               <button
                 key={status}
                 onClick={() => updateStatus(status)}
-                className={`px-3 py-2 rounded-lg border text-sm font-semibold transition ${
+                className={`px-3 py-2.5 rounded-lg border text-sm font-semibold transition ${
                   workOrder.status === status
                     ? getStatusColor(status)
                     : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-700'
@@ -178,7 +179,7 @@ export default function WorkOrderDetailPage() {
 
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <section className="bg-white rounded-xl shadow-sm border p-5 md:p-6">
+            <section className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
               <div className="flex items-center gap-3 mb-5">
                 <ShieldCheck className="w-5 h-5 text-blue-600" />
                 <h2 className="text-lg font-semibold text-slate-900">Job Overview</h2>
@@ -201,7 +202,7 @@ export default function WorkOrderDetailPage() {
               )}
             </section>
 
-            <section className="bg-white rounded-xl shadow-sm border p-5 md:p-6">
+            <section className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
               <div className="flex items-center gap-3 mb-5">
                 <FileText className="w-5 h-5 text-blue-600" />
                 <h2 className="text-lg font-semibold text-slate-900">Services</h2>
@@ -210,8 +211,8 @@ export default function WorkOrderDetailPage() {
               {services.length > 0 ? (
                 <div className="divide-y divide-slate-100">
                   {services.map((service, index) => (
-                    <div key={service.id || `${service.name}-${index}`} className="py-4 first:pt-0 last:pb-0 flex items-start justify-between gap-4">
-                      <div>
+                    <div key={service.id || `${service.name}-${index}`} className="py-4 first:pt-0 last:pb-0 flex items-start justify-between gap-3">
+                      <div className="min-w-0">
                         <p className="font-semibold text-slate-900">{service.name || 'Service'}</p>
                         <p className="text-sm text-slate-500 mt-1">
                           {service.quantity || 1} x ${Number(service.basePrice || 0).toLocaleString()}
@@ -219,7 +220,7 @@ export default function WorkOrderDetailPage() {
                           {service.frequency ? ` · ${service.frequency}` : ''}
                         </p>
                       </div>
-                      <p className="font-bold text-slate-900">${Number(service.total || 0).toLocaleString()}</p>
+                      <p className="font-bold text-slate-900 flex-shrink-0">${Number(service.total || 0).toLocaleString()}</p>
                     </div>
                   ))}
                 </div>
@@ -228,7 +229,7 @@ export default function WorkOrderDetailPage() {
               )}
             </section>
 
-            <section className="bg-white rounded-xl shadow-sm border p-5 md:p-6">
+            <section className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
               <div className="flex items-center gap-3 mb-5">
                 <NotebookText className="w-5 h-5 text-blue-600" />
                 <h2 className="text-lg font-semibold text-slate-900">Instructions</h2>
@@ -241,7 +242,7 @@ export default function WorkOrderDetailPage() {
           </div>
 
           <aside className="space-y-6">
-            <section className="bg-white rounded-xl shadow-sm border p-5">
+            <section className="bg-white rounded-xl shadow-sm border p-4 md:p-5">
               <h2 className="font-semibold text-slate-900 mb-4">Timeline</h2>
               <div className="space-y-4">
                 <TimelineItem icon={<FileText className="w-4 h-4" />} title="Created" detail={formatDate(workOrder.createdAt, true)} active />
@@ -251,7 +252,7 @@ export default function WorkOrderDetailPage() {
               </div>
             </section>
 
-            <section className="bg-white rounded-xl shadow-sm border p-5">
+            <section className="bg-white rounded-xl shadow-sm border p-4 md:p-5">
               <h2 className="font-semibold text-slate-900 mb-4">Service Cost</h2>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between gap-4">
@@ -269,7 +270,7 @@ export default function WorkOrderDetailPage() {
               </div>
             </section>
 
-            <section className="bg-white rounded-xl shadow-sm border p-5">
+            <section className="bg-white rounded-xl shadow-sm border p-4 md:p-5">
               <h2 className="font-semibold text-slate-900 mb-4">Danger Zone</h2>
               {confirmDelete ? (
                 <div className="space-y-3">

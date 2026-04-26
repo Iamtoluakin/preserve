@@ -79,14 +79,14 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-slate-50">
       {/* Dashboard Header */}
       <header className="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-40">
-        <div className="px-4 md:px-6 py-3">
+        <div className="px-3 sm:px-4 md:px-6 py-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 md:gap-5 min-w-0">
               <Link href="/" className="flex items-center gap-2 md:gap-3 flex-shrink-0">
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center shadow-sm">
-                  <span className="text-white font-bold text-xl md:text-2xl">P</span>
+                  <span className="text-white font-bold text-lg md:text-2xl">P</span>
                 </div>
-                <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
+                <span className="text-lg md:text-2xl font-bold text-slate-900">Preserve</span>
               </Link>
               <div className="hidden md:block h-9 w-px bg-slate-200" />
               <div className="hidden sm:block min-w-0">
@@ -125,7 +125,7 @@ export default function DashboardPage() {
               </div>
               <button
                 onClick={handleLogout}
-                className="h-10 flex items-center gap-2 rounded-xl border border-slate-200 px-3 text-sm font-semibold text-slate-600 hover:border-red-200 hover:bg-red-50 hover:text-red-600 transition"
+                className="h-10 w-10 sm:w-auto flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-0 sm:px-3 text-sm font-semibold text-slate-600 hover:border-red-200 hover:bg-red-50 hover:text-red-600 transition"
                 title="Sign out"
               >
                 <LogOut className="w-4 h-4" />
@@ -170,9 +170,9 @@ export default function DashboardPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-4 md:p-6 pb-24 lg:pb-6">
+        <main className="flex-1 p-3 sm:p-4 md:p-6 pb-28 lg:pb-6">
           {/* Stats Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-5 md:mb-8">
             <StatCard
               title="Active Properties"
               value={properties.length.toString()}
@@ -204,17 +204,17 @@ export default function DashboardPage() {
           </div>
 
           {/* Actions Bar */}
-          <div className="bg-white rounded-lg shadow-sm border p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-2 md:gap-4 flex-wrap">
-              <Link href="/dashboard/properties/add" className="bg-blue-600 text-white px-3 md:px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2 text-sm md:text-base">
+          <div className="bg-white rounded-xl shadow-sm border p-3 md:p-4 mb-5 md:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 md:gap-4">
+              <Link href="/dashboard/properties/add" className="bg-blue-600 text-white px-3 md:px-4 py-2.5 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 text-sm md:text-base font-semibold">
                 <Plus className="w-4 h-4 md:w-5 md:h-5" />
                 Add Property
               </Link>
-              <Link href="/dashboard/work-orders/create" className="border border-slate-300 text-slate-700 px-3 md:px-4 py-2 rounded-lg hover:border-blue-600 hover:text-blue-600 transition text-sm md:text-base">
+              <Link href="/dashboard/work-orders/create" className="border border-slate-300 text-slate-700 px-3 md:px-4 py-2.5 rounded-lg hover:border-blue-600 hover:text-blue-600 transition text-sm md:text-base font-semibold text-center">
                 Create Work Order
               </Link>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
               <button
                 onClick={() => setShowAnalytics(!showAnalytics)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
@@ -222,7 +222,7 @@ export default function DashboardPage() {
                 }`}
               >
                 <BarChart3 className="w-4 h-4" />
-                <span className="hidden sm:inline">Analytics</span>
+                <span>Analytics</span>
               </button>
               <button
                 onClick={() => setShowCalendar(!showCalendar)}
@@ -231,7 +231,7 @@ export default function DashboardPage() {
                 }`}
               >
                 <Calendar className="w-4 h-4" />
-                <span className="hidden sm:inline">Calendar</span>
+                <span>Calendar</span>
               </button>
             </div>
           </div>
@@ -251,7 +251,7 @@ export default function DashboardPage() {
           )}
 
           {/* Properties Table */}
-          <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
             <div className="p-4 border-b flex items-center justify-between">
               <h2 className="text-xl font-semibold text-slate-900">Your Properties</h2>
               <Link 
@@ -264,7 +264,31 @@ export default function DashboardPage() {
                 </svg>
               </Link>
             </div>
-            <div className="overflow-x-auto">
+            <div className="sm:hidden divide-y divide-slate-100">
+              {properties.length === 0 ? (
+                <div className="px-6 py-12 text-center">
+                  <Home className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-600 mb-4">No properties added yet</p>
+                  <Link
+                    href="/dashboard/properties/add"
+                    className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Your First Property
+                  </Link>
+                </div>
+              ) : (
+                properties.slice(0, 5).map(property => (
+                  <MobilePropertyCard
+                    key={property.id}
+                    id={property.id}
+                    address={property.address || 'Untitled property'}
+                    county={property.county || 'N/A'}
+                  />
+                ))
+              )}
+            </div>
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-slate-50 border-b">
                   <tr>
@@ -321,7 +345,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Activity */}
-          <div className="mt-6 bg-white rounded-lg shadow-sm border p-4 md:p-6">            <h2 className="text-xl font-semibold text-slate-900 mb-4">Recent Activity</h2>
+          <div className="mt-6 bg-white rounded-xl shadow-sm border p-4 md:p-6">            <h2 className="text-xl font-semibold text-slate-900 mb-4">Recent Activity</h2>
             <div className="space-y-4">
               <ActivityItem
                 icon={<Camera className="w-5 h-5 text-blue-600" />}
@@ -347,12 +371,12 @@ export default function DashboardPage() {
       </div>
 
       {/* Mobile Bottom Nav */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50 flex items-center justify-around px-2 py-2">
-        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t z-50 grid grid-cols-5 px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(15,23,42,0.08)]">
+        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg bg-blue-50 text-blue-600">
           <Home className="w-5 h-5" />
           <span className="text-xs font-medium">Home</span>
         </Link>
-        <Link href="/dashboard/properties" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+        <Link href="/dashboard/properties" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <MapPin className="w-5 h-5" />
           <span className="text-xs font-medium">Properties</span>
         </Link>
@@ -362,11 +386,11 @@ export default function DashboardPage() {
           </div>
           <span className="text-xs font-medium text-slate-500 mt-0.5">New</span>
         </Link>
-        <Link href="/dashboard/work-orders" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+        <Link href="/dashboard/work-orders" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <FileText className="w-5 h-5" />
           <span className="text-xs font-medium">Orders</span>
         </Link>
-        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <Settings className="w-5 h-5" />
           <span className="text-xs font-medium">Settings</span>
         </Link>
@@ -404,18 +428,19 @@ function StatCard({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-4 md:p-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className="text-slate-600 text-sm md:text-base">{title}</div>
-        <div className="text-slate-400">{icon}</div>
+    <div className="bg-white rounded-xl shadow-sm border p-3 md:p-6">
+      <div className="flex items-start justify-between gap-2 mb-3 md:mb-4">
+        <div className="text-slate-600 text-xs md:text-base leading-snug">{title}</div>
+        <div className="text-slate-400 [&>svg]:w-5 [&>svg]:h-5 md:[&>svg]:w-6 md:[&>svg]:h-6 flex-shrink-0">{icon}</div>
       </div>
-      <div className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">{value}</div>
+      <div className="text-2xl md:text-3xl font-bold text-slate-900 mb-1 md:mb-2">{value}</div>
       <div className={`text-sm font-medium ${
         trend === 'up' ? 'text-green-600' :
         trend === 'down' ? 'text-red-600' :
         'text-slate-600'
       }`}>
-        {change} from last month
+        <span className="md:hidden">{change}</span>
+        <span className="hidden md:inline">{change} from last month</span>
       </div>
     </div>
   );
@@ -467,6 +492,30 @@ function PropertyRow({
         </button>
       </td>
     </tr>
+  );
+}
+
+function MobilePropertyCard({ id, address, county }: { id: string; address: string; county: string }) {
+  return (
+    <div className="p-4">
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+          <MapPin className="w-5 h-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold text-slate-900 break-words">{address}</p>
+          <p className="text-xs text-slate-500 mt-1">{county}</p>
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+              Active
+            </span>
+            <Link href={`/dashboard/properties/${id}`} className="text-sm font-semibold text-blue-600">
+              View Details
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

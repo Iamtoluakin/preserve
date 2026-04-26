@@ -76,54 +76,54 @@ export default function PropertiesPage() {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="bg-white border-b sticky top-0 z-40">
-        <div className="px-4 md:px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4">
+          <div className="flex items-center justify-between gap-3">
             <Link href="/dashboard" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">P</span>
+              <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl md:text-2xl">P</span>
               </div>
-              <span className="text-2xl font-bold text-slate-900">Preserve</span>
+              <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
             </Link>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               <Link href="/dashboard" className="hidden sm:flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-blue-600 transition text-sm font-medium">
                 <ArrowLeft className="w-4 h-4" />
                 Dashboard
               </Link>
               <button
                 onClick={loadData}
-                className="flex items-center gap-2 px-4 py-2 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 transition text-sm"
+                className="h-10 w-10 sm:w-auto flex items-center justify-center gap-2 px-0 sm:px-4 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 transition text-sm"
               >
                 <RefreshCw className="w-4 h-4" />
-                Refresh
+                <span className="hidden sm:inline">Refresh</span>
               </button>
               <Link
                 href="/dashboard/properties/add"
-                className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
+                className="h-10 flex items-center gap-2 bg-blue-600 text-white px-3 sm:px-5 rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
               >
                 <Plus className="w-4 h-4" />
-                Add Property
+                <span>Add<span className="hidden sm:inline"> Property</span></span>
               </Link>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 pb-24 lg:pb-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8 pb-28 lg:pb-8">
         {/* Page Header */}
-        <div className="mb-8">
+        <div className="mb-6 md:mb-8">
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <Building2 className="w-6 h-6 text-blue-600" />
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Building2 className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">Your Properties</h1>
-              <p className="text-slate-600">Manage and track all your foreclosed and REO properties</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Your Properties</h1>
+              <p className="text-sm md:text-base text-slate-600">Manage and track all your foreclosed and REO properties</p>
             </div>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
           {[
             {
               label: 'Total Properties',
@@ -147,20 +147,20 @@ export default function PropertiesPage() {
               bg: 'bg-purple-100',
             },
           ].map(s => (
-            <div key={s.label} className="bg-white rounded-xl shadow-sm border p-5">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-slate-600">{s.label}</span>
+            <div key={s.label} className="bg-white rounded-xl shadow-sm border p-3 md:p-5">
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <span className="text-xs md:text-sm font-medium text-slate-600 leading-snug">{s.label}</span>
                 <div className={`w-9 h-9 ${s.bg} rounded-lg flex items-center justify-center`}>{s.icon}</div>
               </div>
-              <div className="text-3xl font-bold text-slate-900">{s.value}</div>
+              <div className="text-2xl md:text-3xl font-bold text-slate-900">{s.value}</div>
               <div className="text-xs text-slate-500 mt-1">{s.sub}</div>
             </div>
           ))}
         </div>
 
         {/* Search & Filter */}
-        <div className="bg-white rounded-xl shadow-sm border p-4 mb-6 flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-[200px]">
+        <div className="bg-white rounded-xl shadow-sm border p-3 md:p-4 mb-6 grid gap-3 sm:flex sm:flex-wrap">
+          <div className="relative sm:flex-1 sm:min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
             <input
               type="text"
@@ -170,12 +170,12 @@ export default function PropertiesPage() {
               className="w-full pl-9 pr-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
             />
           </div>
-          <div className="relative">
+          <div className="relative sm:w-auto">
             <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
             <select
               value={filterType}
               onChange={e => setFilterType(e.target.value)}
-              className="pl-9 pr-8 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white"
+              className="w-full sm:w-auto pl-9 pr-8 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white"
             >
               <option value="all">All Property Types</option>
               <option value="single_family">Single Family</option>
@@ -188,7 +188,7 @@ export default function PropertiesPage() {
 
         {/* Properties List */}
         {filteredProperties.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border p-14 text-center">
+          <div className="bg-white rounded-xl shadow-sm border px-5 py-12 md:p-14 text-center">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Home className="w-8 h-8 text-slate-400" />
             </div>
@@ -214,17 +214,17 @@ export default function PropertiesPage() {
               const woCount = getWorkOrderCount(property.id);
               return (
                 <div key={property.id} className="bg-white rounded-xl shadow-sm border hover:shadow-md transition">
-                  <div className="p-5 md:p-6">
-                    <div className="flex items-start gap-4">
+                  <div className="p-4 md:p-6">
+                    <div className="flex items-start gap-3 md:gap-4">
                       {/* Icon */}
-                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Home className="w-6 h-6 text-blue-600" />
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <Home className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
                       </div>
 
                       {/* Main Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
-                          <h3 className="text-lg font-semibold text-slate-900">{property.address}</h3>
+                          <h3 className="text-base md:text-lg font-semibold text-slate-900 break-words">{property.address}</h3>
                           <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 flex-shrink-0">
                             {property.status || 'Active'}
                           </span>
@@ -265,24 +265,24 @@ export default function PropertiesPage() {
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-4 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                    <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2">
                       <Link
                         href={`/dashboard/properties/${property.id}`}
-                        className="flex items-center gap-1.5 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition text-sm font-medium"
+                        className="flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2.5 text-blue-600 bg-blue-50 sm:bg-transparent hover:bg-blue-50 rounded-lg transition text-sm font-medium"
                       >
                         <Eye className="w-4 h-4" />
                         View Details
                       </Link>
                       <Link
                         href={`/dashboard/work-orders/create?propertyId=${property.id}`}
-                        className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium"
+                        className="flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium"
                       >
                         <Plus className="w-4 h-4" />
                         Create Work Order
                       </Link>
 
                       {confirmDelete === property.id ? (
-                        <div className="flex items-center gap-2 ml-auto">
+                        <div className="col-span-2 sm:col-span-1 flex flex-wrap items-center gap-2 sm:ml-auto">
                           <span className="text-xs text-red-600 font-medium">Delete this property?</span>
                           <button
                             onClick={() => deleteProperty(property.id)}
@@ -300,7 +300,7 @@ export default function PropertiesPage() {
                       ) : (
                         <button
                           onClick={() => setConfirmDelete(property.id)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition text-sm ml-auto"
+                          className="col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition text-sm sm:ml-auto"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           Delete
@@ -316,12 +316,12 @@ export default function PropertiesPage() {
       </main>
 
       {/* Mobile Bottom Nav */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50 flex items-center justify-around px-2 py-2">
-        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t z-50 grid grid-cols-5 px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(15,23,42,0.08)]">
+        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <Home className="w-5 h-5" />
           <span className="text-xs font-medium">Home</span>
         </Link>
-        <Link href="/dashboard/properties" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600">
+        <Link href="/dashboard/properties" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg bg-blue-50 text-blue-600">
           <MapPin className="w-5 h-5" />
           <span className="text-xs font-medium">Properties</span>
         </Link>
@@ -331,11 +331,11 @@ export default function PropertiesPage() {
           </div>
           <span className="text-xs font-medium text-slate-500 mt-0.5">New</span>
         </Link>
-        <Link href="/dashboard/work-orders" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+        <Link href="/dashboard/work-orders" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <FileText className="w-5 h-5" />
           <span className="text-xs font-medium">Orders</span>
         </Link>
-        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <Settings className="w-5 h-5" />
           <span className="text-xs font-medium">Settings</span>
         </Link>

@@ -126,40 +126,41 @@ export default function WorkOrdersPage() {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="bg-white border-b sticky top-0 z-40">
-        <div className="px-4 md:px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4">
+          <div className="flex items-center justify-between gap-3">
             <Link href="/dashboard" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">P</span>
+              <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl md:text-2xl">P</span>
               </div>
-              <span className="text-2xl font-bold text-slate-900">Preserve</span>
+              <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
             </Link>
             <Link href="/dashboard" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition text-sm">
               <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
+              <span className="hidden sm:inline">Back to Dashboard</span>
+              <span className="sm:hidden">Dashboard</span>
             </Link>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 pb-24 lg:pb-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8 pb-28 lg:pb-8">
         {/* Page Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 md:mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-1">Work Orders</h1>
-            <p className="text-slate-600">Manage and track all service requests</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-1">Work Orders</h1>
+            <p className="text-sm md:text-base text-slate-600">Manage and track all service requests</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3">
             <button
               onClick={loadOrders}
-              className="flex items-center gap-2 px-4 py-2 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 transition text-sm"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 transition text-sm font-medium"
             >
               <RefreshCw className="w-4 h-4" />
               Refresh
             </button>
             <Link
               href="/dashboard/work-orders/create"
-              className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
+              className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 sm:px-5 py-2.5 rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
             >
               <Plus className="w-4 h-4" />
               Create Work Order
@@ -168,26 +169,26 @@ export default function WorkOrdersPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
           {[
             { label: 'Total Orders', value: counts.total, icon: <FileText className="w-5 h-5 text-slate-500" />, color: 'text-slate-900' },
             { label: 'Pending', value: counts.pending, icon: <AlertCircle className="w-5 h-5 text-yellow-500" />, color: 'text-yellow-600' },
             { label: 'In Progress', value: counts.inProgress, icon: <Clock className="w-5 h-5 text-blue-500" />, color: 'text-blue-600' },
             { label: 'Completed', value: counts.completed, icon: <CheckCircle2 className="w-5 h-5 text-green-500" />, color: 'text-green-600' },
           ].map(stat => (
-            <div key={stat.label} className="bg-white rounded-xl shadow-sm border p-5">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-slate-600">{stat.label}</span>
+            <div key={stat.label} className="bg-white rounded-xl shadow-sm border p-3 md:p-5">
+              <div className="flex items-start justify-between gap-2 mb-2 md:mb-3">
+                <span className="text-xs md:text-sm font-medium text-slate-600 leading-snug">{stat.label}</span>
                 {stat.icon}
               </div>
-              <div className={`text-3xl font-bold ${stat.color}`}>{stat.value}</div>
+              <div className={`text-2xl md:text-3xl font-bold ${stat.color}`}>{stat.value}</div>
             </div>
           ))}
         </div>
 
         {/* Search & Filter */}
-        <div className="bg-white rounded-xl border shadow-sm p-4 mb-6 flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-[200px]">
+        <div className="bg-white rounded-xl border shadow-sm p-3 md:p-4 mb-6 grid gap-3 sm:flex sm:flex-wrap">
+          <div className="relative sm:flex-1 sm:min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
@@ -197,12 +198,12 @@ export default function WorkOrdersPage() {
               className="w-full pl-9 pr-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
             />
           </div>
-          <div className="relative">
+          <div className="relative sm:w-auto">
             <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
-              className="pl-9 pr-8 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white"
+              className="w-full sm:w-auto pl-9 pr-8 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white"
             >
               {STATUS_OPTIONS.map(s => (
                 <option key={s} value={s}>
@@ -215,7 +216,7 @@ export default function WorkOrdersPage() {
 
         {/* Work Orders List */}
         <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-          <div className="px-6 py-4 border-b flex items-center justify-between">
+          <div className="px-4 md:px-6 py-4 border-b flex items-center justify-between">
             <h2 className="font-semibold text-slate-900">
               {filtered.length} Work Order{filtered.length !== 1 ? 's' : ''}
               {statusFilter !== 'all' && ` · ${statusFilter}`}
@@ -244,8 +245,8 @@ export default function WorkOrdersPage() {
           ) : (
             <div className="divide-y divide-slate-100">
               {filtered.map(order => (
-                <div key={order.id} className="p-5 md:p-6 hover:bg-slate-50 transition">
-                  <div className="flex items-start gap-4">
+                <div key={order.id} className="p-4 md:p-6 hover:bg-slate-50 transition">
+                  <div className="flex items-start gap-3 md:gap-4">
                     <div className="mt-0.5 flex-shrink-0">{getStatusIcon(order.status)}</div>
 
                     <div className="flex-1 min-w-0">
@@ -265,7 +266,7 @@ export default function WorkOrdersPage() {
                       </div>
 
                       {/* Service Type */}
-                      <p className="text-base font-semibold text-slate-800 mb-2 truncate">
+                      <p className="text-base font-semibold text-slate-800 mb-2 break-words md:truncate">
                         {order.serviceType || 'Service not specified'}
                       </p>
 
@@ -274,7 +275,7 @@ export default function WorkOrdersPage() {
                         {order.propertyAddress && (
                           <div className="flex items-center gap-1.5">
                             <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                            <span className="truncate max-w-xs">{order.propertyAddress}</span>
+                            <span className="break-words md:truncate md:max-w-xs">{order.propertyAddress}</span>
                           </div>
                         )}
                         <div className="flex items-center gap-1.5">
@@ -303,10 +304,10 @@ export default function WorkOrdersPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="mt-4 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                  <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2">
                     {/* Status Update */}
                     {updatingStatus === order.id ? (
-                      <div className="flex items-center gap-2 flex-wrap">
+                      <div className="col-span-2 flex items-center gap-2 flex-wrap">
                         <span className="text-xs text-slate-500 font-medium">Set status:</span>
                         {(['pending', 'in-progress', 'completed', 'cancelled'] as WorkOrderStatus[]).map(s => (
                           <button
@@ -328,7 +329,7 @@ export default function WorkOrdersPage() {
                       <>
                         <button
                           onClick={() => setUpdatingStatus(order.id)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition text-sm"
+                          className="flex items-center justify-center gap-1.5 px-3 py-2.5 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition text-sm"
                         >
                           <ChevronDown className="w-3.5 h-3.5" />
                           Update Status
@@ -336,7 +337,7 @@ export default function WorkOrdersPage() {
 
                         <Link
                           href={`/dashboard/work-orders/${order.id}`}
-                          className="flex items-center gap-1.5 px-3 py-1.5 border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 transition text-sm font-medium"
+                          className="flex items-center justify-center gap-1.5 px-3 py-2.5 border border-blue-200 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-50 transition text-sm font-medium"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           View Details
@@ -345,7 +346,7 @@ export default function WorkOrdersPage() {
                         {order.status !== 'completed' && (
                           <button
                             onClick={() => updateStatus(order.id, 'completed')}
-                            className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
+                            className="col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
                           >
                             <CheckCircle2 className="w-3.5 h-3.5" />
                             Mark Complete
@@ -353,7 +354,7 @@ export default function WorkOrdersPage() {
                         )}
 
                         {confirmDelete === order.id ? (
-                          <div className="flex items-center gap-2 ml-auto">
+                          <div className="col-span-2 sm:col-span-1 flex flex-wrap items-center gap-2 sm:ml-auto">
                             <span className="text-xs text-red-600 font-medium">Delete this order?</span>
                             <button
                               onClick={() => deleteOrder(order.id)}
@@ -371,7 +372,7 @@ export default function WorkOrdersPage() {
                         ) : (
                           <button
                             onClick={() => setConfirmDelete(order.id)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition text-sm ml-auto"
+                            className="col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition text-sm sm:ml-auto"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                             Delete
@@ -388,12 +389,12 @@ export default function WorkOrdersPage() {
       </main>
 
       {/* Mobile Bottom Nav */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50 flex items-center justify-around px-2 py-2">
-        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t z-50 grid grid-cols-5 px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(15,23,42,0.08)]">
+        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <Home className="w-5 h-5" />
           <span className="text-xs font-medium">Home</span>
         </Link>
-        <Link href="/dashboard/properties" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+        <Link href="/dashboard/properties" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <MapPin className="w-5 h-5" />
           <span className="text-xs font-medium">Properties</span>
         </Link>
@@ -403,11 +404,11 @@ export default function WorkOrdersPage() {
           </div>
           <span className="text-xs font-medium text-slate-500 mt-0.5">New</span>
         </Link>
-        <Link href="/dashboard/work-orders" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600">
+        <Link href="/dashboard/work-orders" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg bg-blue-50 text-blue-600">
           <FileText className="w-5 h-5" />
           <span className="text-xs font-medium">Orders</span>
         </Link>
-        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <Settings className="w-5 h-5" />
           <span className="text-xs font-medium">Settings</span>
         </Link>

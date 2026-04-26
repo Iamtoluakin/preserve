@@ -39,36 +39,37 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="bg-white border-b sticky top-0 z-40">
-        <div className="px-4 md:px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4">
+          <div className="flex items-center justify-between gap-3">
             <Link href="/dashboard" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">P</span>
+              <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl md:text-2xl">P</span>
               </div>
-              <span className="text-2xl font-bold text-slate-900">Preserve</span>
+              <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
             </Link>
             <Link href="/dashboard" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition text-sm">
               <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
+              <span className="hidden sm:inline">Back to Dashboard</span>
+              <span className="sm:hidden">Dashboard</span>
             </Link>
           </div>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 md:px-6 py-8 pb-24 lg:pb-8">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-            <Settings className="w-6 h-6 text-blue-600" />
+      <main className="max-w-5xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8 pb-28 lg:pb-8">
+        <div className="flex items-center gap-3 mb-6 md:mb-8">
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <Settings className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Settings</h1>
-            <p className="text-slate-600">Manage your account and preservation preferences</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Settings</h1>
+            <p className="text-sm md:text-base text-slate-600">Manage your account and preservation preferences</p>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
           <section className="lg:col-span-2 space-y-6">
-            <div className="bg-white rounded-xl shadow-sm border p-5 md:p-6">
+            <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
               <div className="flex items-center gap-3 mb-5">
                 <User className="w-5 h-5 text-blue-600" />
                 <h2 className="text-lg font-semibold text-slate-900">Account</h2>
@@ -80,7 +81,7 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border p-5 md:p-6">
+            <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
               <div className="flex items-center gap-3 mb-5">
                 <Bell className="w-5 h-5 text-blue-600" />
                 <h2 className="text-lg font-semibold text-slate-900">Notifications</h2>
@@ -92,7 +93,7 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border p-5 md:p-6">
+            <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
               <div className="flex items-center gap-3 mb-5">
                 <ShieldCheck className="w-5 h-5 text-blue-600" />
                 <h2 className="text-lg font-semibold text-slate-900">Preservation Defaults</h2>
@@ -107,7 +108,7 @@ export default function SettingsPage() {
           </section>
 
           <aside className="space-y-6">
-            <div className="bg-white rounded-xl shadow-sm border p-5">
+            <div className="bg-white rounded-xl shadow-sm border p-4 md:p-5">
               <Lock className="w-6 h-6 text-slate-500 mb-3" />
               <h2 className="font-semibold text-slate-900 mb-2">Session</h2>
               <p className="text-sm text-slate-500 mb-4">Sign out of this browser when you are done managing properties.</p>
@@ -122,12 +123,12 @@ export default function SettingsPage() {
         </div>
       </main>
 
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50 flex items-center justify-around px-2 py-2">
-        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t z-50 grid grid-cols-5 px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(15,23,42,0.08)]">
+        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <Home className="w-5 h-5" />
           <span className="text-xs font-medium">Home</span>
         </Link>
-        <Link href="/dashboard/properties" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+        <Link href="/dashboard/properties" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <MapPin className="w-5 h-5" />
           <span className="text-xs font-medium">Properties</span>
         </Link>
@@ -137,11 +138,11 @@ export default function SettingsPage() {
           </div>
           <span className="text-xs font-medium text-slate-500 mt-0.5">New</span>
         </Link>
-        <Link href="/dashboard/work-orders" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
+        <Link href="/dashboard/work-orders" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
           <FileText className="w-5 h-5" />
           <span className="text-xs font-medium">Orders</span>
         </Link>
-        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600">
+        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg bg-blue-50 text-blue-600">
           <Settings className="w-5 h-5" />
           <span className="text-xs font-medium">Settings</span>
         </Link>
@@ -152,9 +153,9 @@ export default function SettingsPage() {
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-3 last:border-b-0 last:pb-0">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-slate-100 pb-3 last:border-b-0 last:pb-0">
       <span className="text-sm text-slate-500">{label}</span>
-      <span className="text-sm font-semibold text-slate-900 text-right break-all">{value}</span>
+      <span className="text-sm font-semibold text-slate-900 sm:text-right break-all">{value}</span>
     </div>
   );
 }
@@ -178,7 +179,7 @@ function ToggleRow({
   onChange: (checked: boolean) => void;
 }) {
   return (
-    <label className="flex items-center justify-between gap-4 border border-slate-200 rounded-lg p-4 cursor-pointer hover:bg-slate-50 transition">
+    <label className="flex items-center justify-between gap-4 border border-slate-200 rounded-lg p-3 md:p-4 cursor-pointer hover:bg-slate-50 transition">
       <span className="text-sm font-medium text-slate-800">{label}</span>
       <input
         type="checkbox"
