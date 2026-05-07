@@ -3,6 +3,56 @@
 -- Run this in: https://app.supabase.com → SQL Editor → New Query
 -- ============================================================
 
+-- ─── ORGANIZATIONS ─────────────────────────────────────────────
+create table if not exists public.organizations (
+  id         uuid primary key default gen_random_uuid(),
+  name       text not null,
+  created_at timestamptz default now()
+);
+
+alter table public.organizations enable row level security;
+
+create policy "Members can view their organization"
+  on public.organizations for select
+  using (id in (
+    select organization_id from public.organization_members where user_id = auth.uid()
+  ));
+
+create policy "Admins can update their organization"
+  on public.organizations for update
+  using (id in (
+    select organization_id from public.organization_members where user_id = auth.uid() and role in ('owner', 'admin')
+  ));
+
+create policy "Owners can delete their organization"
+  on public.organizations for delete
+  using (id in (
+    select organization_id from public.organization_members where user_id = auth.uid() and role = 'owner'
+  ));
+
+create policy "Authenticated users can create organizations"
+  on public.organizations for insert
+  with check (auth.uid() is not null);
+
+-- ─── USERS (profile table) ──────────────────────────────────────
+create table if not exists public.users (
+  id         uuid primary key references auth.users(id) on delete cascade,
+  email      text,
+  full_name  text,
+  created_at timestamptz default now()
+);
+
+alter table public.users enable row level security;
+
+create policy "Users can view own profile"
+  on public.users for select using (id = auth.uid());
+
+create policy "Users can update own profile"
+  on public.users for update using (id = auth.uid());
+
+create policy "Users can insert own profile"
+  on public.users for insert with check (id = auth.uid());
+
 -- ─── PROPERTIES ────────────────────────────────────────────────
 create table if not exists public.properties (
   id           uuid primary key default gen_random_uuid(),

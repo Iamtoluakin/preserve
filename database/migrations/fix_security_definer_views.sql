@@ -1,3 +1,4 @@
+
 -- ============================================================
 -- Migration: Fix SECURITY DEFINER views
 -- Run in: https://app.supabase.com → SQL Editor → New Query
