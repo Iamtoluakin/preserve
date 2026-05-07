@@ -5,40 +5,35 @@
 
 -- ─── public.organizations ────────────────────────────────────
 
--- Enable RLS
+-- Step 1: Add owner_id column if it doesn't already exist
+alter table public.organizations
+  add column if not exists owner_id uuid references auth.users(id) on delete set null;
+
+-- Step 2: Enable RLS
 alter table public.organizations enable row level security;
 
--- Members can read their own organization
-create policy "Members can view their organization"
+-- Drop old policies if they exist (safe re-run)
+drop policy if exists "Members can view their organization" on public.organizations;
+drop policy if exists "Admins can update their organization" on public.organizations;
+drop policy if exists "Owners can delete their organization" on public.organizations;
+drop policy if exists "Authenticated users can create organizations" on public.organizations;
+
+-- Owner can read their own organization
+create policy "Owners can view their organization"
   on public.organizations for select
-  using (
-    id in (
-      select organization_id from public.organization_members
-      where user_id = auth.uid()
-    )
-  );
+  using (owner_id = auth.uid());
 
--- Only org owners/admins can update their organization
-create policy "Admins can update their organization"
+-- Owner can update their own organization
+create policy "Owners can update their organization"
   on public.organizations for update
-  using (
-    id in (
-      select organization_id from public.organization_members
-      where user_id = auth.uid() and role in ('owner', 'admin')
-    )
-  );
+  using (owner_id = auth.uid());
 
--- Only org owners can delete their organization
+-- Owner can delete their own organization
 create policy "Owners can delete their organization"
   on public.organizations for delete
-  using (
-    id in (
-      select organization_id from public.organization_members
-      where user_id = auth.uid() and role = 'owner'
-    )
-  );
+  using (owner_id = auth.uid());
 
--- Any authenticated user can create an organization (they become owner)
+-- Authenticated users can create an organization
 create policy "Authenticated users can create organizations"
   on public.organizations for insert
   with check (auth.uid() is not null);
@@ -51,6 +46,11 @@ create policy "Authenticated users can create organizations"
 
 -- Enable RLS
 alter table public.users enable row level security;
+
+-- Drop old policies if they exist (safe re-run)
+drop policy if exists "Users can view own profile" on public.users;
+drop policy if exists "Users can update own profile" on public.users;
+drop policy if exists "Users can insert own profile" on public.users;
 
 -- Users can only read their own row
 create policy "Users can view own profile"
