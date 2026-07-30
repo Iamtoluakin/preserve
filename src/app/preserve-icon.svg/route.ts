@@ -1,0 +1,14 @@
+const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Preserve">
+  <rect width="128" height="128" rx="24" fill="#1d4ed8"/>
+  <path d="M36 95V29h31c15.7 0 26.5 9.4 26.5 24.1S82.7 77 67 77H51.2v18H36Zm15.2-31.6h14.5c7.8 0 12.4-3.9 12.4-10.3 0-6.5-4.6-10.5-12.4-10.5H51.2v20.8Z" fill="#fff"/>
+  <path d="M51 103h45" stroke="#93c5fd" stroke-width="8" stroke-linecap="round"/>
+</svg>`;
+
+export function GET() {
+  return new Response(iconSvg, {
+    headers: {
+      'Content-Type': 'image/svg+xml',
+      'Cache-Control': 'public, max-age=3600',
+    },
+  });
+}
