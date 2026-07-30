@@ -301,7 +301,7 @@ export default function HomePage() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { step: '1', title: 'Create your account', desc: 'Sign up free in 30 seconds — no credit card needed.' },
+              { step: '1', title: 'Open the workspace', desc: 'Jump straight into the dashboard and sketch your property care plan.' },
               { step: '2', title: 'Add your properties', desc: 'Enter each address and pick the services you need.' },
               { step: '3', title: 'Relax', desc: "We handle everything and send you reports so you're always in the loop." },
             ].map(s => (
