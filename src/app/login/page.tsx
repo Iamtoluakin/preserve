@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -33,6 +33,16 @@ async function ensureUserProfile(fullName?: string) {
   }
 }
 
+async function saveAppSession(accessToken: string) {
+  const sessionResponse = await fetch('/api/auth/session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ accessToken }),
+  });
+
+  if (!sessionResponse.ok) throw new Error('Could not save your login session. Please try again.');
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<'login' | 'signup'>('login');
@@ -41,8 +51,42 @@ export default function LoginPage() {
   const [name, setName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
   const [error, setError] = useState('');
   const [signupDone, setSignupDone] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    const completeExistingSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      const accessToken = data.session?.access_token;
+      if (!active || !accessToken) return;
+
+      try {
+        await ensureUserProfile();
+        await saveAppSession(accessToken);
+
+        const next = new URLSearchParams(window.location.search).get('next') || '/dashboard';
+        router.push(next);
+        router.refresh();
+      } catch (err: any) {
+        setError(err.message || 'Could not complete sign in. Please try again.');
+      }
+    };
+
+    completeExistingSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange(async event => {
+      if (event !== 'SIGNED_IN') return;
+      await completeExistingSession();
+    });
+
+    return () => {
+      active = false;
+      listener.subscription.unsubscribe();
+    };
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,12 +102,7 @@ export default function LoginPage() {
         const accessToken = sessionData.session?.access_token;
         if (!accessToken) throw new Error('Could not create a login session. Please try again.');
 
-        const sessionResponse = await fetch('/api/auth/session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ accessToken }),
-        });
-        if (!sessionResponse.ok) throw new Error('Could not save your login session. Please try again.');
+        await saveAppSession(accessToken);
 
         const next = new URLSearchParams(window.location.search).get('next') || '/dashboard';
         router.push(next);
@@ -83,12 +122,7 @@ export default function LoginPage() {
         if (data.session) {
           await ensureUserProfile(name);
           const accessToken = data.session.access_token;
-          const sessionResponse = await fetch('/api/auth/session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ accessToken }),
-          });
-          if (!sessionResponse.ok) throw new Error('Could not save your login session. Please try again.');
+          await saveAppSession(accessToken);
 
           router.push('/dashboard');
           router.refresh();
@@ -100,6 +134,27 @@ export default function LoginPage() {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setOauthLoading(true);
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${getSiteUrl()}/login`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'select_account',
+        },
+      },
+    });
+
+    if (error) {
+      setOauthLoading(false);
+      setError(error.message || 'Could not start Google sign in.');
     }
   };
 
@@ -160,6 +215,25 @@ export default function LoginPage() {
           {error && (
             <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>
           )}
+
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={loading || oauthLoading}
+            className="w-full border border-slate-300 bg-white text-slate-800 py-3 rounded-xl font-semibold transition hover:bg-slate-50 disabled:opacity-60 flex items-center justify-center gap-3 mb-5"
+          >
+            {oauthLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span className="text-base font-bold">G</span>}
+            Continue with Google
+          </button>
+
+          <div className="relative mb-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-white px-3 text-slate-400">or use email</span>
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'signup' && (
