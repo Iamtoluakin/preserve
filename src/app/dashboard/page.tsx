@@ -31,13 +31,13 @@ export default function DashboardPage() {
   const [properties, setProperties] = useState<PreserveProperty[]>([]);
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
-  const accountLabel = userName || userEmail || 'Signed in';
-  const accountInitial = (accountLabel.trim()[0] || 'U').toUpperCase();
+  const accountLabel = userName || userEmail || 'Preserve Workspace';
+  const accountInitial = (accountLabel.trim()[0] || 'P').toUpperCase();
 
-  const handleLogout = async () => {
+  const handleExit = async () => {
     await supabase.auth.signOut();
     await fetch('/api/auth/session', { method: 'DELETE' });
-    router.push('/login');
+    router.push('/');
   };
 
   useEffect(() => {
@@ -128,17 +128,17 @@ export default function DashboardPage() {
                   <p className="text-xs font-semibold text-slate-900 truncate max-w-[150px]">
                     {accountLabel}
                   </p>
-                  <p className="text-[11px] text-slate-500">Owner account</p>
+                  <p className="text-[11px] text-slate-500">Open dashboard</p>
                 </div>
                 <ChevronDown className="w-4 h-4 text-slate-400" />
               </div>
               <button
-                onClick={handleLogout}
+                onClick={handleExit}
                 className="h-10 w-10 sm:w-auto flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-0 sm:px-3 text-sm font-semibold text-slate-600 hover:border-red-200 hover:bg-red-50 hover:text-red-600 transition"
-                title="Sign out"
+                title="Back to homepage"
               >
                 <LogOut className="w-4 h-4" />
-                <span className="hidden xl:inline">Sign Out</span>
+                <span className="hidden xl:inline">Exit</span>
               </button>
             </div>
           </div>

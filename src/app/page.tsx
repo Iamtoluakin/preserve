@@ -153,7 +153,7 @@ const plans = [
       'Work order management',
       'Email support',
     ],
-    cta: 'Get Started Free',
+    cta: 'Open Dashboard',
     highlight: false,
   },
   {
@@ -170,7 +170,7 @@ const plans = [
       'Winterization reminders',
       'Phone & email support',
     ],
-    cta: 'Start Free Trial',
+    cta: 'Build Care Plan',
     highlight: true,
   },
   {
@@ -187,7 +187,7 @@ const plans = [
       'Team & vendor access',
       'Dedicated account manager',
     ],
-    cta: 'Contact Sales',
+    cta: 'View Portfolio Tools',
     highlight: false,
   },
 ];
@@ -225,16 +225,16 @@ export default function HomePage() {
               <a href="#services" className="text-slate-600 hover:text-blue-600 transition text-sm">Services</a>
               <a href="#pricing" className="text-slate-600 hover:text-blue-600 transition text-sm">Pricing</a>
               <a href="#contact" className="text-slate-600 hover:text-blue-600 transition text-sm">Contact</a>
-              <Link href="/login" className="text-slate-600 hover:text-blue-600 transition text-sm font-medium">Sign In</Link>
-              <Link href="/login" className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
-                Get Started
+              <Link href="/dashboard" className="text-slate-600 hover:text-blue-600 transition text-sm font-medium">Open Dashboard</Link>
+              <Link href="/dashboard" className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
+                Launch App
               </Link>
             </div>
             {/* Mobile nav */}
             <div className="flex md:hidden items-center gap-3">
-              <Link href="/login" className="text-slate-600 hover:text-blue-600 transition text-sm">Sign In</Link>
-              <Link href="/login" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
-                Start Free
+              <Link href="/dashboard" className="text-slate-600 hover:text-blue-600 transition text-sm">Dashboard</Link>
+              <Link href="/dashboard" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
+                Launch
               </Link>
             </div>
           </div>
@@ -257,16 +257,16 @@ export default function HomePage() {
                 Request service, track progress, and protect your asset without chasing contractors.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/login"
+                <Link href="/dashboard"
                   className="bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700 transition font-semibold text-center flex items-center justify-center gap-2 shadow-lg shadow-blue-200">
-                  Start Free — Add Your First Property <ArrowRight className="w-5 h-5" />
+                  Open Your Property Dashboard <ArrowRight className="w-5 h-5" />
                 </Link>
                 <a href="#pricing"
                   className="border-2 border-slate-300 text-slate-700 px-8 py-4 rounded-xl hover:border-blue-600 hover:text-blue-600 transition font-semibold text-center">
                   View Pricing
                 </a>
               </div>
-              <p className="text-sm text-slate-500 mt-4">No credit card required · Cancel anytime</p>
+              <p className="text-sm text-slate-500 mt-4">Explore the dashboard instantly · No sign-in required</p>
             </div>
             <div className="relative">
               <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl p-8 shadow-2xl">
@@ -421,14 +421,14 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <Link href="/login"
+                <Link href="/dashboard"
                   className={`w-full text-center py-3 rounded-xl font-semibold transition ${plan.highlight ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'}`}>
                   {plan.cta}
                 </Link>
               </div>
             ))}
           </div>
-          <p className="text-center text-slate-500 text-sm mt-8">All plans include a 14-day free trial. No credit card required to start.</p>
+          <p className="text-center text-slate-500 text-sm mt-8">Use the dashboard to shape a property care plan before we turn on paid subscriptions.</p>
         </div>
       </section>
 
@@ -461,10 +461,10 @@ export default function HomePage() {
       <section id="contact" className="py-20 bg-slate-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold text-slate-900 mb-4">Ready to Get Started?</h2>
-          <p className="text-xl text-slate-600 mb-10">Create your free account and add your first property in minutes.</p>
-          <Link href="/login"
+          <p className="text-xl text-slate-600 mb-10">Open the dashboard and add your first property in minutes.</p>
+          <Link href="/dashboard"
             className="inline-flex items-center gap-2 bg-blue-600 text-white px-10 py-4 rounded-xl hover:bg-blue-700 transition font-semibold text-lg shadow-lg shadow-blue-200">
-            Start Free Today <ArrowRight className="w-5 h-5" />
+            Open Dashboard <ArrowRight className="w-5 h-5" />
           </Link>
           <div className="grid md:grid-cols-3 gap-8 mt-14">
             {[
@@ -522,7 +522,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
-                  <Link href="/login" onClick={() => setSelectedService(null)}
+                  <Link href="/dashboard" onClick={() => setSelectedService(null)}
                     className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition font-semibold text-center">
                     Get Started
                   </Link>
@@ -556,8 +556,8 @@ export default function HomePage() {
               <ul className="space-y-2 text-slate-400 text-sm">
                 <li><a href="#services" className="hover:text-white transition">Services</a></li>
                 <li><a href="#pricing" className="hover:text-white transition">Pricing</a></li>
-                <li><Link href="/login" className="hover:text-white transition">Sign In</Link></li>
-                <li><Link href="/login" className="hover:text-white transition">Sign Up</Link></li>
+                <li><Link href="/dashboard" className="hover:text-white transition">Dashboard</Link></li>
+                <li><Link href="/dashboard/properties/add" className="hover:text-white transition">Add Property</Link></li>
               </ul>
             </div>
             <div>

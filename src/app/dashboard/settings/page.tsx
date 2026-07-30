@@ -30,10 +30,10 @@ export default function SettingsPage() {
     });
   }, []);
 
-  const handleLogout = async () => {
+  const handleExit = async () => {
     await supabase.auth.signOut();
     await fetch('/api/auth/session', { method: 'DELETE' });
-    router.push('/login');
+    router.push('/');
   };
 
   return (
@@ -63,7 +63,7 @@ export default function SettingsPage() {
           </div>
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Settings</h1>
-            <p className="text-sm md:text-base text-slate-600">Manage your account and preservation preferences</p>
+            <p className="text-sm md:text-base text-slate-600">Manage workspace preferences for property care planning</p>
           </div>
         </div>
 
@@ -72,11 +72,11 @@ export default function SettingsPage() {
             <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
               <div className="flex items-center gap-3 mb-5">
                 <User className="w-5 h-5 text-blue-600" />
-                <h2 className="text-lg font-semibold text-slate-900">Account</h2>
+                <h2 className="text-lg font-semibold text-slate-900">Workspace</h2>
               </div>
               <div className="space-y-4">
-                <InfoRow label="Email" value={userEmail || 'Signed in user'} />
-                <InfoRow label="Role" value="Owner account" />
+                <InfoRow label="Contact" value={userEmail || 'Not connected yet'} />
+                <InfoRow label="Mode" value="Open dashboard" />
                 <InfoRow label="Workspace" value="Preserve dashboard" />
               </div>
             </div>
@@ -110,13 +110,13 @@ export default function SettingsPage() {
           <aside className="space-y-6">
             <div className="bg-white rounded-xl shadow-sm border p-4 md:p-5">
               <Lock className="w-6 h-6 text-slate-500 mb-3" />
-              <h2 className="font-semibold text-slate-900 mb-2">Session</h2>
-              <p className="text-sm text-slate-500 mb-4">Sign out of this browser when you are done managing properties.</p>
+              <h2 className="font-semibold text-slate-900 mb-2">Access</h2>
+              <p className="text-sm text-slate-500 mb-4">This dashboard is open while we shape the property care experience.</p>
               <button
-                onClick={handleLogout}
-                className="w-full border border-red-200 text-red-600 px-4 py-2.5 rounded-lg hover:bg-red-50 transition text-sm font-semibold"
+                onClick={handleExit}
+                className="w-full border border-slate-200 text-slate-700 px-4 py-2.5 rounded-lg hover:bg-slate-50 transition text-sm font-semibold"
               >
-                Sign Out
+                Back to Homepage
               </button>
             </div>
           </aside>
