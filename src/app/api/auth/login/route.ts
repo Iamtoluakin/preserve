@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { createServiceSupabaseClient } from '@/lib/serverSupabase';
+
+function getFullName(metadata: Record<string, unknown> | undefined) {
+  const value = metadata?.full_name;
+  return typeof value === 'string' ? value : null;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,10 +40,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get user profile
-    const { data: userData, error: userError } = await supabase
+    const adminSupabase = createServiceSupabaseClient();
+    const fullName = getFullName(authData.user.user_metadata);
+
+    // Make login self-healing if the profile row was not created during signup.
+    const { data: userData, error: userError } = await adminSupabase
       .from('users')
-      .select('*, organization:organizations(*)')
+      .upsert(
+        {
+          id: authData.user.id,
+          email: authData.user.email,
+          full_name: fullName,
+        },
+        { onConflict: 'id' }
+      )
+      .select('*')
       .eq('id', authData.user.id)
       .single();
 
@@ -54,10 +71,7 @@ export async function POST(request: NextRequest) {
       user: {
         id: userData.id,
         email: userData.email,
-        firstName: userData.first_name,
-        lastName: userData.last_name,
-        role: userData.role,
-        organization: userData.organization,
+        fullName: userData.full_name,
       },
       session: authData.session,
     });

@@ -6,6 +6,33 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react';
 
+function getSiteUrl() {
+  if (typeof window !== 'undefined') return window.location.origin;
+  return process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+}
+
+async function ensureUserProfile(fullName?: string) {
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+  const user = userData.user;
+
+  if (userError || !user) return;
+
+  const { error } = await supabase
+    .from('users')
+    .upsert(
+      {
+        id: user.id,
+        email: user.email,
+        full_name: fullName || user.user_metadata?.full_name || null,
+      },
+      { onConflict: 'id' }
+    );
+
+  if (error) {
+    console.warn('Could not sync Supabase user profile:', error.message);
+  }
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<'login' | 'signup'>('login');
@@ -25,6 +52,7 @@ export default function LoginPage() {
       if (mode === 'login') {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        await ensureUserProfile();
 
         const { data: sessionData } = await supabase.auth.getSession();
         const accessToken = sessionData.session?.access_token;
@@ -42,13 +70,31 @@ export default function LoginPage() {
         router.refresh();
       } else {
         if (!name.trim()) { setError('Please enter your name.'); setLoading(false); return; }
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: { data: { full_name: name } },
+          options: {
+            data: { full_name: name },
+            emailRedirectTo: `${getSiteUrl()}/login`,
+          },
         });
         if (error) throw error;
-        setSignupDone(true);
+
+        if (data.session) {
+          await ensureUserProfile(name);
+          const accessToken = data.session.access_token;
+          const sessionResponse = await fetch('/api/auth/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ accessToken }),
+          });
+          if (!sessionResponse.ok) throw new Error('Could not save your login session. Please try again.');
+
+          router.push('/dashboard');
+          router.refresh();
+        } else {
+          setSignupDone(true);
+        }
       }
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.');

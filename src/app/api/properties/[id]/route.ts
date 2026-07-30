@@ -12,6 +12,7 @@ function toPropertyUpdate(body: Record<string, unknown>) {
   if ('city' in body) update.city = body.city;
   if ('county' in body) update.county = body.county || null;
   if ('state' in body) update.state = body.state;
+  if ('serviceArea' in body || 'service_area' in body) update.service_area = body.serviceArea || body.service_area || null;
   if ('zip' in body) update.zip = body.zip;
   if ('parcelId' in body || 'parcel_id' in body) update.parcel_id = body.parcelId || body.parcel_id || null;
   if ('propertyType' in body || 'property_type' in body) update.property_type = body.propertyType || body.property_type;

@@ -238,6 +238,9 @@ export default function PropertiesPage() {
                           {property.county && (
                             <span className="text-slate-400">· {property.county}</span>
                           )}
+                          {property.serviceArea && (
+                            <span className="text-slate-400">· {property.serviceArea}</span>
+                          )}
                         </div>
 
                         <div className="flex flex-wrap gap-3 text-xs text-slate-500">

@@ -19,6 +19,22 @@ export function createServerSupabaseClient(request: Request) {
   );
 }
 
+export function createServiceSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error('Supabase service role environment variables are not configured.');
+  }
+
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+}
+
 export async function getAuthenticatedUser(request: Request) {
   const supabase = createServerSupabaseClient(request);
   const { data, error } = await supabase.auth.getUser();

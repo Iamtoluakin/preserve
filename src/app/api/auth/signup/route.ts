@@ -1,15 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { createServiceSupabaseClient } from '@/lib/serverSupabase';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, password, firstName, lastName, organizationName, organizationType } = body;
+    const { email, password, name, fullName, firstName, lastName } = body;
+    const displayName =
+      name ||
+      fullName ||
+      [firstName, lastName].filter(Boolean).join(' ').trim() ||
+      null;
 
     // Validate required fields
-    if (!email || !password || !firstName || !lastName || !organizationName || !organizationType) {
+    if (!email || !password || !displayName) {
       return NextResponse.json(
-        { error: 'All fields are required' },
+        { error: 'Name, email, and password are required' },
         { status: 400 }
       );
     }
@@ -18,6 +24,9 @@ export async function POST(request: NextRequest) {
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: { full_name: displayName },
+      },
     });
 
     if (authError) {
@@ -35,43 +44,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 2. Wait a moment for the trigger to create the user profile
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // 3. Create organization
-    const { data: orgData, error: orgError } = await supabase
-      .from('organizations')
-      .insert([
+    // 2. Create the app profile row with service-role access. This works whether
+    // email confirmation is enabled or disabled.
+    const adminSupabase = createServiceSupabaseClient();
+    const { data: userData, error: profileError } = await adminSupabase
+      .from('users')
+      .upsert(
         {
-          name: organizationName,
-          type: organizationType,
+          id: authData.user.id,
+          email: authData.user.email,
+          full_name: displayName,
         },
-      ])
-      .select()
+        { onConflict: 'id' }
+      )
+      .select('*')
       .single();
 
-    if (orgError) {
-      console.error('Organization creation error:', orgError);
+    if (profileError) {
+      console.error('Profile creation error:', profileError);
       return NextResponse.json(
-        { error: 'Failed to create organization' },
-        { status: 500 }
-      );
-    }
-
-    // 4. Update user profile with organization_id and names
-    const { error: updateError } = await supabase
-      .from('users')
-      .update({
-        organization_id: orgData.id,
-        first_name: firstName,
-        last_name: lastName,
-      })
-      .eq('id', authData.user.id);
-
-    if (updateError) {
-      console.error('User update error:', updateError);
-      return NextResponse.json(
-        { error: 'Failed to update user profile' },
+        { error: 'Account was created, but the profile could not be saved' },
         { status: 500 }
       );
     }
@@ -79,14 +71,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       message: 'Account created successfully',
       user: {
-        id: authData.user.id,
-        email: authData.user.email,
-        firstName,
-        lastName,
-        organizationId: orgData.id,
-        organizationName: orgData.name,
-        organizationType: orgData.type,
+        id: userData.id,
+        email: userData.email,
+        fullName: userData.full_name,
       },
+      session: authData.session,
     });
   } catch (error) {
     console.error('Signup error:', error);

@@ -6,6 +6,7 @@ export type PreserveProperty = {
   city?: string;
   county?: string;
   state?: string;
+  serviceArea?: string;
   zip?: string;
   propertyType?: string;
   acquisitionDate?: string;

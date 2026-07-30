@@ -5,12 +5,117 @@ import { useState } from 'react';
 import { ArrowLeft, Home, MapPin, FileText, Upload } from 'lucide-react';
 import { readProperties, type PreserveProperty, writeProperties } from '@/lib/localData';
 
+const SERVICE_AREAS = {
+  NC: [
+    {
+      name: 'Triangle',
+      counties: ['Wake', 'Durham', 'Orange', 'Chatham', 'Johnston'],
+      cities: [
+        { name: 'Raleigh', county: 'Wake' },
+        { name: 'Durham', county: 'Durham' },
+        { name: 'Chapel Hill', county: 'Orange' },
+        { name: 'Cary', county: 'Wake' },
+        { name: 'Apex', county: 'Wake' },
+        { name: 'Garner', county: 'Wake' },
+        { name: 'Wake Forest', county: 'Wake' },
+        { name: 'Clayton', county: 'Johnston' },
+      ],
+    },
+    {
+      name: 'Charlotte Metro',
+      counties: ['Mecklenburg', 'Union', 'Cabarrus', 'Gaston', 'Iredell'],
+      cities: [
+        { name: 'Charlotte', county: 'Mecklenburg' },
+        { name: 'Concord', county: 'Cabarrus' },
+        { name: 'Gastonia', county: 'Gaston' },
+        { name: 'Matthews', county: 'Mecklenburg' },
+        { name: 'Huntersville', county: 'Mecklenburg' },
+        { name: 'Mooresville', county: 'Iredell' },
+        { name: 'Monroe', county: 'Union' },
+      ],
+    },
+    {
+      name: 'Triad',
+      counties: ['Guilford', 'Forsyth', 'Alamance', 'Davidson', 'Randolph'],
+      cities: [
+        { name: 'Greensboro', county: 'Guilford' },
+        { name: 'Winston-Salem', county: 'Forsyth' },
+        { name: 'High Point', county: 'Guilford' },
+        { name: 'Burlington', county: 'Alamance' },
+        { name: 'Lexington', county: 'Davidson' },
+        { name: 'Asheboro', county: 'Randolph' },
+      ],
+    },
+    {
+      name: 'Coastal NC',
+      counties: ['New Hanover', 'Brunswick', 'Onslow', 'Pender', 'Carteret'],
+      cities: [
+        { name: 'Wilmington', county: 'New Hanover' },
+        { name: 'Leland', county: 'Brunswick' },
+        { name: 'Jacksonville', county: 'Onslow' },
+        { name: 'Hampstead', county: 'Pender' },
+        { name: 'Morehead City', county: 'Carteret' },
+      ],
+    },
+  ],
+  TX: [
+    {
+      name: 'Dallas-Fort Worth',
+      counties: ['Dallas', 'Tarrant', 'Collin', 'Denton', 'Rockwall'],
+      cities: [
+        { name: 'Dallas', county: 'Dallas' },
+        { name: 'Fort Worth', county: 'Tarrant' },
+        { name: 'Arlington', county: 'Tarrant' },
+        { name: 'Plano', county: 'Collin' },
+        { name: 'Frisco', county: 'Collin' },
+        { name: 'Denton', county: 'Denton' },
+        { name: 'Rockwall', county: 'Rockwall' },
+      ],
+    },
+    {
+      name: 'Houston Metro',
+      counties: ['Harris', 'Fort Bend', 'Montgomery', 'Brazoria', 'Galveston'],
+      cities: [
+        { name: 'Houston', county: 'Harris' },
+        { name: 'Katy', county: 'Harris' },
+        { name: 'Sugar Land', county: 'Fort Bend' },
+        { name: 'The Woodlands', county: 'Montgomery' },
+        { name: 'Pearland', county: 'Brazoria' },
+        { name: 'Galveston', county: 'Galveston' },
+      ],
+    },
+    {
+      name: 'Austin-San Antonio',
+      counties: ['Travis', 'Williamson', 'Hays', 'Bexar', 'Comal'],
+      cities: [
+        { name: 'Austin', county: 'Travis' },
+        { name: 'Round Rock', county: 'Williamson' },
+        { name: 'San Marcos', county: 'Hays' },
+        { name: 'San Antonio', county: 'Bexar' },
+        { name: 'New Braunfels', county: 'Comal' },
+      ],
+    },
+    {
+      name: 'East Texas',
+      counties: ['Smith', 'Gregg', 'Bowie', 'Nacogdoches', 'Angelina'],
+      cities: [
+        { name: 'Tyler', county: 'Smith' },
+        { name: 'Longview', county: 'Gregg' },
+        { name: 'Texarkana', county: 'Bowie' },
+        { name: 'Nacogdoches', county: 'Nacogdoches' },
+        { name: 'Lufkin', county: 'Angelina' },
+      ],
+    },
+  ],
+} as const;
+
 export default function AddPropertyPage() {
   const [formData, setFormData] = useState({
     address: '',
     city: '',
     county: '',
     state: 'NC',
+    serviceArea: '',
     zip: '',
     parcelId: '',
     propertyType: 'single_family',
@@ -31,6 +136,7 @@ export default function AddPropertyPage() {
       city: formData.city,
       county: formData.county,
       state: formData.state,
+      serviceArea: formData.serviceArea,
       zip: formData.zip,
       propertyType: formData.propertyType,
       acquisitionDate: formData.acquisitionDate || new Date().toISOString().split('T')[0],
@@ -50,10 +156,27 @@ export default function AddPropertyPage() {
     }, 2000);
   };
 
+  const stateAreas = SERVICE_AREAS[formData.state as keyof typeof SERVICE_AREAS] || [];
+  const selectedArea = stateAreas.find(area => area.name === formData.serviceArea);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
+    const { name, value } = e.target;
+
+    setFormData(previous => {
+      if (name === 'state') {
+        return { ...previous, state: value, serviceArea: '', city: '', county: '' };
+      }
+
+      if (name === 'serviceArea') {
+        return { ...previous, serviceArea: value, city: '', county: '' };
+      }
+
+      if (name === 'city') {
+        const city = selectedArea?.cities.find(option => option.name === value);
+        return { ...previous, city: value, county: city?.county || previous.county };
+      }
+
+      return { ...previous, [name]: value };
     });
   };
 
@@ -134,145 +257,72 @@ export default function AddPropertyPage() {
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  City *
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
-                  placeholder="Durham"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  County *
+                  State *
                 </label>
                 <select
-                  name="county"
-                  value={formData.county}
+                  name="state"
+                  value={formData.state}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white"
                 >
-                  <option value="">Select County</option>
-                  <option value="Alamance">Alamance County</option>
-                  <option value="Alexander">Alexander County</option>
-                  <option value="Alleghany">Alleghany County</option>
-                  <option value="Anson">Anson County</option>
-                  <option value="Ashe">Ashe County</option>
-                  <option value="Avery">Avery County</option>
-                  <option value="Beaufort">Beaufort County</option>
-                  <option value="Bertie">Bertie County</option>
-                  <option value="Bladen">Bladen County</option>
-                  <option value="Brunswick">Brunswick County</option>
-                  <option value="Buncombe">Buncombe County</option>
-                  <option value="Burke">Burke County</option>
-                  <option value="Cabarrus">Cabarrus County</option>
-                  <option value="Caldwell">Caldwell County</option>
-                  <option value="Camden">Camden County</option>
-                  <option value="Carteret">Carteret County</option>
-                  <option value="Caswell">Caswell County</option>
-                  <option value="Catawba">Catawba County</option>
-                  <option value="Chatham">Chatham County</option>
-                  <option value="Cherokee">Cherokee County</option>
-                  <option value="Chowan">Chowan County</option>
-                  <option value="Clay">Clay County</option>
-                  <option value="Cleveland">Cleveland County</option>
-                  <option value="Columbus">Columbus County</option>
-                  <option value="Craven">Craven County</option>
-                  <option value="Cumberland">Cumberland County</option>
-                  <option value="Currituck">Currituck County</option>
-                  <option value="Dare">Dare County</option>
-                  <option value="Davidson">Davidson County</option>
-                  <option value="Davie">Davie County</option>
-                  <option value="Duplin">Duplin County</option>
-                  <option value="Durham">Durham County</option>
-                  <option value="Edgecombe">Edgecombe County</option>
-                  <option value="Forsyth">Forsyth County</option>
-                  <option value="Franklin">Franklin County</option>
-                  <option value="Gaston">Gaston County</option>
-                  <option value="Gates">Gates County</option>
-                  <option value="Graham">Graham County</option>
-                  <option value="Granville">Granville County</option>
-                  <option value="Greene">Greene County</option>
-                  <option value="Guilford">Guilford County</option>
-                  <option value="Halifax">Halifax County</option>
-                  <option value="Harnett">Harnett County</option>
-                  <option value="Haywood">Haywood County</option>
-                  <option value="Henderson">Henderson County</option>
-                  <option value="Hertford">Hertford County</option>
-                  <option value="Hoke">Hoke County</option>
-                  <option value="Hyde">Hyde County</option>
-                  <option value="Iredell">Iredell County</option>
-                  <option value="Jackson">Jackson County</option>
-                  <option value="Johnston">Johnston County</option>
-                  <option value="Jones">Jones County</option>
-                  <option value="Lee">Lee County</option>
-                  <option value="Lenoir">Lenoir County</option>
-                  <option value="Lincoln">Lincoln County</option>
-                  <option value="McDowell">McDowell County</option>
-                  <option value="Macon">Macon County</option>
-                  <option value="Madison">Madison County</option>
-                  <option value="Martin">Martin County</option>
-                  <option value="Mecklenburg">Mecklenburg County</option>
-                  <option value="Mitchell">Mitchell County</option>
-                  <option value="Montgomery">Montgomery County</option>
-                  <option value="Moore">Moore County</option>
-                  <option value="Nash">Nash County</option>
-                  <option value="New Hanover">New Hanover County</option>
-                  <option value="Northampton">Northampton County</option>
-                  <option value="Onslow">Onslow County</option>
-                  <option value="Orange">Orange County</option>
-                  <option value="Pamlico">Pamlico County</option>
-                  <option value="Pasquotank">Pasquotank County</option>
-                  <option value="Pender">Pender County</option>
-                  <option value="Perquimans">Perquimans County</option>
-                  <option value="Person">Person County</option>
-                  <option value="Pitt">Pitt County</option>
-                  <option value="Polk">Polk County</option>
-                  <option value="Randolph">Randolph County</option>
-                  <option value="Richmond">Richmond County</option>
-                  <option value="Robeson">Robeson County</option>
-                  <option value="Rockingham">Rockingham County</option>
-                  <option value="Rowan">Rowan County</option>
-                  <option value="Rutherford">Rutherford County</option>
-                  <option value="Sampson">Sampson County</option>
-                  <option value="Scotland">Scotland County</option>
-                  <option value="Stanly">Stanly County</option>
-                  <option value="Stokes">Stokes County</option>
-                  <option value="Surry">Surry County</option>
-                  <option value="Swain">Swain County</option>
-                  <option value="Transylvania">Transylvania County</option>
-                  <option value="Tyrrell">Tyrrell County</option>
-                  <option value="Union">Union County</option>
-                  <option value="Vance">Vance County</option>
-                  <option value="Wake">Wake County</option>
-                  <option value="Warren">Warren County</option>
-                  <option value="Washington">Washington County</option>
-                  <option value="Watauga">Watauga County</option>
-                  <option value="Wayne">Wayne County</option>
-                  <option value="Wilkes">Wilkes County</option>
-                  <option value="Wilson">Wilson County</option>
-                  <option value="Yadkin">Yadkin County</option>
-                  <option value="Yancey">Yancey County</option>
+                  <option value="NC">North Carolina</option>
+                  <option value="TX">Texas</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  State
+                  Service Area *
+                </label>
+                <select
+                  name="serviceArea"
+                  value={formData.serviceArea}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white"
+                >
+                  <option value="">Select nearest market</option>
+                  {stateAreas.map(area => (
+                    <option key={area.name} value={area.name}>
+                      {area.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  City *
+                </label>
+                <select
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  required
+                  disabled={!selectedArea}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white disabled:bg-slate-50 disabled:text-slate-400"
+                >
+                  <option value="">{selectedArea ? 'Select city' : 'Select service area first'}</option>
+                  {selectedArea?.cities.map(city => (
+                    <option key={`${city.name}-${city.county}`} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  County
                 </label>
                 <input
                   type="text"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
+                  name="county"
+                  value={formData.county}
                   readOnly
                   className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 text-slate-900"
+                  placeholder="Auto-filled from city"
                 />
               </div>
 

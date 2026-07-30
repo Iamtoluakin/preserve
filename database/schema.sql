@@ -6,33 +6,29 @@
 -- ─── ORGANIZATIONS ─────────────────────────────────────────────
 create table if not exists public.organizations (
   id         uuid primary key default gen_random_uuid(),
+  owner_id   uuid references auth.users(id) on delete set null,
   name       text not null,
   created_at timestamptz default now()
 );
 
 alter table public.organizations enable row level security;
 
-create policy "Members can view their organization"
+create policy "Owners can view their organization"
   on public.organizations for select
-  using (id in (
-    select organization_id from public.organization_members where user_id = auth.uid()
-  ));
+  using (owner_id = auth.uid());
 
-create policy "Admins can update their organization"
+create policy "Owners can update their organization"
   on public.organizations for update
-  using (id in (
-    select organization_id from public.organization_members where user_id = auth.uid() and role in ('owner', 'admin')
-  ));
+  using (owner_id = auth.uid())
+  with check (owner_id = auth.uid());
 
 create policy "Owners can delete their organization"
   on public.organizations for delete
-  using (id in (
-    select organization_id from public.organization_members where user_id = auth.uid() and role = 'owner'
-  ));
+  using (owner_id = auth.uid());
 
 create policy "Authenticated users can create organizations"
   on public.organizations for insert
-  with check (auth.uid() is not null);
+  with check (owner_id = auth.uid());
 
 -- ─── USERS (profile table) ──────────────────────────────────────
 create table if not exists public.users (
@@ -61,6 +57,7 @@ create table if not exists public.properties (
   city         text not null,
   county       text,
   state        text not null default 'NC',
+  service_area text,
   zip          text not null,
   parcel_id    text,
   property_type text not null default 'single_family',
@@ -74,7 +71,9 @@ create table if not exists public.properties (
 alter table public.properties enable row level security;
 
 create policy "Users manage own properties"
-  on public.properties for all using (auth.uid() = user_id);
+  on public.properties for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
 
 -- ─── WORK ORDERS ───────────────────────────────────────────────
 create table if not exists public.work_orders (
@@ -97,7 +96,36 @@ create table if not exists public.work_orders (
 alter table public.work_orders enable row level security;
 
 create policy "Users manage own work orders"
-  on public.work_orders for all using (auth.uid() = user_id);
+  on public.work_orders for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+-- ─── AUTH PROFILE SYNC ────────────────────────────────────────
+-- Creates an app profile row whenever Supabase Auth creates a user.
+create or replace function public.handle_new_user()
+returns trigger
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.users (id, email, full_name)
+  values (
+    new.id,
+    new.email,
+    coalesce(new.raw_user_meta_data->>'full_name', '')
+  )
+  on conflict (id) do update
+    set email = excluded.email,
+        full_name = coalesce(nullif(excluded.full_name, ''), public.users.full_name);
+
+  return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
 
 -- ─── AUTO-UPDATE updated_at ─────────────────────────────────────
 create or replace function public.handle_updated_at()
@@ -129,6 +157,7 @@ select
   p.city,
   p.county,
   p.state,
+  p.service_area,
   p.zip,
   p.property_type,
   p.nickname,
@@ -169,6 +198,7 @@ select
   p.city            as property_city,
   p.county          as property_county,
   p.state           as property_state,
+  p.service_area    as property_service_area,
   p.zip             as property_zip,
   p.property_type,
   p.nickname        as property_nickname

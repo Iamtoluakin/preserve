@@ -8,6 +8,7 @@ function toDatabaseProperty(body: Record<string, unknown>, userId: string) {
     city: body.city,
     county: body.county || null,
     state: body.state || 'NC',
+    service_area: body.serviceArea || body.service_area || null,
     zip: body.zip,
     parcel_id: body.parcelId || body.parcel_id || null,
     property_type: body.propertyType || body.property_type || 'single_family',

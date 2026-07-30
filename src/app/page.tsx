@@ -192,6 +192,17 @@ const plans = [
   },
 ];
 
+const coverageMarkets = [
+  {
+    state: 'North Carolina',
+    areas: ['Triangle', 'Charlotte Metro', 'Triad', 'Coastal NC'],
+  },
+  {
+    state: 'Texas',
+    areas: ['Dallas-Fort Worth', 'Houston Metro', 'Austin-San Antonio', 'East Texas'],
+  },
+];
+
 export default function HomePage() {
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -318,6 +329,42 @@ export default function HomePage() {
               <ServiceCard key={key} icon={<svc.icon className="w-8 h-8" />} title={svc.title}
                 description={svc.description} onClick={() => { setSelectedService(key); setCurrentImageIndex(0); }} />
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Coverage */}
+      <section className="py-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 items-start">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-800 mb-4">
+                <MapPin className="w-4 h-4" />
+                Current launch markets
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                Starting in North Carolina and Texas
+              </h2>
+              <p className="text-lg text-slate-600">
+                Preserve is rolling out city by city so every property is matched to the right service area and local crew.
+                Add your property, choose the nearest market, and we will route work orders from there.
+              </p>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {coverageMarkets.map(market => (
+                <div key={market.state} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <h3 className="text-xl font-bold text-slate-900 mb-4">{market.state}</h3>
+                  <div className="space-y-3">
+                    {market.areas.map(area => (
+                      <div key={area} className="flex items-center gap-3">
+                        <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+                        <span className="font-medium text-slate-700">{area}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -502,7 +549,7 @@ export default function HomePage() {
                 <span className="text-2xl font-bold">Preserve</span>
               </div>
               <p className="text-slate-400 mb-2">Property care made simple — for homeowners, landlords, and investors.</p>
-              <p className="text-slate-500 text-sm">Serving North Carolina and beyond.</p>
+              <p className="text-slate-500 text-sm">Launching in North Carolina and Texas service areas.</p>
             </div>
             <div>
               <h4 className="font-semibold mb-4 text-sm uppercase tracking-wide text-slate-300">Product</h4>
