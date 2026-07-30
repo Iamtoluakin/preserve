@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react';
@@ -37,10 +36,16 @@ async function saveAppSession(accessToken: string) {
   const sessionResponse = await fetch('/api/auth/session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    cache: 'no-store',
     body: JSON.stringify({ accessToken }),
   });
 
   if (!sessionResponse.ok) throw new Error('Could not save your login session. Please try again.');
+}
+
+function moveToNextPath(nextPath: string) {
+  window.location.replace(nextPath);
 }
 
 function GoogleMark() {
@@ -52,7 +57,7 @@ function GoogleMark() {
 }
 
 export default function LoginPage() {
-  const router = useRouter();
+  const redirectingRef = useRef(false);
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -73,16 +78,18 @@ export default function LoginPage() {
     let active = true;
 
     const completeSession = async (accessToken?: string | null) => {
-      if (!active || !accessToken) return;
+      if (!active || !accessToken || redirectingRef.current) return;
 
       try {
+        redirectingRef.current = true;
         await ensureUserProfile();
         await saveAppSession(accessToken);
 
-        router.push(getNextPath());
-        router.refresh();
+        moveToNextPath(getNextPath());
       } catch (err: any) {
+        redirectingRef.current = false;
         setError(err.message || 'Could not complete sign in. Please try again.');
+        setOauthLoading(false);
       }
     };
 
@@ -118,7 +125,7 @@ export default function LoginPage() {
       active = false;
       listener.subscription.unsubscribe();
     };
-  }, [router]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,8 +143,7 @@ export default function LoginPage() {
 
         await saveAppSession(accessToken);
 
-        router.push(getNextPath());
-        router.refresh();
+        moveToNextPath(getNextPath());
       } else {
         if (!name.trim()) { setError('Please enter your name.'); setLoading(false); return; }
         const { data, error } = await supabase.auth.signUp({
@@ -155,8 +161,7 @@ export default function LoginPage() {
           const accessToken = data.session.access_token;
           await saveAppSession(accessToken);
 
-          router.push('/dashboard');
-          router.refresh();
+          moveToNextPath('/dashboard');
         } else {
           setSignupDone(true);
         }
