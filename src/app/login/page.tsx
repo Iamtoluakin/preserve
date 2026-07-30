@@ -58,10 +58,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showEmailForm, setShowEmailForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState(false);
   const [error, setError] = useState('');
   const [signupDone, setSignupDone] = useState(false);
+
+  const getNextPath = () => {
+    if (typeof window === 'undefined') return '/dashboard';
+    return new URLSearchParams(window.location.search).get('next') || '/dashboard';
+  };
 
   useEffect(() => {
     let active = true;
@@ -73,8 +79,7 @@ export default function LoginPage() {
         await ensureUserProfile();
         await saveAppSession(accessToken);
 
-        const next = new URLSearchParams(window.location.search).get('next') || '/dashboard';
-        router.push(next);
+        router.push(getNextPath());
         router.refresh();
       } catch (err: any) {
         setError(err.message || 'Could not complete sign in. Please try again.');
@@ -131,8 +136,7 @@ export default function LoginPage() {
 
         await saveAppSession(accessToken);
 
-        const next = new URLSearchParams(window.location.search).get('next') || '/dashboard';
-        router.push(next);
+        router.push(getNextPath());
         router.refresh();
       } else {
         if (!name.trim()) { setError('Please enter your name.'); setLoading(false); return; }
@@ -167,11 +171,12 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     setError('');
     setOauthLoading(true);
+    const next = getNextPath();
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${getSiteUrl()}/login`,
+        redirectTo: `${getSiteUrl()}/login?next=${encodeURIComponent(next)}`,
         queryParams: {
           access_type: 'offline',
           prompt: 'select_account',
@@ -183,6 +188,10 @@ export default function LoginPage() {
       setOauthLoading(false);
       setError(error.message || 'Could not start Google sign in.');
     }
+  };
+
+  const continueWithoutSignIn = () => {
+    router.push(getNextPath());
   };
 
   if (signupDone) {
@@ -233,10 +242,10 @@ export default function LoginPage() {
           </div>
 
           <h2 className="text-xl font-bold text-slate-900 mb-1">
-            {mode === 'login' ? 'Welcome back' : 'Get started for free'}
+            Open your Preserve workspace
           </h2>
           <p className="text-slate-500 text-sm mb-6">
-            {mode === 'login' ? 'Sign in to manage your properties' : 'Add your properties and choose your plan'}
+            Jump into the dashboard now. You can connect an account later when you are ready.
           </p>
 
           {error && (
@@ -245,57 +254,66 @@ export default function LoginPage() {
 
           <button
             type="button"
+            onClick={continueWithoutSignIn}
+            className="mb-3 flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-slate-200/80 transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-xl"
+          >
+            Continue to Dashboard
+          </button>
+
+          <button
+            type="button"
             onClick={handleGoogleSignIn}
             disabled={loading || oauthLoading}
-            className="group mb-5 flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-slate-950 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-slate-200/70 transition hover:-translate-y-0.5 hover:bg-slate-900 hover:shadow-xl disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+            className="group mb-4 flex w-full items-center justify-center gap-3 rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200/80 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {oauthLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <GoogleMark />}
             Continue with Google
           </button>
 
-          <div className="relative mb-5">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-3 text-slate-400">or use email</span>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {mode === 'signup' && (
+          {!showEmailForm ? (
+            <button
+              type="button"
+              onClick={() => setShowEmailForm(true)}
+              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+            >
+              or sign in via email
+            </button>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4 border-t border-slate-100 pt-5">
+              {mode === 'signup' && (
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
+                  <input type="text" value={name} onChange={e => setName(e.target.value)}
+                    placeholder="Jane Smith" required
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white" />
+                </div>
+              )}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
-                <input type="text" value={name} onChange={e => setName(e.target.value)}
-                  placeholder="Jane Smith" required
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Email Address</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                  placeholder="you@example.com" required
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white" />
               </div>
-            )}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Email Address</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                placeholder="you@example.com" required
-                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
-              <div className="relative">
-                <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
-                  placeholder={mode === 'signup' ? 'At least 6 characters' : '••••••••'} required minLength={6}
-                  className="w-full px-4 py-3 pr-12 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+                <div className="relative">
+                  <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
+                    placeholder={mode === 'signup' ? 'At least 6 characters' : '••••••••'} required minLength={6}
+                    className="w-full px-4 py-3 pr-12 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white" />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
               </div>
-            </div>
-            <button type="submit" disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition disabled:opacity-60 flex items-center justify-center gap-2 mt-2">
-              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-              {mode === 'login' ? 'Sign In' : 'Create Free Account'}
-            </button>
-          </form>
-          {mode === 'signup' && (
+              <button type="submit" disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition disabled:opacity-60 flex items-center justify-center gap-2 mt-2">
+                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                {mode === 'login' ? 'Sign In' : 'Create Free Account'}
+              </button>
+            </form>
+          )}
+          {showEmailForm && mode === 'signup' && (
             <p className="text-xs text-slate-400 text-center mt-4">By signing up you agree to our Terms of Service and Privacy Policy.</p>
           )}
         </div>
