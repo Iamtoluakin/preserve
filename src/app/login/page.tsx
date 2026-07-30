@@ -82,8 +82,8 @@ export default function LoginPage() {
 
       try {
         redirectingRef.current = true;
-        await ensureUserProfile();
         await saveAppSession(accessToken);
+        void ensureUserProfile().catch(error => console.warn('Could not sync user profile:', error));
 
         moveToNextPath(getNextPath());
       } catch (err: any) {
@@ -96,6 +96,12 @@ export default function LoginPage() {
     const completeExistingSession = async () => {
       const params = new URLSearchParams(window.location.search);
       const oauthCode = params.get('code');
+      const oauthError = params.get('error_description') || params.get('error');
+
+      if (oauthError) {
+        setError(oauthError);
+        return;
+      }
 
       if (oauthCode) {
         setOauthLoading(true);
@@ -110,14 +116,20 @@ export default function LoginPage() {
         return;
       }
 
-      const { data } = await supabase.auth.getSession();
-      await completeSession(data.session?.access_token);
+      for (let attempt = 0; attempt < 4; attempt += 1) {
+        const { data } = await supabase.auth.getSession();
+        if (data.session?.access_token) {
+          await completeSession(data.session.access_token);
+          return;
+        }
+        await new Promise(resolve => setTimeout(resolve, 250));
+      }
     };
 
     completeExistingSession();
 
     const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event !== 'SIGNED_IN') return;
+      if (!['INITIAL_SESSION', 'SIGNED_IN', 'TOKEN_REFRESHED'].includes(event)) return;
       await completeSession(session?.access_token);
     });
 
@@ -135,13 +147,13 @@ export default function LoginPage() {
       if (mode === 'login') {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        await ensureUserProfile();
 
         const { data: sessionData } = await supabase.auth.getSession();
         const accessToken = sessionData.session?.access_token;
         if (!accessToken) throw new Error('Could not create a login session. Please try again.');
 
         await saveAppSession(accessToken);
+        void ensureUserProfile().catch(error => console.warn('Could not sync user profile:', error));
 
         moveToNextPath(getNextPath());
       } else {
@@ -157,9 +169,9 @@ export default function LoginPage() {
         if (error) throw error;
 
         if (data.session) {
-          await ensureUserProfile(name);
           const accessToken = data.session.access_token;
           await saveAppSession(accessToken);
+          void ensureUserProfile(name).catch(error => console.warn('Could not sync user profile:', error));
 
           moveToNextPath('/dashboard');
         } else {

@@ -227,16 +227,16 @@ export default function HomePage() {
               <a href="#services" className="text-slate-600 hover:text-blue-600 transition text-sm">Services</a>
               <a href="#pricing" className="text-slate-600 hover:text-blue-600 transition text-sm">Pricing</a>
               <a href="#contact" className="text-slate-600 hover:text-blue-600 transition text-sm">Contact</a>
-              <Link href={dashboardLoginHref} className="text-slate-600 hover:text-blue-600 transition text-sm font-medium">Sign In</Link>
+              <Link href={dashboardLoginHref} className="text-slate-600 hover:text-blue-600 transition text-sm font-medium">Dashboard</Link>
               <Link href={dashboardLoginHref} className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
-                Launch App
+                Sign In
               </Link>
             </div>
             {/* Mobile nav */}
             <div className="flex md:hidden items-center gap-3">
-              <Link href={dashboardLoginHref} className="text-slate-600 hover:text-blue-600 transition text-sm">Sign In</Link>
+              <Link href={dashboardLoginHref} className="text-slate-600 hover:text-blue-600 transition text-sm">Dashboard</Link>
               <Link href={dashboardLoginHref} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
-                Launch
+                Enter
               </Link>
             </div>
           </div>
