@@ -43,6 +43,14 @@ async function saveAppSession(accessToken: string) {
   if (!sessionResponse.ok) throw new Error('Could not save your login session. Please try again.');
 }
 
+function GoogleMark() {
+  return (
+    <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-sm font-black text-blue-600 shadow-sm ring-1 ring-slate-200">
+      G
+    </span>
+  );
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<'login' | 'signup'>('login');
@@ -58,9 +66,7 @@ export default function LoginPage() {
   useEffect(() => {
     let active = true;
 
-    const completeExistingSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      const accessToken = data.session?.access_token;
+    const completeSession = async (accessToken?: string | null) => {
       if (!active || !accessToken) return;
 
       try {
@@ -75,11 +81,32 @@ export default function LoginPage() {
       }
     };
 
+    const completeExistingSession = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const oauthCode = params.get('code');
+
+      if (oauthCode) {
+        setOauthLoading(true);
+        const { data, error } = await supabase.auth.exchangeCodeForSession(oauthCode);
+        if (error) {
+          setOauthLoading(false);
+          setError(error.message || 'Could not finish Google sign in. Please try again.');
+          return;
+        }
+
+        await completeSession(data.session?.access_token);
+        return;
+      }
+
+      const { data } = await supabase.auth.getSession();
+      await completeSession(data.session?.access_token);
+    };
+
     completeExistingSession();
 
-    const { data: listener } = supabase.auth.onAuthStateChange(async event => {
+    const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event !== 'SIGNED_IN') return;
-      await completeExistingSession();
+      await completeSession(session?.access_token);
     });
 
     return () => {
@@ -220,9 +247,9 @@ export default function LoginPage() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={loading || oauthLoading}
-            className="w-full border border-slate-300 bg-white text-slate-800 py-3 rounded-xl font-semibold transition hover:bg-slate-50 disabled:opacity-60 flex items-center justify-center gap-3 mb-5"
+            className="group mb-5 flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-slate-950 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-slate-200/70 transition hover:-translate-y-0.5 hover:bg-slate-900 hover:shadow-xl disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {oauthLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span className="text-base font-bold">G</span>}
+            {oauthLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <GoogleMark />}
             Continue with Google
           </button>
 

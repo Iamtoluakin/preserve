@@ -30,7 +30,9 @@ export default function DashboardPage() {
   const [workOrders, setWorkOrders] = useState<PreserveWorkOrder[]>([]);
   const [properties, setProperties] = useState<PreserveProperty[]>([]);
   const [userEmail, setUserEmail] = useState('');
-  const accountInitial = (userEmail?.trim()[0] || 'U').toUpperCase();
+  const [userName, setUserName] = useState('');
+  const accountLabel = userName || userEmail || 'Signed in';
+  const accountInitial = (accountLabel.trim()[0] || 'U').toUpperCase();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -40,7 +42,14 @@ export default function DashboardPage() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) setUserEmail(data.user.email || '');
+      if (!data.user) return;
+
+      setUserEmail(data.user.email || '');
+      setUserName(
+        data.user.user_metadata?.full_name ||
+        data.user.user_metadata?.name ||
+        ''
+      );
     });
   }, []);
   const [showAnalytics, setShowAnalytics] = useState(true);
@@ -117,7 +126,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="min-w-0 leading-tight">
                   <p className="text-xs font-semibold text-slate-900 truncate max-w-[150px]">
-                    {userEmail || 'Signed in'}
+                    {accountLabel}
                   </p>
                   <p className="text-[11px] text-slate-500">Owner account</p>
                 </div>
