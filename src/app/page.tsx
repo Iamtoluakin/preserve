@@ -35,7 +35,7 @@ const serviceDetails = {
     ],
     description: 'Regular mowing, trimming, edging, and landscaping to keep your property looking its best.',
     longDescription: "Whether you own a vacation home, a rental property, or a home you're preparing to sell, our lawn care team keeps your grounds neat, code-compliant, and curb-appeal-ready — without you lifting a finger.",
-    pricing: { base: 100, frequency: 'per visit', monthly: 'From $100/visit' },
+    pricing: { base: 65, frequency: 'per visit', monthly: 'NC $40-$65 | TX $45-$75' },
     includes: ['Mowing & edging', 'Trimming around structures', 'Clipping removal', 'Weed control', 'GPS-stamped before/after photos', 'Code compliance check'],
     frequency: 'Weekly, Bi-weekly, or Monthly',
     timeline: '1–2 hours per visit',
@@ -51,7 +51,7 @@ const serviceDetails = {
     ],
     description: 'Lock changes, lockboxes, and boarding to protect vacant or unoccupied properties.',
     longDescription: "Heading away for months? Inherited a property? We secure your home fast — lock changes, lockboxes, window boarding — so you're protected from unauthorized entry and vandalism.",
-    pricing: { base: 250, frequency: 'one-time', monthly: 'From $250' },
+    pricing: { base: 225, frequency: 'one-time', monthly: 'NC $150-$350 | TX $150-$400' },
     includes: ['Lock change on all entry points', 'Secure lockbox installation', 'Window/door boarding', 'Exterior lighting check', 'Photo documentation', 'Insurance-compliant report'],
     frequency: 'One-time or as-needed',
     timeline: '2–4 hours',
@@ -67,7 +67,7 @@ const serviceDetails = {
     ],
     description: 'Protect your plumbing from freeze damage during cold months.',
     longDescription: 'A single burst pipe can cost thousands. Our licensed technicians drain all water lines, treat drain traps with antifreeze, and shut down your HVAC safely — then de-winterize in the spring.',
-    pricing: { base: 350, frequency: 'seasonal', monthly: 'From $300/season' },
+    pricing: { base: 300, frequency: 'seasonal', monthly: 'NC $250-$450 | TX $200-$400' },
     includes: ['Drain all supply lines', 'Antifreeze in drain traps', 'HVAC shutdown', 'Water heater drain', 'Toilet winterization', 'Detailed photo report'],
     frequency: 'Fall & Spring',
     timeline: '2–3 hours',
@@ -83,7 +83,7 @@ const serviceDetails = {
     ],
     description: 'Detailed inspections with GPS-stamped photos and condition reports delivered to your inbox.',
     longDescription: 'Can\'t visit your property in person? We inspect it for you — interior and exterior — with GPS-stamped photos, a written condition report, and alerts for any urgent issues.',
-    pricing: { base: 200, frequency: 'per visit', monthly: 'From $150/visit' },
+    pricing: { base: 425, frequency: 'per visit', monthly: 'NC $375-$725 | TX $350-$600' },
     includes: ['Full interior & exterior walk-through', '30–50+ GPS-stamped photos', 'Condition checklist', 'HVAC/plumbing/electrical checks', 'Immediate emergency alerts', 'PDF report within 24 hrs'],
     frequency: 'Monthly, Bi-weekly, or Custom',
     timeline: '1–2 hours',
@@ -99,7 +99,7 @@ const serviceDetails = {
     ],
     description: 'Interior cleaning, move-out deep cleans, deodorizing, and sanitation for vacant or preserved homes.',
     longDescription: 'Preservation is not only exterior upkeep. Preserve can clean the house itself after vacancy, turnover, weather events, or long periods away, then document the finished condition with photos.',
-    pricing: { base: 250, frequency: 'per visit', monthly: 'From $250/visit' },
+    pricing: { base: 180, frequency: 'per visit', monthly: 'NC $100-$300 | TX $120-$280' },
     includes: ['Kitchen & bathroom cleaning', 'Floor sweeping and mopping', 'Dusting and surface sanitizing', 'Move-out deep clean options', 'Odor treatment', 'Before/after photos'],
     frequency: 'One-time, Monthly, or As-needed',
     timeline: '2-6 hours',
@@ -115,7 +115,7 @@ const serviceDetails = {
     ],
     description: 'Minor repairs, touch-ups, debris removal, and general upkeep to protect property value.',
     longDescription: 'From gutter cleaning to pressure washing to small repairs, our team keeps your property in great shape between visits — preserving its value and preventing small issues from becoming big ones.',
-    pricing: { base: 150, frequency: 'per hour', monthly: 'From $150/hr' },
+    pricing: { base: 125, frequency: 'per hour', monthly: 'Typical $75-$150/hr' },
     includes: ['Minor carpentry & repairs', 'Exterior paint touch-ups', 'Debris & trash removal', 'Gutter cleaning', 'Pressure washing', 'Work completion reports'],
     frequency: 'As-needed',
     timeline: 'Varies by scope',
@@ -131,7 +131,7 @@ const serviceDetails = {
     ],
     description: 'Professional GPS-stamped photos and condition reports for insurance, legal, or rental use.',
     longDescription: 'Keep a timestamped visual record of your property — perfect for insurance claims, tenant move-in/out, legal disputes, or simply staying informed about a home you can\'t visit often.',
-    pricing: { base: 50, frequency: 'per visit', monthly: 'From $50/visit' },
+    pricing: { base: 75, frequency: 'per visit', monthly: 'Typical $50-$125/visit' },
     includes: ['GPS-stamped exterior photos', 'Interior condition photos', 'Cloud storage & instant access', 'Detailed written notes', 'Before/after comparisons', 'PDF reports'],
     frequency: 'Monthly or with any service',
     timeline: '30–60 minutes',
@@ -329,7 +329,8 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {Object.entries(serviceDetails).map(([key, svc]) => (
               <ServiceCard key={key} icon={<svc.icon className="w-8 h-8" />} title={svc.title}
-                description={svc.description} onClick={() => { setSelectedService(key); setCurrentImageIndex(0); }} />
+                description={svc.description} price={svc.pricing.monthly}
+                onClick={() => { setSelectedService(key); setCurrentImageIndex(0); }} />
             ))}
           </div>
         </div>
@@ -510,7 +511,7 @@ export default function HomePage() {
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">{service.title}</h2>
                 <p className="text-slate-600 mb-4">{service.longDescription}</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-4 bg-slate-50 rounded-xl text-center text-sm">
-                  <div><DollarSign className="w-5 h-5 text-blue-600 mx-auto mb-1" /><div className="text-slate-500">Pricing</div><div className="font-semibold text-slate-900">{service.pricing.monthly}</div></div>
+                  <div><DollarSign className="w-5 h-5 text-blue-600 mx-auto mb-1" /><div className="text-slate-500">Pricing</div><div className="font-semibold text-slate-900 text-xs md:text-sm leading-snug">{service.pricing.monthly}</div></div>
                   <div><Clock className="w-5 h-5 text-blue-600 mx-auto mb-1" /><div className="text-slate-500">Time</div><div className="font-semibold text-slate-900">{service.timeline}</div></div>
                   <div><Users className="w-5 h-5 text-blue-600 mx-auto mb-1" /><div className="text-slate-500">Team</div><div className="font-semibold text-slate-900">{service.team}</div></div>
                   <div><CheckSquare className="w-5 h-5 text-blue-600 mx-auto mb-1" /><div className="text-slate-500">Schedule</div><div className="font-semibold text-slate-900">{service.frequency}</div></div>
@@ -580,7 +581,19 @@ export default function HomePage() {
   );
 }
 
-function ServiceCard({ icon, title, description, onClick }: { icon: React.ReactNode; title: string; description: string; onClick?: () => void }) {
+function ServiceCard({
+  icon,
+  title,
+  description,
+  price,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  price: string;
+  onClick?: () => void;
+}) {
   return (
     <div onClick={onClick}
       className="bg-slate-50 rounded-xl p-6 hover:shadow-lg transition border border-slate-200 cursor-pointer group">
@@ -589,6 +602,10 @@ function ServiceCard({ icon, title, description, onClick }: { icon: React.ReactN
       </div>
       <h3 className="text-xl font-semibold text-slate-900 mb-2 group-hover:text-blue-600 transition">{title}</h3>
       <p className="text-slate-600 mb-4 text-sm">{description}</p>
+      <div className="mb-4 inline-flex max-w-full items-center rounded-lg bg-white px-3 py-2 text-xs font-semibold leading-snug text-slate-800 shadow-sm ring-1 ring-slate-200">
+        <DollarSign className="mr-1 h-4 w-4 flex-shrink-0 text-blue-600" />
+        <span>{price}</span>
+      </div>
       <div className="text-blue-600 font-medium text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
         Learn More <ArrowRight className="w-4 h-4" />
       </div>
