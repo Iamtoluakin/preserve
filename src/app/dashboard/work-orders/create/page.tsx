@@ -13,7 +13,7 @@ import {
   DollarSign,
   CheckCircle2
 } from 'lucide-react';
-import { serviceCatalog, calculateMonthlyCost } from '@/lib/supabase';
+import { serviceCatalog, calculateMonthlyCost, supabase } from '@/lib/supabase';
 import {
   readProperties,
   readWorkOrders,
@@ -33,6 +33,7 @@ type SelectedService = {
 };
 
 type BillingFrequency = 'one-time' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
+const WORK_ORDER_DRAFT_KEY = 'preserve_work_order_draft';
 
 export default function CreateWorkOrderV2Page() {
   const router = useRouter();
@@ -53,8 +54,23 @@ export default function CreateWorkOrderV2Page() {
   useEffect(() => {
     const storedProperties = readProperties();
     const requestedPropertyId = new URLSearchParams(window.location.search).get('propertyId') || '';
+    const savedDraft = window.localStorage.getItem(WORK_ORDER_DRAFT_KEY);
 
     setProperties(storedProperties);
+
+    if (savedDraft) {
+      try {
+        const draft = JSON.parse(savedDraft);
+        setFormData(current => ({ ...current, ...draft.formData }));
+        setSelectedServices(Array.isArray(draft.selectedServices) ? draft.selectedServices : []);
+        setBillingFrequency(draft.billingFrequency || 'monthly');
+        window.localStorage.removeItem(WORK_ORDER_DRAFT_KEY);
+        return;
+      } catch {
+        window.localStorage.removeItem(WORK_ORDER_DRAFT_KEY);
+      }
+    }
+
     if (requestedPropertyId && storedProperties.some(property => property.id === requestedPropertyId)) {
       setFormData(current => ({ ...current, propertyId: requestedPropertyId }));
     }
@@ -166,8 +182,21 @@ export default function CreateWorkOrderV2Page() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const { data } = await supabase.auth.getSession();
+
+    if (!data.session) {
+      window.localStorage.setItem(WORK_ORDER_DRAFT_KEY, JSON.stringify({
+        formData,
+        selectedServices,
+        billingFrequency,
+      }));
+      const next = `${window.location.pathname}${window.location.search}`;
+      router.push(`/login?next=${encodeURIComponent(next)}&intent=service`);
+      return;
+    }
+
     const woNumber = `WO-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
     setOrderNumber(woNumber);
     
@@ -195,7 +224,6 @@ export default function CreateWorkOrderV2Page() {
     };
 
     writeWorkOrders([newWorkOrder, ...readWorkOrders()]);
-    
     setSubmitted(true);
     setTimeout(() => {
       router.push('/dashboard/work-orders');

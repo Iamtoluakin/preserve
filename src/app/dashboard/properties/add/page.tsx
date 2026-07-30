@@ -482,7 +482,7 @@ export default function AddPropertyPage() {
               type="submit"
               className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-center"
             >
-              Add Property & Request Service
+              Add Property
             </button>
           </div>
         </form>

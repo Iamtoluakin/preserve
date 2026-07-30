@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   ArrowLeft, 
   Home,
@@ -12,7 +13,7 @@ import {
   DollarSign,
   CheckCircle2
 } from 'lucide-react';
-import { serviceCatalog, calculateMonthlyCost } from '@/lib/supabase';
+import { serviceCatalog, calculateMonthlyCost, supabase } from '@/lib/supabase';
 
 type SelectedService = {
   id: string;
@@ -23,8 +24,10 @@ type SelectedService = {
   unit: string;
   total: number;
 };
+const WORK_ORDER_V2_DRAFT_KEY = 'preserve_work_order_v2_draft';
 
 export default function CreateWorkOrderV2Page() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     propertyId: '',
     priority: 'normal',
@@ -44,6 +47,21 @@ export default function CreateWorkOrderV2Page() {
     { id: '4', address: '3456 Elm Court, Durham, NC 27703' },
     { id: '5', address: '7890 Maple Drive, Greensboro, NC 27401' }
   ];
+
+  useEffect(() => {
+    const savedDraft = window.localStorage.getItem(WORK_ORDER_V2_DRAFT_KEY);
+    if (!savedDraft) return;
+
+    try {
+      const draft = JSON.parse(savedDraft);
+      setFormData(current => ({ ...current, ...draft.formData }));
+      setSelectedServices(Array.isArray(draft.selectedServices) ? draft.selectedServices : []);
+    } catch {
+      // Ignore malformed local drafts and continue with a blank request.
+    } finally {
+      window.localStorage.removeItem(WORK_ORDER_V2_DRAFT_KEY);
+    }
+  }, []);
 
   const categories = [...new Set(serviceCatalog.map(s => s.category))];
 
@@ -96,8 +114,20 @@ export default function CreateWorkOrderV2Page() {
     }, 0);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const { data } = await supabase.auth.getSession();
+
+    if (!data.session) {
+      window.localStorage.setItem(WORK_ORDER_V2_DRAFT_KEY, JSON.stringify({
+        formData,
+        selectedServices,
+      }));
+      const next = `${window.location.pathname}${window.location.search}`;
+      router.push(`/login?next=${encodeURIComponent(next)}&intent=service`);
+      return;
+    }
+
     const woNumber = `WO-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
     setOrderNumber(woNumber);
     
