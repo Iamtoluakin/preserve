@@ -69,12 +69,6 @@ export default function LoginPage() {
     return new URLSearchParams(window.location.search).get('next') || '/dashboard';
   };
 
-  const requiresSignIn = () => {
-    if (typeof window === 'undefined') return false;
-    const params = new URLSearchParams(window.location.search);
-    return params.get('intent') === 'service' || getNextPath().startsWith('/dashboard/work-orders/create');
-  };
-
   useEffect(() => {
     let active = true;
 
@@ -196,12 +190,6 @@ export default function LoginPage() {
     }
   };
 
-  const continueWithoutSignIn = () => {
-    router.push('/dashboard');
-  };
-
-  const serviceIntent = requiresSignIn();
-
   if (signupDone) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 flex items-center justify-center p-4">
@@ -250,26 +238,14 @@ export default function LoginPage() {
           </div>
 
           <h2 className="text-xl font-bold text-slate-900 mb-1">
-            {serviceIntent ? 'Sign in to submit your service request' : 'Open your Preserve workspace'}
+            Sign in to open Preserve
           </h2>
           <p className="text-slate-500 text-sm mb-6">
-            {serviceIntent
-              ? 'We saved your plan. Connect an account so Preserve can follow up and manage the job.'
-              : 'Jump into the dashboard now. You can connect an account later when you are ready.'}
+            Create a secure workspace before viewing properties, pricing tools, and service requests.
           </p>
 
           {error && (
             <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>
-          )}
-
-          {!serviceIntent && (
-            <button
-              type="button"
-              onClick={continueWithoutSignIn}
-              className="mb-3 flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-slate-200/80 transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-xl"
-            >
-              Continue to Dashboard
-            </button>
           )}
 
           <button

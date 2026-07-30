@@ -208,6 +208,8 @@ export default function HomePage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const service = selectedService ? serviceDetails[selectedService as keyof typeof serviceDetails] : null;
+  const dashboardLoginHref = '/login?next=%2Fdashboard';
+  const addPropertyLoginHref = '/login?next=%2Fdashboard%2Fproperties%2Fadd';
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
@@ -225,15 +227,15 @@ export default function HomePage() {
               <a href="#services" className="text-slate-600 hover:text-blue-600 transition text-sm">Services</a>
               <a href="#pricing" className="text-slate-600 hover:text-blue-600 transition text-sm">Pricing</a>
               <a href="#contact" className="text-slate-600 hover:text-blue-600 transition text-sm">Contact</a>
-              <Link href="/dashboard" className="text-slate-600 hover:text-blue-600 transition text-sm font-medium">Open Dashboard</Link>
-              <Link href="/dashboard" className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
+              <Link href={dashboardLoginHref} className="text-slate-600 hover:text-blue-600 transition text-sm font-medium">Sign In</Link>
+              <Link href={dashboardLoginHref} className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
                 Launch App
               </Link>
             </div>
             {/* Mobile nav */}
             <div className="flex md:hidden items-center gap-3">
-              <Link href="/dashboard" className="text-slate-600 hover:text-blue-600 transition text-sm">Dashboard</Link>
-              <Link href="/dashboard" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
+              <Link href={dashboardLoginHref} className="text-slate-600 hover:text-blue-600 transition text-sm">Sign In</Link>
+              <Link href={dashboardLoginHref} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
                 Launch
               </Link>
             </div>
@@ -257,7 +259,7 @@ export default function HomePage() {
                 Request service, track progress, and protect your asset without chasing contractors.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/dashboard"
+                <Link href={dashboardLoginHref}
                   className="bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700 transition font-semibold text-center flex items-center justify-center gap-2 shadow-lg shadow-blue-200">
                   Open Your Property Dashboard <ArrowRight className="w-5 h-5" />
                 </Link>
@@ -266,7 +268,7 @@ export default function HomePage() {
                   View Pricing
                 </a>
               </div>
-              <p className="text-sm text-slate-500 mt-4">Explore the dashboard instantly · No sign-in required</p>
+              <p className="text-sm text-slate-500 mt-4">Secure workspace · Sign in to view dashboard tools</p>
             </div>
             <div className="relative">
               <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl p-8 shadow-2xl">
@@ -421,7 +423,7 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <Link href="/dashboard"
+                <Link href={dashboardLoginHref}
                   className={`w-full text-center py-3 rounded-xl font-semibold transition ${plan.highlight ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'}`}>
                   {plan.cta}
                 </Link>
@@ -462,7 +464,7 @@ export default function HomePage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold text-slate-900 mb-4">Ready to Get Started?</h2>
           <p className="text-xl text-slate-600 mb-10">Open the dashboard and add your first property in minutes.</p>
-          <Link href="/dashboard"
+          <Link href={dashboardLoginHref}
             className="inline-flex items-center gap-2 bg-blue-600 text-white px-10 py-4 rounded-xl hover:bg-blue-700 transition font-semibold text-lg shadow-lg shadow-blue-200">
             Open Dashboard <ArrowRight className="w-5 h-5" />
           </Link>
@@ -522,7 +524,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
-                  <Link href="/dashboard" onClick={() => setSelectedService(null)}
+                  <Link href={dashboardLoginHref} onClick={() => setSelectedService(null)}
                     className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition font-semibold text-center">
                     Get Started
                   </Link>
@@ -556,8 +558,8 @@ export default function HomePage() {
               <ul className="space-y-2 text-slate-400 text-sm">
                 <li><a href="#services" className="hover:text-white transition">Services</a></li>
                 <li><a href="#pricing" className="hover:text-white transition">Pricing</a></li>
-                <li><Link href="/dashboard" className="hover:text-white transition">Dashboard</Link></li>
-                <li><Link href="/dashboard/properties/add" className="hover:text-white transition">Add Property</Link></li>
+                <li><Link href={dashboardLoginHref} className="hover:text-white transition">Dashboard</Link></li>
+                <li><Link href={addPropertyLoginHref} className="hover:text-white transition">Add Property</Link></li>
               </ul>
             </div>
             <div>
