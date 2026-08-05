@@ -1,13 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Preserve property care">
-  <rect width="1200" height="630" fill="#f8fafc"/>
-  <rect x="72" y="72" width="1056" height="486" rx="36" fill="#ffffff" stroke="#dbeafe" stroke-width="4"/>
-  <rect x="116" y="118" width="112" height="112" rx="24" fill="#1d4ed8"/>
-  <path d="M148 203v-58h27c13.8 0 23.3 8.3 23.3 21.2 0 12.8-9.5 21-23.3 21h-13.8V203H148Zm13.2-27.8H174c6.9 0 10.9-3.4 10.9-9s-4-9.2-10.9-9.2h-12.8v18.2Z" fill="#fff"/>
-  <text x="116" y="304" fill="#0f172a" font-family="Inter, Arial, sans-serif" font-size="76" font-weight="800">Preserve</text>
-  <text x="116" y="378" fill="#334155" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="500">Property preservation, handled from anywhere.</text>
-  <text x="116" y="438" fill="#64748b" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="500">Lawn care, inspections, cleaning, repairs, and photo reports for remote owners and investors.</text>
-  <rect x="835" y="142" width="194" height="194" rx="28" fill="#dbeafe"/>
-  <path d="M884 294v-92l48-38 48 38v92h-35v-54h-26v54h-35Z" fill="#1d4ed8"/>
-  <rect x="835" y="378" width="194" height="68" rx="18" fill="#1d4ed8"/>
-  <text x="879" y="422" fill="#fff" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800">Sign In</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="PreserveHQ managed property operations">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <rect x="56" y="56" width="1088" height="518" rx="40" fill="#ffffff"/>
+  <rect x="112" y="112" width="86" height="86" rx="22" fill="#2563eb"/>
+  <text x="155" y="174" fill="#ffffff" font-family="Arial, sans-serif" font-size="58" font-weight="800" text-anchor="middle">P</text>
+  <text x="216" y="150" fill="#0f172a" font-family="Arial, sans-serif" font-size="48" font-weight="800">PreserveHQ</text>
+  <text x="216" y="184" fill="#64748b" font-family="Arial, sans-serif" font-size="22" font-weight="700">Managed property operations</text>
+  <rect x="880" y="122" width="208" height="54" rx="27" fill="#dcfce7"/>
+  <text x="984" y="157" fill="#166534" font-family="Arial, sans-serif" font-size="22" font-weight="700" text-anchor="middle">Verified field network</text>
+  <text x="112" y="362" fill="#0f172a" font-family="Arial, sans-serif" font-size="72" font-weight="800">
+    <tspan x="112" dy="0">Property operations,</tspan>
+    <tspan x="112" dy="72">handled end to end.</tspan>
+  </text>
+  <text x="112" y="473" fill="#475569" font-family="Arial, sans-serif" font-size="30" font-weight="500">
+    <tspan x="112" dy="0">Service requests, dispatch, contractor workflows,</tspan>
+    <tspan x="112" dy="39">quality review, invoices, and property history.</tspan>
+  </text>
+  <g font-family="Arial, sans-serif" font-size="26" font-weight="800" fill="#1e3a8a">
+    <rect x="866" y="292" width="222" height="66" rx="20" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+    <text x="888" y="334">Requests</text>
+    <rect x="866" y="372" width="222" height="66" rx="20" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+    <text x="888" y="414">Dispatch</text>
+    <rect x="866" y="452" width="222" height="66" rx="20" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+    <text x="888" y="494">Photos</text>
+  </g>
 </svg>

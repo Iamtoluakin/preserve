@@ -6,8 +6,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://preservehq.com"),
-  title: "Preserve — Property Care Made Simple",
-  description: "Manage lawn care, house cleaning, inspections, winterization, and maintenance for all your properties in one place. Built for homeowners, landlords, and property investors.",
+  title: "PreserveHQ — Managed Property Operations",
+  description: "PreserveHQ coordinates service requests, dispatch, verified field professionals, quality review, invoices, and permanent property history.",
   manifest: "/site.webmanifest",
   icons: {
     icon: "/preserve-icon.svg",
@@ -15,25 +15,25 @@ export const metadata: Metadata = {
     apple: "/preserve-icon.svg",
   },
   openGraph: {
-    title: "Preserve — Property Care Made Simple",
-    description: "Property preservation, handled from anywhere.",
+    title: "PreserveHQ — Managed Property Operations",
+    description: "Property operations, handled end to end.",
     url: "https://preservehq.com",
     siteName: "Preserve",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/opengraph-image?v=2",
         width: 1200,
         height: 630,
-        alt: "Preserve property care",
+        alt: "PreserveHQ managed property operations",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Preserve — Property Care Made Simple",
-    description: "Property preservation, handled from anywhere.",
-    images: ["/opengraph-image"],
+    title: "PreserveHQ — Managed Property Operations",
+    description: "Property operations, handled end to end.",
+    images: ["/opengraph-image?v=2"],
   },
 };
 

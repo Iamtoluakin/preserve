@@ -19,9 +19,9 @@ export default function Image() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#f8fafc",
+          background: "#0f172a",
           fontFamily: "Arial, sans-serif",
-          padding: 72,
+          padding: 56,
         }}
       >
         <div
@@ -29,106 +29,129 @@ export default function Image() {
             width: "100%",
             height: "100%",
             display: "flex",
+            flexDirection: "column",
             justifyContent: "space-between",
             background: "#ffffff",
-            border: "4px solid #dbeafe",
-            borderRadius: 36,
-            padding: 44,
+            borderRadius: 40,
+            padding: 56,
+            overflow: "hidden",
           }}
         >
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <div
-              style={{
-                width: 112,
-                height: 112,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 24,
-                background: "#1d4ed8",
-                color: "#ffffff",
-                fontSize: 76,
-                fontWeight: 800,
-              }}
-            >
-              P
-            </div>
-            <div
-              style={{
-                marginTop: 48,
-                color: "#0f172a",
-                fontSize: 76,
-                fontWeight: 800,
-                letterSpacing: 0,
-              }}
-            >
-              Preserve
-            </div>
-            <div
-              style={{
-                marginTop: 22,
-                color: "#334155",
-                fontSize: 34,
-                fontWeight: 500,
-              }}
-            >
-              Property preservation, handled from anywhere.
-            </div>
-            <div
-              style={{
-                marginTop: 28,
-                maxWidth: 760,
-                color: "#64748b",
-                fontSize: 26,
-                lineHeight: 1.35,
-                fontWeight: 500,
-              }}
-            >
-              Lawn care, inspections, cleaning, repairs, and photo reports for
-              remote owners and investors.
-            </div>
-          </div>
           <div
             style={{
-              width: 240,
               display: "flex",
-              flexDirection: "column",
               alignItems: "center",
-              justifyContent: "center",
-              gap: 42,
+              justifyContent: "space-between",
             }}
           >
             <div
               style={{
-                width: 194,
-                height: 194,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 28,
-                background: "#dbeafe",
-                color: "#1d4ed8",
-                fontSize: 98,
-                fontWeight: 800,
+                gap: 18,
               }}
             >
-              P
+              <div
+                style={{
+                  width: 86,
+                  height: 86,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 22,
+                  background: "#2563eb",
+                  color: "#ffffff",
+                  fontSize: 58,
+                  fontWeight: 800,
+                }}
+              >
+                P
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <div style={{ color: "#0f172a", fontSize: 48, fontWeight: 800 }}>
+                  PreserveHQ
+                </div>
+                <div style={{ color: "#64748b", fontSize: 22, fontWeight: 700 }}>
+                  Managed property operations
+                </div>
+              </div>
             </div>
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                width: 194,
-                height: 68,
-                borderRadius: 18,
-                background: "#1d4ed8",
-                color: "#ffffff",
-                fontSize: 24,
-                fontWeight: 800,
+                borderRadius: 999,
+                background: "#dcfce7",
+                color: "#166534",
+                fontSize: 22,
+                fontWeight: 700,
+                padding: "14px 22px",
               }}
             >
-              Sign In
+              Verified field network
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", flexDirection: "column", maxWidth: 760 }}>
+              <div
+                style={{
+                  color: "#0f172a",
+                  fontSize: 72,
+                  lineHeight: 0.98,
+                  fontWeight: 800,
+                  letterSpacing: 0,
+                }}
+              >
+                Property operations, handled end to end.
+              </div>
+              <div
+                style={{
+                  marginTop: 28,
+                  color: "#475569",
+                  fontSize: 30,
+                  lineHeight: 1.3,
+                  fontWeight: 500,
+                }}
+              >
+                Service requests, dispatch, contractor workflows, quality review,
+                invoices, and permanent property history in one trusted platform.
+              </div>
+            </div>
+
+            <div
+              style={{
+                width: 278,
+                display: "flex",
+                flexDirection: "column",
+                gap: 14,
+                flexShrink: 0,
+              }}
+            >
+              {["Requests", "Dispatch", "Photos", "Approvals"].map((item) => (
+                <div
+                  key={item}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    borderRadius: 20,
+                    background: "#eff6ff",
+                    border: "2px solid #bfdbfe",
+                    color: "#1e3a8a",
+                    fontSize: 26,
+                    fontWeight: 800,
+                    padding: "18px 22px",
+                  }}
+                >
+                  {item}
+                </div>
+              ))}
             </div>
           </div>
         </div>
