@@ -247,11 +247,11 @@ const serviceThemeClasses: Record<string, { card: string; icon: string; price: s
     title: 'group-hover:text-amber-700',
   },
   blue: {
-    card: 'border-sky-200 bg-sky-50/80 hover:shadow-sky-100',
-    icon: 'bg-sky-100 text-sky-700',
-    price: 'bg-white text-sky-900 ring-sky-200',
-    link: 'text-sky-700',
-    title: 'group-hover:text-sky-700',
+    card: 'border-rose-200 bg-rose-50/80 hover:shadow-rose-100',
+    icon: 'bg-rose-100 text-rose-700',
+    price: 'bg-white text-rose-900 ring-rose-200',
+    link: 'text-rose-700',
+    title: 'group-hover:text-rose-700',
   },
 };
 
@@ -264,30 +264,30 @@ export default function HomePage() {
   const addPropertyLoginHref = '/login?next=%2Fdashboard%2Fproperties%2Fadd';
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-emerald-50">
+    <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-amber-50 to-rose-50">
       {/* Nav */}
-      <nav className="border-b border-sky-100 bg-white/85 backdrop-blur-sm fixed w-full z-50">
+      <nav className="border-b border-emerald-100 bg-white/85 backdrop-blur-sm fixed w-full z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-sky-600 via-blue-600 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg shadow-sky-100">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-600 via-amber-500 to-rose-600 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-100">
                 <span className="text-white font-bold text-2xl">P</span>
               </div>
               <span className="text-2xl font-bold text-slate-900">Preserve</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#services" className="text-slate-600 hover:text-blue-600 transition text-sm">Services</a>
-              <a href="#pricing" className="text-slate-600 hover:text-blue-600 transition text-sm">Pricing</a>
-              <a href="#contact" className="text-slate-600 hover:text-blue-600 transition text-sm">Contact</a>
-              <Link href={dashboardLoginHref} className="text-slate-600 hover:text-blue-600 transition text-sm font-medium">Dashboard</Link>
-              <Link href={dashboardLoginHref} className="bg-gradient-to-r from-sky-600 to-emerald-600 text-white px-5 py-2 rounded-lg hover:from-sky-700 hover:to-emerald-700 transition text-sm font-semibold shadow-md shadow-sky-100">
+              <a href="#services" className="text-slate-600 hover:text-emerald-700 transition text-sm">Services</a>
+              <a href="#pricing" className="text-slate-600 hover:text-amber-700 transition text-sm">Pricing</a>
+              <a href="#contact" className="text-slate-600 hover:text-rose-700 transition text-sm">Contact</a>
+              <Link href={dashboardLoginHref} className="text-slate-600 hover:text-emerald-700 transition text-sm font-medium">Dashboard</Link>
+              <Link href={dashboardLoginHref} className="bg-gradient-to-r from-emerald-600 to-rose-600 text-white px-5 py-2 rounded-lg hover:from-emerald-700 hover:to-rose-700 transition text-sm font-semibold shadow-md shadow-emerald-100">
                 Sign In
               </Link>
             </div>
             {/* Mobile nav */}
             <div className="flex md:hidden items-center gap-3">
-              <Link href={dashboardLoginHref} className="text-slate-600 hover:text-blue-600 transition text-sm">Dashboard</Link>
-              <Link href={dashboardLoginHref} className="bg-gradient-to-r from-sky-600 to-emerald-600 text-white px-4 py-2 rounded-lg hover:from-sky-700 hover:to-emerald-700 transition text-sm font-semibold">
+              <Link href={dashboardLoginHref} className="text-slate-600 hover:text-emerald-700 transition text-sm">Dashboard</Link>
+              <Link href={dashboardLoginHref} className="bg-gradient-to-r from-emerald-600 to-rose-600 text-white px-4 py-2 rounded-lg hover:from-emerald-700 hover:to-rose-700 transition text-sm font-semibold">
                 Enter
               </Link>
             </div>
@@ -296,7 +296,7 @@ export default function HomePage() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-28 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-sky-50 via-white to-amber-50">
+      <section className="pt-28 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-50 via-amber-50 to-rose-50">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -304,7 +304,7 @@ export default function HomePage() {
                 First Property Preservation for remote owners, landlords &amp; investors
               </div>
               <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight">
-                Property preservation,<br /><span className="bg-gradient-to-r from-sky-700 via-emerald-600 to-amber-600 bg-clip-text text-transparent">handled from anywhere</span>
+                Property preservation,<br /><span className="bg-gradient-to-r from-emerald-700 via-amber-600 to-rose-700 bg-clip-text text-transparent">handled from anywhere</span>
               </h1>
               <p className="text-xl text-slate-600 mb-8">
                 Preserve coordinates lawn care, house cleaning, inspections, securing, winterization, repairs, and photo reports for every property you own.
@@ -312,7 +312,7 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href={dashboardLoginHref}
-                  className="bg-gradient-to-r from-sky-600 to-emerald-600 text-white px-8 py-4 rounded-xl hover:from-sky-700 hover:to-emerald-700 transition font-semibold text-center flex items-center justify-center gap-2 shadow-lg shadow-sky-200">
+                  className="bg-gradient-to-r from-emerald-600 to-rose-600 text-white px-8 py-4 rounded-xl hover:from-emerald-700 hover:to-rose-700 transition font-semibold text-center flex items-center justify-center gap-2 shadow-lg shadow-emerald-200">
                   Open Your Property Dashboard <ArrowRight className="w-5 h-5" />
                 </Link>
                 <a href="#pricing"
@@ -323,7 +323,7 @@ export default function HomePage() {
               <p className="text-sm text-slate-500 mt-4">Secure workspace · Sign in to view dashboard tools</p>
             </div>
             <div className="relative">
-              <div className="bg-gradient-to-br from-sky-500 via-emerald-500 to-amber-400 rounded-2xl p-8 shadow-2xl shadow-sky-200">
+              <div className="bg-gradient-to-br from-emerald-500 via-amber-400 to-rose-500 rounded-2xl p-8 shadow-2xl shadow-amber-200">
                 <div className="bg-white rounded-xl p-6 space-y-4">
                   <p className="text-sm font-semibold text-emerald-700 uppercase tracking-wide mb-2">Works for</p>
                   {[
@@ -347,7 +347,7 @@ export default function HomePage() {
       </section>
 
       {/* How it works */}
-      <section className="py-16 bg-gradient-to-r from-emerald-50 via-sky-50 to-amber-50">
+      <section className="py-16 bg-gradient-to-r from-emerald-50 via-amber-50 to-rose-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-slate-900 mb-3">How It Works</h2>
@@ -355,7 +355,7 @@ export default function HomePage() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { step: '1', title: 'Open the workspace', desc: 'Jump straight into the dashboard and sketch your property care plan.', border: 'border-sky-200', badge: 'from-sky-500 to-blue-600' },
+              { step: '1', title: 'Open the workspace', desc: 'Jump straight into the dashboard and sketch your property care plan.', border: 'border-rose-200', badge: 'from-rose-500 to-orange-600' },
               { step: '2', title: 'Add your properties', desc: 'Enter each address and pick the services you need.', border: 'border-emerald-200', badge: 'from-emerald-500 to-teal-600' },
               { step: '3', title: 'Relax', desc: "We handle everything and send you reports so you're always in the loop.", border: 'border-amber-200', badge: 'from-amber-500 to-orange-600' },
             ].map(s => (
@@ -390,7 +390,7 @@ export default function HomePage() {
       </section>
 
       {/* Coverage */}
-      <section className="py-16 bg-gradient-to-br from-sky-50 via-white to-teal-50">
+      <section className="py-16 bg-gradient-to-br from-emerald-50 via-amber-50 to-teal-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 items-start">
             <div>
@@ -408,12 +408,12 @@ export default function HomePage() {
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
               {coverageMarkets.map(market => (
-                <div key={market.state} className={`rounded-2xl border bg-white p-6 shadow-sm ${market.state === 'North Carolina' ? 'border-emerald-200 shadow-emerald-100' : 'border-sky-200 shadow-sky-100'}`}>
-                  <h3 className={`text-xl font-bold mb-4 ${market.state === 'North Carolina' ? 'text-emerald-800' : 'text-sky-800'}`}>{market.state}</h3>
+                <div key={market.state} className={`rounded-2xl border bg-white p-6 shadow-sm ${market.state === 'North Carolina' ? 'border-emerald-200 shadow-emerald-100' : 'border-rose-200 shadow-rose-100'}`}>
+                  <h3 className={`text-xl font-bold mb-4 ${market.state === 'North Carolina' ? 'text-emerald-800' : 'text-rose-800'}`}>{market.state}</h3>
                   <div className="space-y-3">
                     {market.areas.map(area => (
                       <div key={area} className="flex items-center gap-3">
-                        <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${market.state === 'North Carolina' ? 'text-emerald-600' : 'text-sky-600'}`} />
+                        <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${market.state === 'North Carolina' ? 'text-emerald-600' : 'text-rose-600'}`} />
                         <span className="font-medium text-slate-700">{area}</span>
                       </div>
                     ))}
@@ -426,7 +426,7 @@ export default function HomePage() {
       </section>
 
       {/* Social proof */}
-      <section className="py-16 bg-gradient-to-r from-sky-700 via-emerald-600 to-amber-500 text-white">
+      <section className="py-16 bg-gradient-to-r from-emerald-700 via-amber-600 to-rose-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8 text-center">
             {[
@@ -445,7 +445,7 @@ export default function HomePage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-20 bg-gradient-to-b from-amber-50 via-white to-sky-50">
+      <section id="pricing" className="py-20 bg-gradient-to-b from-amber-50 via-emerald-50 to-rose-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <h2 className="text-4xl font-bold text-slate-900 mb-4">Simple, Transparent Pricing</h2>
@@ -456,7 +456,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {plans.map(plan => (
               <div key={plan.name}
-                className={`bg-white rounded-2xl p-8 border-2 flex flex-col ${plan.highlight ? 'border-emerald-500 shadow-2xl shadow-emerald-100 scale-105' : plan.name === 'Starter' ? 'border-sky-200 shadow-sm' : 'border-violet-200 shadow-sm'}`}>
+                className={`bg-white rounded-2xl p-8 border-2 flex flex-col ${plan.highlight ? 'border-emerald-500 shadow-2xl shadow-emerald-100 scale-105' : plan.name === 'Starter' ? 'border-amber-200 shadow-sm' : 'border-violet-200 shadow-sm'}`}>
                 {plan.highlight && (
                   <div className="text-center mb-4">
                     <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Most Popular</span>
@@ -478,7 +478,7 @@ export default function HomePage() {
                   ))}
                 </ul>
                 <Link href={dashboardLoginHref}
-                  className={`w-full text-center py-3 rounded-xl font-semibold transition ${plan.highlight ? 'bg-emerald-600 text-white hover:bg-emerald-700' : plan.name === 'Starter' ? 'bg-sky-100 text-sky-900 hover:bg-sky-200' : 'bg-violet-100 text-violet-900 hover:bg-violet-200'}`}>
+                  className={`w-full text-center py-3 rounded-xl font-semibold transition ${plan.highlight ? 'bg-emerald-600 text-white hover:bg-emerald-700' : plan.name === 'Starter' ? 'bg-amber-100 text-amber-900 hover:bg-amber-200' : 'bg-violet-100 text-violet-900 hover:bg-violet-200'}`}>
                   {plan.cta}
                 </Link>
               </div>
@@ -498,7 +498,7 @@ export default function HomePage() {
               { name: 'Sandra K.', role: 'Vacation home owner', text: "Our beach house sits empty 8 months a year. With Preserve, I know it's being checked, maintained, and ready whenever we show up." },
               { name: 'David R.', role: 'Property investor', text: 'Managing 7 properties used to be a full-time job. Now I get weekly reports and a single dashboard. Completely transformed my workflow.' },
             ].map(t => (
-              <div key={t.name} className="bg-gradient-to-br from-white to-sky-50 rounded-2xl p-6 border border-sky-100 shadow-sm">
+              <div key={t.name} className="bg-gradient-to-br from-white to-amber-50 rounded-2xl p-6 border border-amber-100 shadow-sm">
                 <div className="flex gap-1 mb-3">
                   {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)}
                 </div>
@@ -514,17 +514,17 @@ export default function HomePage() {
       </section>
 
       {/* Contact */}
-      <section id="contact" className="py-20 bg-gradient-to-br from-emerald-50 via-sky-50 to-amber-50">
+      <section id="contact" className="py-20 bg-gradient-to-br from-emerald-50 via-amber-50 to-rose-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold text-slate-900 mb-4">Ready to Get Started?</h2>
           <p className="text-xl text-slate-600 mb-10">Open the dashboard and add your first property in minutes.</p>
           <Link href={dashboardLoginHref}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-sky-600 to-emerald-600 text-white px-10 py-4 rounded-xl hover:from-sky-700 hover:to-emerald-700 transition font-semibold text-lg shadow-lg shadow-sky-200">
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-rose-600 text-white px-10 py-4 rounded-xl hover:from-emerald-700 hover:to-rose-700 transition font-semibold text-lg shadow-lg shadow-emerald-200">
             Open Dashboard <ArrowRight className="w-5 h-5" />
           </Link>
           <div className="grid md:grid-cols-3 gap-8 mt-14">
             {[
-              { icon: <Phone className="w-6 h-6 text-sky-600" />, label: 'Phone', val: '(919) 555-0123', bg: 'bg-sky-100' },
+              { icon: <Phone className="w-6 h-6 text-rose-600" />, label: 'Phone', val: '(919) 555-0123', bg: 'bg-rose-100' },
               { icon: <Mail className="w-6 h-6 text-emerald-600" />, label: 'Email', val: 'hello@preserve.app', bg: 'bg-emerald-100' },
               { icon: <MapPin className="w-6 h-6 text-amber-600" />, label: 'Based in', val: 'Raleigh, NC', bg: 'bg-amber-100' },
             ].map(c => (
@@ -565,7 +565,7 @@ export default function HomePage() {
                 <p className="text-slate-600 mb-4">{service.longDescription}</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-4 bg-slate-50 rounded-xl text-center text-sm">
                   <div><DollarSign className="w-5 h-5 text-emerald-600 mx-auto mb-1" /><div className="text-slate-500">Pricing</div><div className="font-semibold text-slate-900 text-xs md:text-sm leading-snug">{service.pricing.monthly}</div></div>
-                  <div><Clock className="w-5 h-5 text-sky-600 mx-auto mb-1" /><div className="text-slate-500">Time</div><div className="font-semibold text-slate-900">{service.timeline}</div></div>
+                  <div><Clock className="w-5 h-5 text-rose-600 mx-auto mb-1" /><div className="text-slate-500">Time</div><div className="font-semibold text-slate-900">{service.timeline}</div></div>
                   <div><Users className="w-5 h-5 text-violet-600 mx-auto mb-1" /><div className="text-slate-500">Team</div><div className="font-semibold text-slate-900">{service.team}</div></div>
                   <div><CheckSquare className="w-5 h-5 text-amber-600 mx-auto mb-1" /><div className="text-slate-500">Schedule</div><div className="font-semibold text-slate-900">{service.frequency}</div></div>
                 </div>
@@ -579,11 +579,11 @@ export default function HomePage() {
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
                   <Link href={dashboardLoginHref} onClick={() => setSelectedService(null)}
-                    className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition font-semibold text-center">
+                    className="flex-1 bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition font-semibold text-center">
                     Get Started
                   </Link>
                   <button onClick={() => setSelectedService(null)}
-                    className="flex-1 border-2 border-slate-300 text-slate-700 px-6 py-3 rounded-xl hover:border-blue-600 hover:text-blue-600 transition font-semibold">
+                    className="flex-1 border-2 border-slate-300 text-slate-700 px-6 py-3 rounded-xl hover:border-rose-600 hover:text-rose-700 transition font-semibold">
                     Close
                   </button>
                 </div>
@@ -594,12 +594,12 @@ export default function HomePage() {
       )}
 
       {/* Footer */}
-      <footer className="bg-gradient-to-br from-slate-950 via-sky-950 to-emerald-950 text-white py-12">
+      <footer className="bg-gradient-to-br from-slate-950 via-emerald-950 to-rose-950 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-sky-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-rose-500 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-2xl">P</span>
                 </div>
                 <span className="text-2xl font-bold">Preserve</span>
