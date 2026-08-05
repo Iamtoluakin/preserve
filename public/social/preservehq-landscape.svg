@@ -14,5 +14,5 @@
     <tspan x="92" dy="36">and review the results from anywhere.</tspan>
   </text>
   <clipPath id="heroClip"><rect x="668" y="92" width="440" height="446" rx="34"/></clipPath>
-  <image href="/images/preservehq-operations-hero.png" x="590" y="92" width="668" height="446" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)"/>
+  <image href="/images/preservehq-operations-hero.jpg" x="590" y="92" width="668" height="446" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)"/>
 </svg>

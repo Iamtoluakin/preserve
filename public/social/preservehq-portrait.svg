@@ -15,5 +15,5 @@
     <tspan x="112" dy="44">to completion.</tspan>
   </text>
   <clipPath id="heroClip"><rect x="112" y="690" width="856" height="520" rx="44"/></clipPath>
-  <image href="/images/preservehq-operations-hero.png" x="112" y="650" width="856" height="570" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)"/>
+  <image href="/images/preservehq-operations-hero.jpg" x="112" y="650" width="856" height="570" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)"/>
 </svg>

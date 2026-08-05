@@ -14,7 +14,7 @@ const socialSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630
     <tspan x="92" dy="36">and manages work from request to completion.</tspan>
   </text>
   <clipPath id="heroClip"><rect x="668" y="92" width="440" height="446" rx="34"/></clipPath>
-  <image href="/images/preservehq-operations-hero.png" x="590" y="92" width="668" height="446" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)"/>
+  <image href="/images/preservehq-operations-hero.jpg" x="590" y="92" width="668" height="446" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)"/>
   <rect x="694" y="468" width="294" height="58" rx="24" fill="#ffffff" opacity="0.94"/>
   <circle cx="730" cy="497" r="18" fill="#16a34a"/>
   <text x="730" y="505" fill="#ffffff" font-family="Arial, sans-serif" font-size="24" font-weight="900" text-anchor="middle">✓</text>

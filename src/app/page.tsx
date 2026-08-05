@@ -410,8 +410,8 @@ function HeroVisual() {
       <div className="overflow-hidden rounded-[2rem] border border-white bg-white shadow-2xl shadow-blue-100">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/preservehq-operations-hero.png"
-          alt="Property manager and field professional coordinating completed property work with photo and location verification"
+          src="/images/preservehq-operations-hero.jpg"
+          alt="Property professionals reviewing property details on a tablet outside a residential building"
           className="aspect-[4/3] w-full object-cover lg:aspect-[1.22/1]"
           width={1536}
           height={1024}

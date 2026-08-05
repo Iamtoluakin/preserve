@@ -109,7 +109,7 @@ export default function Image() {
             }}
           >
             <img
-              src="https://preservehq.com/images/preservehq-operations-hero.png"
+              src="https://preservehq.com/images/preservehq-operations-hero.jpg"
               alt=""
               width="610"
               height="407"
