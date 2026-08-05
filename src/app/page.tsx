@@ -3,605 +3,610 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import {
-  Home,
-  Shield,
-  ClipboardCheck,
-  Wrench,
-  Camera,
-  Snowflake,
-  Phone,
-  Mail,
-  MapPin,
-  CheckCircle2,
   ArrowRight,
-  X,
-  DollarSign,
+  BriefcaseBusiness,
+  Building2,
+  Camera,
+  CheckCircle2,
+  ClipboardCheck,
+  ClipboardList,
   Clock,
-  Users,
-  CheckSquare,
-  Star,
-  Zap,
+  History,
+  Home,
+  LockKeyhole,
+  MapPin,
+  MessageSquare,
+  Repeat,
+  Shield,
   Sparkles,
+  Trash2,
+  Wrench,
+  X,
+  Snowflake,
 } from 'lucide-react';
 
-const serviceDetails = {
-  lawn: {
-    title: 'Lawn & Grounds Maintenance',
-    icon: Home,
-    color: 'green',
-    images: [
-      'https://images.unsplash.com/photo-1558904541-efa843a96f01?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1621574541862-c7c0c7e876f2?w=800&h=600&fit=crop',
-    ],
-    description: 'Regular mowing, trimming, edging, and landscaping to keep your property looking its best.',
-    longDescription: "Whether you own a vacation home, a rental property, or a home you're preparing to sell, our lawn care team keeps your grounds neat, code-compliant, and curb-appeal-ready — without you lifting a finger.",
-    pricing: { base: 65, frequency: 'per visit', monthly: 'NC $40-$65 | TX $45-$75' },
-    includes: ['Mowing & edging', 'Trimming around structures', 'Clipping removal', 'Weed control', 'GPS-stamped before/after photos', 'Code compliance check'],
-    frequency: 'Weekly, Bi-weekly, or Monthly',
-    timeline: '1–2 hours per visit',
-    team: '2-person crew',
+const serviceCategories = [
+  { title: 'Inspections', icon: ClipboardCheck, description: 'Interior, exterior, vacancy, and utility checks with photo documentation.' },
+  { title: 'Lawn care', icon: Home, description: 'Recurring mowing, grounds care, trimming, and property upkeep.' },
+  { title: 'Cleaning', icon: Sparkles, description: 'Move-out cleans, interior cleaning, sanitation, and make-ready support.' },
+  { title: 'Repairs', icon: Wrench, description: 'Minor repairs, maintenance, touch-ups, and property preservation tasks.' },
+  { title: 'Lock changes', icon: LockKeyhole, description: 'Rekeying, lockboxes, securing, and access coordination.' },
+  { title: 'Debris removal', icon: Trash2, description: 'Trash-outs, debris hauling, cleanups, and exterior clearing.' },
+  { title: 'Winterization', icon: Snowflake, description: 'Seasonal protection, de-winterization, and utility checks.' },
+  { title: 'Property preservation', icon: Shield, description: 'Coordinated services to keep vacant or remote properties protected.' },
+  { title: 'Rental turns', icon: Repeat, description: 'Turnover work, cleaning, repairs, and readiness coordination.' },
+  { title: 'Recurring maintenance', icon: Clock, description: 'Scheduled property care with history attached to each address.' },
+];
+
+const steps = [
+  {
+    number: '01',
+    title: 'Request',
+    text: 'Tell us what your property needs and upload any helpful details or photos.',
   },
-  securing: {
-    title: 'Property Securing',
-    icon: Shield,
-    color: 'orange',
-    images: [
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1582139329536-e7284fece509?w=800&h=600&fit=crop',
-    ],
-    description: 'Lock changes, lockboxes, and boarding to protect vacant or unoccupied properties.',
-    longDescription: "Heading away for months? Inherited a property? We secure your home fast — lock changes, lockboxes, window boarding — so you're protected from unauthorized entry and vandalism.",
-    pricing: { base: 225, frequency: 'one-time', monthly: 'NC $150-$350 | TX $150-$400' },
-    includes: ['Lock change on all entry points', 'Secure lockbox installation', 'Window/door boarding', 'Exterior lighting check', 'Photo documentation', 'Insurance-compliant report'],
-    frequency: 'One-time or as-needed',
-    timeline: '2–4 hours',
-    team: 'Licensed security specialists',
+  {
+    number: '02',
+    title: 'We Assign',
+    text: 'We match the work with a verified local professional.',
   },
-  winterization: {
-    title: 'Winterization',
-    icon: Snowflake,
-    color: 'cyan',
-    images: [
-      'https://images.unsplash.com/photo-1516380851973-7c4b90251c91?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1585338107529-13afc5f02586?w=800&h=600&fit=crop',
-    ],
-    description: 'Protect your plumbing from freeze damage during cold months.',
-    longDescription: 'A single burst pipe can cost thousands. Our licensed technicians drain all water lines, treat drain traps with antifreeze, and shut down your HVAC safely — then de-winterize in the spring.',
-    pricing: { base: 300, frequency: 'seasonal', monthly: 'NC $250-$450 | TX $200-$400' },
-    includes: ['Drain all supply lines', 'Antifreeze in drain traps', 'HVAC shutdown', 'Water heater drain', 'Toilet winterization', 'Detailed photo report'],
-    frequency: 'Fall & Spring',
-    timeline: '2–3 hours',
-    team: 'Licensed plumbing specialists',
+  {
+    number: '03',
+    title: 'Track the Work',
+    text: 'Follow progress, messages, photos, and updates in one place.',
   },
-  inspection: {
-    title: 'Property Inspections',
-    icon: ClipboardCheck,
-    color: 'purple',
-    images: [
-      'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop',
-    ],
-    description: 'Detailed inspections with GPS-stamped photos and condition reports delivered to your inbox.',
-    longDescription: 'Can\'t visit your property in person? We inspect it for you — interior and exterior — with GPS-stamped photos, a written condition report, and alerts for any urgent issues.',
-    pricing: { base: 425, frequency: 'per visit', monthly: 'NC $375-$725 | TX $350-$600' },
-    includes: ['Full interior & exterior walk-through', '30–50+ GPS-stamped photos', 'Condition checklist', 'HVAC/plumbing/electrical checks', 'Immediate emergency alerts', 'PDF report within 24 hrs'],
-    frequency: 'Monthly, Bi-weekly, or Custom',
-    timeline: '1–2 hours',
-    team: 'Certified inspectors',
+  {
+    number: '04',
+    title: 'Review and Approve',
+    text: 'Review the completed work and keep the full record attached to the property.',
   },
-  cleaning: {
-    title: 'Interior House Cleaning',
-    icon: Sparkles,
-    color: 'teal',
-    images: [
-      'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=800&h=600&fit=crop',
-    ],
-    description: 'Interior cleaning, move-out deep cleans, deodorizing, and sanitation for vacant or preserved homes.',
-    longDescription: 'Preservation is not only exterior upkeep. Preserve can clean the house itself after vacancy, turnover, weather events, or long periods away, then document the finished condition with photos.',
-    pricing: { base: 180, frequency: 'per visit', monthly: 'NC $100-$300 | TX $120-$280' },
-    includes: ['Kitchen & bathroom cleaning', 'Floor sweeping and mopping', 'Dusting and surface sanitizing', 'Move-out deep clean options', 'Odor treatment', 'Before/after photos'],
-    frequency: 'One-time, Monthly, or As-needed',
-    timeline: '2-6 hours',
-    team: 'Interior cleaning crew',
+];
+
+const outcomes = [
+  {
+    title: 'Work without chasing contractors',
+    text: 'PreserveHQ handles assignment, communication, progress tracking, and follow-up.',
+    icon: MessageSquare,
   },
-  maintenance: {
-    title: 'Maintenance & Repairs',
-    icon: Wrench,
-    color: 'gray',
-    images: [
-      'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?w=800&h=600&fit=crop',
-    ],
-    description: 'Minor repairs, touch-ups, debris removal, and general upkeep to protect property value.',
-    longDescription: 'From gutter cleaning to pressure washing to small repairs, our team keeps your property in great shape between visits — preserving its value and preventing small issues from becoming big ones.',
-    pricing: { base: 125, frequency: 'per hour', monthly: 'Typical $75-$150/hr' },
-    includes: ['Minor carpentry & repairs', 'Exterior paint touch-ups', 'Debris & trash removal', 'Gutter cleaning', 'Pressure washing', 'Work completion reports'],
-    frequency: 'As-needed',
-    timeline: 'Varies by scope',
-    team: 'Licensed contractors',
-  },
-  documentation: {
-    title: 'Photo Documentation',
+  {
+    title: 'Proof you can trust',
+    text: 'Review timestamps, updates, and before-and-after photos from anywhere.',
     icon: Camera,
-    color: 'blue',
-    images: [
-      'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1551847812-b84ae5d63762?w=800&h=600&fit=crop',
-    ],
-    description: 'Professional GPS-stamped photos and condition reports for insurance, legal, or rental use.',
-    longDescription: 'Keep a timestamped visual record of your property — perfect for insurance claims, tenant move-in/out, legal disputes, or simply staying informed about a home you can\'t visit often.',
-    pricing: { base: 75, frequency: 'per visit', monthly: 'Typical $50-$125/visit' },
-    includes: ['GPS-stamped exterior photos', 'Interior condition photos', 'Cloud storage & instant access', 'Detailed written notes', 'Before/after comparisons', 'PDF reports'],
-    frequency: 'Monthly or with any service',
-    timeline: '30–60 minutes',
-    team: 'Documentation specialists',
   },
-};
+  {
+    title: 'Every property has a history',
+    text: 'Keep completed work, reports, invoices, notes, and service records organized by property.',
+    icon: History,
+  },
+  {
+    title: 'One platform for recurring needs',
+    text: 'Manage inspections, lawn care, cleanings, repairs, preservation, and recurring maintenance.',
+    icon: Repeat,
+  },
+];
+
+const audiences = [
+  {
+    title: 'Property owners',
+    icon: Home,
+    text: 'Protect remote, vacant, inherited, or second homes without coordinating every job yourself.',
+  },
+  {
+    title: 'Landlords and investors',
+    icon: Building2,
+    text: 'Keep service requests, repairs, turns, and records organized across every unit.',
+  },
+  {
+    title: 'Property managers',
+    icon: ClipboardList,
+    text: 'Centralize requests, status updates, photo proof, and approvals across portfolios.',
+  },
+  {
+    title: 'Asset and regional operators',
+    icon: BriefcaseBusiness,
+    text: 'Create repeatable operating visibility across markets, vendors, and field work.',
+  },
+];
+
+const trustPoints = [
+  'Professionals are reviewed before receiving work',
+  'Work is tracked through PreserveHQ',
+  'Required updates and photo proof stay attached to the job',
+  'Property history remains available to the customer',
+  'Issues can be reviewed through the platform',
+];
 
 const plans = [
   {
     name: 'Starter',
     price: 49,
-    period: '/mo',
-    description: 'Perfect for a single property owner',
-    color: 'slate',
-    features: [
-      '1 property',
-      'Monthly inspection report',
-      'Photo documentation',
-      'Work order management',
-      'Email support',
-    ],
-    cta: 'Open Dashboard',
-    highlight: false,
+    description: 'For one property and essential service tracking.',
+    features: ['1 property', 'Work order management', 'Photo documentation', 'Email support'],
   },
   {
     name: 'Essential',
     price: 99,
-    period: '/mo',
-    description: 'Most popular for 2–5 properties',
-    color: 'blue',
-    features: [
-      'Up to 5 properties',
-      'Bi-weekly inspection reports',
-      'Priority work orders',
-      'Lawn care scheduling',
-      'Winterization reminders',
-      'Phone & email support',
-    ],
-    cta: 'Build Care Plan',
-    highlight: true,
+    description: 'For owners managing several properties.',
+    features: ['Up to 5 properties', 'Priority work orders', 'Recurring services', 'Phone and email support'],
+    featured: true,
   },
   {
     name: 'Portfolio',
     price: 199,
-    period: '/mo',
-    description: 'For serious property owners & landlords',
-    color: 'purple',
-    features: [
-      'Unlimited properties',
-      'Weekly inspection reports',
-      'Emergency 24/7 response',
-      'Full service scheduling',
-      'Team & vendor access',
-      'Dedicated account manager',
-    ],
-    cta: 'View Portfolio Tools',
-    highlight: false,
-  },
-];
-
-const coverageMarkets = [
-  {
-    state: 'North Carolina',
-    areas: ['Triangle', 'Charlotte Metro', 'Triad', 'Coastal NC'],
-  },
-  {
-    state: 'Texas',
-    areas: ['Dallas-Fort Worth', 'Houston Metro', 'Austin-San Antonio', 'East Texas'],
+    description: 'For investors and operators with ongoing needs.',
+    features: ['Unlimited properties', 'Portfolio tracking', 'Team and vendor access', 'Dedicated account support'],
   },
 ];
 
 export default function HomePage() {
-  const [selectedService, setSelectedService] = useState<string | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const service = selectedService ? serviceDetails[selectedService as keyof typeof serviceDetails] : null;
-  const dashboardLoginHref = '/login?next=%2Fdashboard';
-  const addPropertyLoginHref = '/login?next=%2Fdashboard%2Fproperties%2Fadd';
+  const [selectedService, setSelectedService] = useState<(typeof serviceCategories)[number] | null>(null);
+  const getStartedHref = '/login?next=%2Fdashboard%2Fproperties%2Fadd';
+  const signInHref = '/login?next=%2Fdashboard';
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-gradient-to-b from-slate-50 to-white">
-      {/* Nav */}
-      <nav className="border-b bg-white/80 backdrop-blur-sm fixed w-full z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">P</span>
-              </div>
-              <span className="text-2xl font-bold text-slate-900">Preserve</span>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-4 lg:space-x-8">
-              <a href="#services" className="hidden sm:inline text-slate-600 hover:text-blue-600 transition text-sm">Services</a>
-              <a href="#pricing" className="hidden sm:inline text-slate-600 hover:text-blue-600 transition text-sm">Pricing</a>
-              <a href="#contact" className="hidden md:inline text-slate-600 hover:text-blue-600 transition text-sm">Contact</a>
-              <Link href={dashboardLoginHref} className="hidden sm:inline text-slate-600 hover:text-blue-600 transition text-sm font-medium">Dashboard</Link>
-              <Link href={dashboardLoginHref} className="bg-blue-600 text-white px-4 sm:px-5 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
-                Sign In
+    <main className="min-h-screen overflow-x-hidden bg-[#f7fbff] text-slate-950">
+      <Header getStartedHref={getStartedHref} signInHref={signInHref} />
+
+      <section className="relative isolate px-4 pb-16 pt-28 sm:px-6 lg:px-8 lg:pb-24">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_16%,rgba(37,99,235,0.16),transparent_32%),radial-gradient(circle_at_86%_20%,rgba(14,165,233,0.18),transparent_30%)]" />
+        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-12">
+          <div className="animate-[fadeUp_700ms_ease-out_both]">
+            <p className="mb-5 inline-flex rounded-full border border-blue-200 bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-blue-700 shadow-sm">
+              Property operations, simplified
+            </p>
+            <h1 className="max-w-3xl text-5xl font-black leading-[0.95] tracking-normal text-slate-950 sm:text-6xl lg:text-7xl">
+              Property care.
+              <span className="block bg-gradient-to-r from-blue-600 to-sky-500 bg-clip-text text-transparent">
+                Handled.
+              </span>
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
+              Request inspections, maintenance, cleaning, repairs, and preservation services. We assign verified local professionals and manage the work from start to finish.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={getStartedHref}
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-base font-bold text-white shadow-lg shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200"
+              >
+                Get Started <ArrowRight className="h-5 w-5" />
               </Link>
+              <a
+                href="#how-it-works"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-bold text-slate-800 transition hover:-translate-y-0.5 hover:border-blue-300 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100"
+              >
+                See How It Works
+              </a>
             </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <section className="pt-24 sm:pt-28 pb-14 sm:pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 items-center">
-            <div>
-              <div className="inline-block mb-4 px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
-                First Property Preservation for remote owners, landlords &amp; investors
-              </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-tight">
-                Property preservation,<br />handled from anywhere
-              </h1>
-              <p className="text-base sm:text-lg lg:text-xl text-slate-600 mb-8">
-                Preserve coordinates lawn care, house cleaning, inspections, securing, winterization, repairs, and photo reports for every property you own.
-                Request service, track progress, and protect your asset without chasing contractors.
+            <div className="mt-6 space-y-2 text-sm font-medium text-slate-600">
+              <p className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                Trusted property care through verified local professionals.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href={dashboardLoginHref}
-                  className="bg-blue-600 text-white px-5 sm:px-8 py-3.5 sm:py-4 rounded-xl hover:bg-blue-700 transition font-semibold text-center flex items-center justify-center gap-2 shadow-lg shadow-blue-200">
-                  Open Your Property Dashboard <ArrowRight className="w-5 h-5" />
-                </Link>
-                <a href="#pricing"
-                  className="border-2 border-slate-300 text-slate-700 px-5 sm:px-8 py-3.5 sm:py-4 rounded-xl hover:border-green-600 hover:text-green-700 transition font-semibold text-center">
-                  View Pricing
-                </a>
-              </div>
-              <p className="text-sm text-slate-500 mt-4">Secure workspace · Sign in to view dashboard tools</p>
-            </div>
-            <div className="relative">
-              <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl p-4 sm:p-8 shadow-2xl">
-                <div className="bg-white rounded-xl p-4 sm:p-6 space-y-4">
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Works for</p>
-                  {[
-                    'Vacation & second homes',
-                    'Rental properties',
-                    'Inherited homes',
-                    'Properties for sale',
-                    'Snowbird homes',
-                    'Investment portfolios',
-                  ].map(item => (
-                    <div key={item} className="flex items-center gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
-                      <span className="text-slate-700 font-medium">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <p>Built for property owners, landlords, investors, and property managers.</p>
             </div>
           </div>
+
+          <HeroVisual />
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="py-14 sm:py-16 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-slate-900 mb-3">How It Works</h2>
-            <p className="text-slate-600 max-w-xl mx-auto">Get your properties on Preserve in minutes</p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3 md:gap-8">
-            {[
-              { step: '1', title: 'Open the workspace', desc: 'Jump straight into the dashboard and sketch your property care plan.', badge: 'bg-blue-600' },
-              { step: '2', title: 'Add your properties', desc: 'Enter each address and pick the services you need.', badge: 'bg-green-600' },
-              { step: '3', title: 'Relax', desc: "We handle everything and send you reports so you're always in the loop.", badge: 'bg-blue-600' },
-            ].map(s => (
-              <div key={s.step} className="bg-white rounded-2xl p-5 sm:p-8 shadow-sm border text-center">
-                <div className={`w-14 h-14 ${s.badge} text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4`}>{s.step}</div>
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">{s.title}</h3>
-                <p className="text-slate-600">{s.desc}</p>
-              </div>
+      <ProductPreview />
+
+      <section id="how-it-works" className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <SectionIntro
+            label="How it works"
+            title="From request to completion."
+            text="PreserveHQ coordinates the entire job so you do not have to manage contractors, photos, updates, and paperwork separately."
+          />
+          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {steps.map((step) => (
+              <article key={step.number} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div className="mb-8 text-sm font-black text-blue-600">{step.number}</div>
+                <h3 className="text-xl font-bold text-slate-950">{step.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">{step.text}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Services */}
-      <section id="services" className="py-14 sm:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Everything Your Property Needs</h2>
-            <p className="text-base sm:text-xl text-slate-600 max-w-2xl mx-auto">
-              From regular maintenance to emergency response — all managed through one simple dashboard
+      <section id="owners" className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <SectionIntro
+            label="Visibility"
+            title="Know what is happening at every property."
+            text="Request the work. Track the progress. Review the proof."
+          />
+          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {outcomes.map((outcome) => (
+              <article key={outcome.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                <outcome.icon className="h-7 w-7 text-blue-600" aria-hidden="true" />
+                <h3 className="mt-5 text-lg font-bold text-slate-950">{outcome.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">{outcome.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="services" className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <SectionIntro
+            label="Services"
+            title="One trusted platform for the work your properties need."
+            text="Choose the service category and PreserveHQ coordinates the operating details."
+          />
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {serviceCategories.map((service) => (
+              <button
+                key={service.title}
+                onClick={() => setSelectedService(service)}
+                className="group min-h-36 rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-100"
+              >
+                <service.icon className="h-6 w-6 text-blue-600" aria-hidden="true" />
+                <h3 className="mt-4 text-base font-bold text-slate-950 group-hover:text-blue-700">{service.title}</h3>
+                <p className="mt-2 text-sm leading-5 text-slate-600">{service.description}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-slate-950 px-4 py-16 text-white sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-sky-300">Who it is for</p>
+            <h2 className="mt-4 text-3xl font-black tracking-normal sm:text-4xl">
+              Built for operators who need property work to be visible, repeatable, and reviewable.
+            </h2>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {audiences.map((audience) => (
+              <article key={audience.title} className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                <audience.icon className="h-7 w-7 text-sky-300" aria-hidden="true" />
+                <h3 className="mt-4 text-lg font-bold">{audience.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-300">{audience.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="contractors" className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 rounded-[2rem] border border-blue-100 bg-gradient-to-br from-white to-blue-50 p-6 shadow-sm sm:p-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-blue-700">Trust</p>
+            <h2 className="mt-4 text-3xl font-black tracking-normal text-slate-950 sm:text-4xl">
+              Local professionals. PreserveHQ accountability.
+            </h2>
+            <p className="mt-4 text-base leading-7 text-slate-600">
+              PreserveHQ is not a public contractor directory. Customers request outcomes, and the platform manages assignment, communication, proof, and review.
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-            {Object.entries(serviceDetails).map(([key, svc]) => (
-              <ServiceCard key={key} icon={<svc.icon className="w-8 h-8" />} title={svc.title}
-                description={svc.description} price={svc.pricing.monthly}
-                onClick={() => { setSelectedService(key); setCurrentImageIndex(0); }} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Coverage */}
-      <section className="py-14 sm:py-16 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10 items-start">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-800 mb-4">
-                <MapPin className="w-4 h-4" />
-                Current launch markets
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-                Starting in North Carolina and Texas
-              </h2>
-              <p className="text-base sm:text-lg text-slate-600">
-                Preserve is rolling out city by city so every property is matched to the right service area and local crew.
-                Add your property, choose the nearest market, and we will route work orders from there.
-              </p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {coverageMarkets.map(market => (
-                <div key={market.state} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-slate-900 mb-4">{market.state}</h3>
-                  <div className="space-y-3">
-                    {market.areas.map(area => (
-                      <div key={area} className="flex items-center gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
-                        <span className="font-medium text-slate-700">{area}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Social proof */}
-      <section className="py-14 sm:py-16 bg-blue-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 text-center">
-            {[
-              { val: '1,200+', label: 'Properties Managed' },
-              { val: '4.9★', label: 'Average Rating' },
-              { val: '24/7', label: 'Emergency Response' },
-              { val: '100%', label: 'Satisfaction Guarantee' },
-            ].map(s => (
-              <div key={s.label}>
-                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2">{s.val}</div>
-                <div className="text-white/80">{s.label}</div>
+          <div className="grid gap-3">
+            {trustPoints.map((point) => (
+              <div key={point} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+                <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-600" />
+                <p className="text-sm font-semibold text-slate-700">{point}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Pricing */}
-      <section id="pricing" className="py-14 sm:py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-base sm:text-xl text-slate-600 max-w-xl mx-auto">
-              Platform access is a flat monthly fee. Individual services are priced separately based on your needs.
-            </p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3 md:gap-8 max-w-5xl mx-auto">
-            {plans.map(plan => (
-              <div key={plan.name}
-                className={`bg-white rounded-2xl p-5 sm:p-8 border-2 flex flex-col ${plan.highlight ? 'border-blue-600 shadow-2xl shadow-blue-100 md:scale-105' : 'border-slate-200 shadow-sm'}`}>
-                {plan.highlight && (
-                  <div className="text-center mb-4">
-                    <span className="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Most Popular</span>
-                  </div>
+      <section id="pricing" className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <SectionIntro
+            label="Pricing"
+            title="Simple plans for property operations."
+            text="Platform access is a monthly fee. Individual services are priced based on property needs and scope."
+          />
+          <div className="mt-10 grid gap-4 lg:grid-cols-3">
+            {plans.map((plan) => (
+              <article
+                key={plan.name}
+                className={`rounded-2xl border p-6 shadow-sm ${plan.featured ? 'border-blue-500 bg-blue-50 shadow-blue-100' : 'border-slate-200 bg-white'}`}
+              >
+                {plan.featured && (
+                  <span className="mb-4 inline-flex rounded-full bg-blue-600 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                    Most popular
+                  </span>
                 )}
-                <h3 className="text-xl font-bold text-slate-900">{plan.name}</h3>
-                <p className="text-slate-500 text-sm mt-1 mb-4">{plan.description}</p>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold text-slate-900">${plan.price}</span>
-                  <span className="text-slate-500">{plan.period}</span>
-                  <p className="text-xs text-slate-400 mt-1">+ service costs</p>
+                <h3 className="text-xl font-black text-slate-950">{plan.name}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{plan.description}</p>
+                <div className="mt-6">
+                  <span className="text-4xl font-black text-slate-950">${plan.price}</span>
+                  <span className="font-semibold text-slate-500">/mo</span>
                 </div>
-                <ul className="space-y-3 flex-1 mb-8">
-                  {plan.features.map(f => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
-                      <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
-                      {f}
+                <p className="mt-1 text-xs text-slate-500">+ service costs</p>
+                <ul className="mt-6 space-y-3">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2 text-sm font-medium text-slate-700">
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                      {feature}
                     </li>
                   ))}
                 </ul>
-                <Link href={dashboardLoginHref}
-                  className={`w-full text-center py-3 rounded-xl font-semibold transition ${plan.highlight ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'}`}>
-                  {plan.cta}
+                <Link
+                  href={getStartedHref}
+                  className={`mt-8 inline-flex min-h-11 w-full items-center justify-center rounded-xl px-5 py-3 text-sm font-bold transition focus:outline-none focus:ring-4 focus:ring-blue-100 ${plan.featured ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'}`}
+                >
+                  Get Started
                 </Link>
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-slate-500 text-sm mt-8">Use the dashboard to shape a property care plan before we turn on paid subscriptions.</p>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-14 sm:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-slate-900 text-center mb-12">What Our Customers Say</h2>
-          <div className="grid gap-4 md:grid-cols-3 md:gap-8">
-            {[
-              { name: 'Marcus T.', role: 'Owns 3 rental properties', text: "I live 4 hours away from my rentals. Preserve gives me eyes on the ground and handles everything. Best investment I've made." },
-              { name: 'Sandra K.', role: 'Vacation home owner', text: "Our beach house sits empty 8 months a year. With Preserve, I know it's being checked, maintained, and ready whenever we show up." },
-              { name: 'David R.', role: 'Property investor', text: 'Managing 7 properties used to be a full-time job. Now I get weekly reports and a single dashboard. Completely transformed my workflow.' },
-            ].map(t => (
-              <div key={t.name} className="bg-slate-50 rounded-2xl p-6 border border-slate-200">
-                <div className="flex gap-1 mb-3">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)}
-                </div>
-                <p className="text-slate-700 mb-4 text-sm leading-relaxed">&ldquo;{t.text}&rdquo;</p>
-                <div>
-                  <div className="font-semibold text-slate-900 text-sm">{t.name}</div>
-                  <div className="text-slate-500 text-xs">{t.role}</div>
-                </div>
-              </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Contact */}
-      <section id="contact" className="py-14 sm:py-20 bg-slate-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Ready to Get Started?</h2>
-          <p className="text-base sm:text-xl text-slate-600 mb-10">Open the dashboard and add your first property in minutes.</p>
-          <Link href={dashboardLoginHref}
-            className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 sm:px-10 py-4 rounded-xl hover:bg-blue-700 transition font-semibold text-base sm:text-lg shadow-lg shadow-blue-200">
-            Open Dashboard <ArrowRight className="w-5 h-5" />
-          </Link>
-          <div className="grid gap-8 sm:grid-cols-3 mt-14">
-            {[
-              { icon: <Phone className="w-6 h-6 text-blue-600" />, label: 'Phone', val: '(919) 555-0123', bg: 'bg-blue-100' },
-              { icon: <Mail className="w-6 h-6 text-green-600" />, label: 'Email', val: 'hello@preserve.app', bg: 'bg-green-100' },
-              { icon: <MapPin className="w-6 h-6 text-blue-600" />, label: 'Based in', val: 'Raleigh, NC', bg: 'bg-blue-100' },
-            ].map(c => (
-              <div key={c.label} className="flex flex-col items-center">
-                <div className={`w-14 h-14 ${c.bg} rounded-full flex items-center justify-center mb-3`}>{c.icon}</div>
-                <p className="font-semibold text-slate-900 mb-1">{c.label}</p>
-                <p className="text-slate-600 text-sm">{c.val}</p>
-              </div>
-            ))}
+      <section id="final-cta" className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl rounded-[2rem] bg-slate-950 px-6 py-12 text-center text-white shadow-2xl shadow-slate-200 sm:px-10 sm:py-16">
+          <h2 className="text-4xl font-black tracking-normal sm:text-5xl">
+            Take care of every property from one place.
+          </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
+            Request the work, follow the progress, and review the results without managing every contractor yourself.
+          </p>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link
+              href={getStartedHref}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-500 px-6 py-3 font-bold text-white transition hover:bg-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-300/40"
+            >
+              Get Started <ArrowRight className="h-5 w-5" />
+            </Link>
+            <Link
+              href={signInHref}
+              className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/15 bg-white/10 px-6 py-3 font-bold text-white transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/20"
+            >
+              Sign In
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Service Modal */}
-      {selectedService && service && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen p-0 text-center">
-            <div className="fixed inset-0 bg-slate-900/75" onClick={() => setSelectedService(null)} />
-            <div className="relative inline-block bg-white sm:rounded-2xl text-left overflow-hidden shadow-xl my-0 sm:my-8 align-middle max-w-3xl w-full max-h-screen sm:max-h-[calc(100vh-4rem)] overflow-y-auto">
-              <button onClick={() => setSelectedService(null)}
-                className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full shadow-lg hover:bg-slate-100 transition">
-                <X className="w-6 h-6 text-slate-600" />
-              </button>
-              <div className="relative h-48 sm:h-64 bg-slate-100">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={service.images[currentImageIndex]} alt={service.title} className="w-full h-full object-cover" />
-                {service.images.length > 1 && (
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                    {service.images.map((_, i) => (
-                      <button key={i} onClick={() => setCurrentImageIndex(i)}
-                        className={`rounded-full transition-all h-2 ${i === currentImageIndex ? 'bg-white w-8' : 'bg-white/50 w-2'}`} />
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className="p-4 sm:p-8">
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">{service.title}</h2>
-                <p className="text-slate-600 mb-4">{service.longDescription}</p>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 p-3 sm:p-4 bg-slate-50 rounded-xl text-center text-sm">
-                  <div><DollarSign className="w-5 h-5 text-green-600 mx-auto mb-1" /><div className="text-slate-500">Pricing</div><div className="font-semibold text-slate-900 text-sm leading-snug">{service.pricing.monthly}</div></div>
-                  <div><Clock className="w-5 h-5 text-blue-600 mx-auto mb-1" /><div className="text-slate-500">Time</div><div className="font-semibold text-slate-900">{service.timeline}</div></div>
-                  <div><Users className="w-5 h-5 text-blue-600 mx-auto mb-1" /><div className="text-slate-500">Team</div><div className="font-semibold text-slate-900">{service.team}</div></div>
-                  <div><CheckSquare className="w-5 h-5 text-blue-600 mx-auto mb-1" /><div className="text-slate-500">Schedule</div><div className="font-semibold text-slate-900">{service.frequency}</div></div>
-                </div>
-                <div className="grid gap-2 sm:grid-cols-2 mb-6">
-                  {service.includes.map((item, i) => (
-                    <div key={i} className="flex items-start gap-2 text-sm">
-                      <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-slate-700">{item}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
-                  <Link href={dashboardLoginHref} onClick={() => setSelectedService(null)}
-                    className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition font-semibold text-center">
-                    Get Started
-                  </Link>
-                  <button onClick={() => setSelectedService(null)}
-                    className="flex-1 border-2 border-slate-300 text-slate-700 px-6 py-3 rounded-xl hover:border-blue-600 hover:text-blue-600 transition font-semibold">
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <Footer signInHref={signInHref} />
+
+      {selectedService && (
+        <ServiceModal service={selectedService} onClose={() => setSelectedService(null)} getStartedHref={getStartedHref} />
       )}
+    </main>
+  );
+}
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="sm:col-span-2">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-2xl">P</span>
-                </div>
-                <span className="text-2xl font-bold">Preserve</span>
-              </div>
-              <p className="text-slate-400 mb-2">Property care made simple — for homeowners, landlords, and investors.</p>
-              <p className="text-slate-500 text-sm">Launching in North Carolina and Texas service areas.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4 text-sm uppercase tracking-wide text-slate-300">Product</h4>
-              <ul className="space-y-2 text-slate-400 text-sm">
-                <li><a href="#services" className="hover:text-white transition">Services</a></li>
-                <li><a href="#pricing" className="hover:text-white transition">Pricing</a></li>
-                <li><Link href={dashboardLoginHref} className="hover:text-white transition">Dashboard</Link></li>
-                <li><Link href={addPropertyLoginHref} className="hover:text-white transition">Add Property</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4 text-sm uppercase tracking-wide text-slate-300">Contact</h4>
-              <ul className="space-y-2 text-slate-400 text-sm">
-                <li>(919) 555-0123</li>
-                <li>hello@preserve.app</li>
-                <li>Raleigh, NC</li>
-              </ul>
-            </div>
+function Header({ getStartedHref, signInHref }: { getStartedHref: string; signInHref: string }) {
+  return (
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
+      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8" aria-label="Primary navigation">
+        <Link href="/" className="flex items-center gap-3 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-100">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-2xl font-black text-white shadow-sm">
+            P
           </div>
-          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-500 text-sm">
-            <p>© 2026 Preserve. All rights reserved. Licensed & Insured.</p>
+          <span className="text-xl font-black text-slate-950">PreserveHQ</span>
+        </Link>
+        <div className="hidden items-center gap-6 lg:flex">
+          <a href="#how-it-works" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">How It Works</a>
+          <a href="#services" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">Services</a>
+          <a href="#owners" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">For Property Owners</a>
+          <a href="#contractors" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">For Contractors</a>
+          <a href="#pricing" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">Pricing</a>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link href={signInHref} className="hidden min-h-11 items-center rounded-xl px-4 text-sm font-bold text-slate-700 transition hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100 sm:inline-flex">
+            Sign In
+          </Link>
+          <Link href={getStartedHref} className="inline-flex min-h-11 items-center rounded-xl bg-blue-600 px-4 text-sm font-bold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200">
+            Get Started
+          </Link>
+        </div>
+      </nav>
+    </header>
+  );
+}
+
+function HeroVisual() {
+  return (
+    <div className="relative animate-[fadeUp_900ms_ease-out_120ms_both]" aria-label="PreserveHQ coordinates property work from request to review">
+      <div className="absolute -inset-4 -z-10 rounded-[2.5rem] bg-gradient-to-br from-blue-200/80 via-white to-sky-100 blur-2xl" aria-hidden="true" />
+      <div className="overflow-hidden rounded-[2rem] border border-white bg-white shadow-2xl shadow-blue-100">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/preservehq-operations-hero.png"
+          alt="Property manager and field professional coordinating completed property work with photo and location verification"
+          className="aspect-[4/3] w-full object-cover lg:aspect-[1.22/1]"
+          width={1536}
+          height={1024}
+        />
+      </div>
+      <div className="absolute bottom-4 left-4 hidden rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-xl backdrop-blur sm:block">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100 text-green-700">
+            <CheckCircle2 className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-sm font-black text-slate-950">Job complete</p>
+            <p className="text-xs font-semibold text-slate-500">Photos ready to review</p>
           </div>
         </div>
-      </footer>
+      </div>
+      <div className="absolute right-4 top-4 hidden rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-xl backdrop-blur md:block">
+        <p className="text-xs font-black uppercase tracking-wide text-blue-700">Professional assigned</p>
+        <div className="mt-3 flex items-center gap-2 text-sm font-bold text-slate-700">
+          <MapPin className="h-4 w-4 text-blue-600" />
+          Verified local coverage
+        </div>
+      </div>
     </div>
   );
 }
 
-function ServiceCard({
-  icon,
-  title,
-  description,
-  price,
-  onClick,
+function ProductPreview() {
+  return (
+    <section className="px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-xl shadow-blue-100/50 sm:p-6 lg:p-8">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-blue-700">Product preview</p>
+              <h2 className="mt-3 text-2xl font-black tracking-normal text-slate-950 sm:text-3xl">
+                One place to request, track, review, and manage property work.
+              </h2>
+            </div>
+            <span className="inline-flex w-fit rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
+              Ready for review
+            </span>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-sm font-bold text-slate-500">Property overview</p>
+                  <h3 className="mt-2 text-xl font-black text-slate-950">Oak Ridge Rental</h3>
+                  <p className="mt-1 text-sm text-slate-600">Raleigh, NC · Single family</p>
+                </div>
+                <div className="rounded-xl bg-blue-100 p-3 text-blue-700">
+                  <Home className="h-6 w-6" />
+                </div>
+              </div>
+              <div className="mt-6 space-y-3">
+                {['Inspection completed', 'Cleaning scheduled', 'Lawn care recurring'].map((item) => (
+                  <div key={item} className="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm">
+                    <span className="font-semibold text-slate-700">{item}</span>
+                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white p-5">
+              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <p className="text-sm font-bold text-blue-700">Active service request</p>
+                  <h3 className="mt-2 text-xl font-black text-slate-950">Exterior inspection and photo report</h3>
+                  <p className="mt-1 text-sm text-slate-600">Assigned professional · Field workflow in progress</p>
+                </div>
+                <div className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-bold text-yellow-800">
+                  Awaiting customer approval
+                </div>
+              </div>
+
+              <div className="mt-6 grid gap-4 md:grid-cols-[1fr_0.8fr]">
+                <div className="space-y-3">
+                  {[
+                    ['Request submitted', 'Customer details captured'],
+                    ['Professional assigned', 'Coverage and availability confirmed'],
+                    ['Photo evidence uploaded', 'Before and after set attached'],
+                    ['Ready for review', 'Completion package prepared'],
+                  ].map(([title, text], index) => (
+                    <div key={title} className="flex gap-3">
+                      <div className={`mt-1 h-3 w-3 rounded-full ${index === 3 ? 'bg-blue-600' : 'bg-green-500'}`} />
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">{title}</p>
+                        <p className="text-xs text-slate-500">{text}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="rounded-2xl bg-slate-100 p-3">
+                    <div className="aspect-[4/3] rounded-xl bg-gradient-to-br from-slate-300 to-slate-100" />
+                    <p className="mt-2 text-xs font-bold text-slate-600">Before</p>
+                  </div>
+                  <div className="rounded-2xl bg-blue-50 p-3">
+                    <div className="aspect-[4/3] rounded-xl bg-gradient-to-br from-green-200 to-blue-100" />
+                    <p className="mt-2 text-xs font-bold text-blue-700">After</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SectionIntro({ label, title, text }: { label: string; title: string; text: string }) {
+  return (
+    <div className="max-w-3xl">
+      <p className="text-xs font-black uppercase tracking-[0.22em] text-blue-700">{label}</p>
+      <h2 className="mt-4 text-3xl font-black tracking-normal text-slate-950 sm:text-4xl">{title}</h2>
+      <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg">{text}</p>
+    </div>
+  );
+}
+
+function ServiceModal({
+  service,
+  onClose,
+  getStartedHref,
 }: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  price: string;
-  onClick?: () => void;
+  service: (typeof serviceCategories)[number];
+  onClose: () => void;
+  getStartedHref: string;
 }) {
   return (
-    <div onClick={onClick}
-      className="bg-slate-50 rounded-xl p-6 hover:shadow-lg transition border border-slate-200 cursor-pointer group">
-      <div className="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-4 text-blue-600 group-hover:scale-110 transition">
-        {icon}
-      </div>
-      <h3 className="text-xl font-semibold text-slate-900 mb-2 group-hover:text-blue-600 transition">{title}</h3>
-      <p className="text-slate-600 mb-4 text-sm">{description}</p>
-      <div className="mb-4 inline-flex max-w-full items-center rounded-lg bg-green-50 px-3 py-2 text-xs font-semibold leading-snug text-green-900 shadow-sm ring-1 ring-green-200">
-        <DollarSign className="mr-1 h-4 w-4 flex-shrink-0 text-green-600" />
-        <span>{price}</span>
-      </div>
-      <div className="text-blue-600 font-medium text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-        Learn More <ArrowRight className="w-4 h-4" />
+    <div className="fixed inset-0 z-[60] overflow-y-auto">
+      <div className="flex min-h-screen items-center justify-center p-0 text-left sm:p-4">
+        <button className="fixed inset-0 cursor-default bg-slate-950/70" onClick={onClose} aria-label="Close service details" />
+        <div className="relative w-full max-w-2xl overflow-hidden bg-white p-6 shadow-2xl sm:rounded-3xl sm:p-8">
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-100"
+            aria-label="Close"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <service.icon className="h-10 w-10 text-blue-600" aria-hidden="true" />
+          <h2 className="mt-5 text-3xl font-black text-slate-950">{service.title}</h2>
+          <p className="mt-4 text-base leading-7 text-slate-600">{service.description}</p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            {['Request details', 'Assigned professional', 'Photo proof'].map((item) => (
+              <div key={item} className="rounded-2xl bg-slate-50 p-4 text-sm font-bold text-slate-700">
+                {item}
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href={getStartedHref}
+              className="inline-flex min-h-12 flex-1 items-center justify-center rounded-xl bg-blue-600 px-5 py-3 font-bold text-white hover:bg-blue-700"
+            >
+              Get Started
+            </Link>
+            <button
+              onClick={onClose}
+              className="inline-flex min-h-12 flex-1 items-center justify-center rounded-xl border border-slate-300 px-5 py-3 font-bold text-slate-700 hover:border-blue-300 hover:text-blue-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
       </div>
     </div>
+  );
+}
+
+function Footer({ signInHref }: { signInHref: string }) {
+  return (
+    <footer className="border-t border-slate-200 bg-white px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-2xl font-black text-white">
+            P
+          </div>
+          <div>
+            <p className="font-black text-slate-950">PreserveHQ</p>
+            <p className="text-sm text-slate-500">Property care. Handled.</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-4 text-sm font-semibold text-slate-600">
+          <a href="#how-it-works" className="hover:text-blue-700">How It Works</a>
+          <a href="#services" className="hover:text-blue-700">Services</a>
+          <a href="#pricing" className="hover:text-blue-700">Pricing</a>
+          <Link href={signInHref} className="hover:text-blue-700">Sign In</Link>
+        </div>
+      </div>
+    </footer>
   );
 }

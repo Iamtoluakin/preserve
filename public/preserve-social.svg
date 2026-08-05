@@ -1,26 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="PreserveHQ managed property operations">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="PreserveHQ property care handled">
   <rect width="1200" height="630" fill="#0f172a"/>
-  <rect x="56" y="56" width="1088" height="518" rx="40" fill="#ffffff"/>
-  <rect x="112" y="112" width="86" height="86" rx="22" fill="#2563eb"/>
-  <text x="155" y="174" fill="#ffffff" font-family="Arial, sans-serif" font-size="58" font-weight="800" text-anchor="middle">P</text>
-  <text x="216" y="150" fill="#0f172a" font-family="Arial, sans-serif" font-size="48" font-weight="800">PreserveHQ</text>
-  <text x="216" y="184" fill="#64748b" font-family="Arial, sans-serif" font-size="22" font-weight="700">Managed property operations</text>
-  <rect x="880" y="122" width="208" height="54" rx="27" fill="#dcfce7"/>
-  <text x="984" y="157" fill="#166534" font-family="Arial, sans-serif" font-size="22" font-weight="700" text-anchor="middle">Verified field network</text>
-  <text x="112" y="362" fill="#0f172a" font-family="Arial, sans-serif" font-size="72" font-weight="800">
-    <tspan x="112" dy="0">Property operations,</tspan>
-    <tspan x="112" dy="72">handled end to end.</tspan>
+  <rect x="48" y="48" width="1104" height="534" rx="42" fill="#ffffff"/>
+  <rect x="92" y="92" width="72" height="72" rx="20" fill="#2563eb"/>
+  <text x="128" y="144" fill="#ffffff" font-family="Arial, sans-serif" font-size="48" font-weight="800" text-anchor="middle">P</text>
+  <text x="180" y="122" fill="#0f172a" font-family="Arial, sans-serif" font-size="36" font-weight="800">PreserveHQ</text>
+  <text x="180" y="153" fill="#64748b" font-family="Arial, sans-serif" font-size="18" font-weight="700">Managed property operations</text>
+  <text x="92" y="336" fill="#0f172a" font-family="Arial, sans-serif" font-size="82" font-weight="900">
+    <tspan x="92" dy="0">Property care.</tspan>
+    <tspan x="92" dy="82">Handled.</tspan>
   </text>
-  <text x="112" y="473" fill="#475569" font-family="Arial, sans-serif" font-size="30" font-weight="500">
-    <tspan x="112" dy="0">Service requests, dispatch, contractor workflows,</tspan>
-    <tspan x="112" dy="39">quality review, invoices, and property history.</tspan>
+  <text x="92" y="508" fill="#475569" font-family="Arial, sans-serif" font-size="28" font-weight="500">
+    <tspan x="92" dy="0">PreserveHQ coordinates verified local professionals</tspan>
+    <tspan x="92" dy="36">and manages work from request to completion.</tspan>
   </text>
-  <g font-family="Arial, sans-serif" font-size="26" font-weight="800" fill="#1e3a8a">
-    <rect x="866" y="292" width="222" height="66" rx="20" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
-    <text x="888" y="334">Requests</text>
-    <rect x="866" y="372" width="222" height="66" rx="20" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
-    <text x="888" y="414">Dispatch</text>
-    <rect x="866" y="452" width="222" height="66" rx="20" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
-    <text x="888" y="494">Photos</text>
-  </g>
+  <clipPath id="heroClip"><rect x="668" y="92" width="440" height="446" rx="34"/></clipPath>
+  <image href="/images/preservehq-operations-hero.png" x="590" y="92" width="668" height="446" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)"/>
+  <rect x="694" y="468" width="294" height="58" rx="24" fill="#ffffff" opacity="0.94"/>
+  <circle cx="730" cy="497" r="18" fill="#16a34a"/>
+  <text x="730" y="505" fill="#ffffff" font-family="Arial, sans-serif" font-size="24" font-weight="900" text-anchor="middle">✓</text>
+  <text x="758" y="505" fill="#0f172a" font-family="Arial, sans-serif" font-size="22" font-weight="800">Photo report ready</text>
 </svg>

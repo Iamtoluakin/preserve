@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" role="img" aria-label="PreserveHQ square social post">
+  <rect width="1080" height="1080" fill="#0f172a"/>
+  <rect x="64" y="64" width="952" height="952" rx="56" fill="#ffffff"/>
+  <clipPath id="heroClip"><rect x="112" y="112" width="856" height="456" rx="42"/></clipPath>
+  <image href="/images/preservehq-operations-hero.png" x="112" y="72" width="856" height="570" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)"/>
+  <rect x="112" y="630" width="84" height="84" rx="24" fill="#2563eb"/>
+  <text x="154" y="690" fill="#ffffff" font-family="Arial, sans-serif" font-size="56" font-weight="800" text-anchor="middle">P</text>
+  <text x="220" y="665" fill="#0f172a" font-family="Arial, sans-serif" font-size="42" font-weight="800">PreserveHQ</text>
+  <text x="220" y="704" fill="#64748b" font-family="Arial, sans-serif" font-size="24" font-weight="700">Managed property operations</text>
+  <text x="112" y="836" fill="#0f172a" font-family="Arial, sans-serif" font-size="76" font-weight="900">
+    <tspan x="112" dy="0">Property care.</tspan>
+    <tspan x="112" dy="76">Handled.</tspan>
+  </text>
+  <text x="112" y="968" fill="#475569" font-family="Arial, sans-serif" font-size="28" font-weight="500">Request. Track. Review.</text>
+</svg>

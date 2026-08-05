@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
-export const alt = "Preserve property care";
+export const alt = "PreserveHQ property care handled";
 export const size = {
   width: 1200,
   height: 630,
@@ -17,11 +17,9 @@ export default function Image() {
           width: "100%",
           height: "100%",
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
           background: "#0f172a",
           fontFamily: "Arial, sans-serif",
-          padding: 56,
+          padding: 48,
         }}
       >
         <div
@@ -29,129 +27,130 @@ export default function Image() {
             width: "100%",
             height: "100%",
             display: "flex",
-            flexDirection: "column",
+            alignItems: "stretch",
             justifyContent: "space-between",
+            gap: 34,
             background: "#ffffff",
-            borderRadius: 40,
-            padding: 56,
+            borderRadius: 42,
+            padding: 44,
             overflow: "hidden",
           }}
         >
           <div
             style={{
+              width: 510,
               display: "flex",
-              alignItems: "center",
+              flexDirection: "column",
               justifyContent: "space-between",
+              padding: "8px 0",
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 18,
-              }}
-            >
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <div
                 style={{
-                  width: 86,
-                  height: 86,
+                  width: 72,
+                  height: 72,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  borderRadius: 22,
+                  borderRadius: 20,
                   background: "#2563eb",
                   color: "#ffffff",
-                  fontSize: 58,
+                  fontSize: 48,
                   fontWeight: 800,
                 }}
               >
                 P
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <div style={{ color: "#0f172a", fontSize: 48, fontWeight: 800 }}>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <div style={{ color: "#0f172a", fontSize: 36, fontWeight: 800 }}>
                   PreserveHQ
                 </div>
-                <div style={{ color: "#64748b", fontSize: 22, fontWeight: 700 }}>
+                <div style={{ color: "#64748b", fontSize: 18, fontWeight: 700 }}>
                   Managed property operations
                 </div>
               </div>
             </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 999,
-                background: "#dcfce7",
-                color: "#166534",
-                fontSize: 22,
-                fontWeight: 700,
-                padding: "14px 22px",
-              }}
-            >
-              Verified field network
-            </div>
-          </div>
 
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
-            <div style={{ display: "flex", flexDirection: "column", maxWidth: 760 }}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
               <div
                 style={{
                   color: "#0f172a",
-                  fontSize: 72,
-                  lineHeight: 0.98,
-                  fontWeight: 800,
+                  fontSize: 82,
+                  lineHeight: 0.9,
+                  fontWeight: 900,
                   letterSpacing: 0,
                 }}
               >
-                Property operations, handled end to end.
+                Property care. Handled.
               </div>
               <div
                 style={{
                   marginTop: 28,
                   color: "#475569",
-                  fontSize: 30,
-                  lineHeight: 1.3,
+                  fontSize: 28,
+                  lineHeight: 1.25,
                   fontWeight: 500,
                 }}
               >
-                Service requests, dispatch, contractor workflows, quality review,
-                invoices, and permanent property history in one trusted platform.
+                PreserveHQ coordinates verified local professionals and manages work from request to completion.
               </div>
             </div>
+          </div>
 
+          <div
+            style={{
+              position: "relative",
+              flex: 1,
+              display: "flex",
+              overflow: "hidden",
+              borderRadius: 34,
+              background: "#dbeafe",
+            }}
+          >
+            <img
+              src="https://preservehq.com/images/preservehq-operations-hero.png"
+              alt=""
+              width="610"
+              height="407"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
             <div
               style={{
-                width: 278,
+                position: "absolute",
+                left: 24,
+                bottom: 24,
                 display: "flex",
-                flexDirection: "column",
-                gap: 14,
-                flexShrink: 0,
+                alignItems: "center",
+                gap: 12,
+                borderRadius: 22,
+                background: "rgba(255,255,255,0.94)",
+                padding: "16px 18px",
               }}
             >
-              {["Requests", "Dispatch", "Photos", "Approvals"].map((item) => (
-                <div
-                  key={item}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    borderRadius: 20,
-                    background: "#eff6ff",
-                    border: "2px solid #bfdbfe",
-                    color: "#1e3a8a",
-                    fontSize: 26,
-                    fontWeight: 800,
-                    padding: "18px 22px",
-                  }}
-                >
-                  {item}
-                </div>
-              ))}
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
+                  background: "#16a34a",
+                  color: "#ffffff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 24,
+                  fontWeight: 900,
+                }}
+              >
+                ✓
+              </div>
+              <div style={{ color: "#0f172a", fontSize: 22, fontWeight: 800 }}>
+                Photo report ready
+              </div>
             </div>
           </div>
         </div>

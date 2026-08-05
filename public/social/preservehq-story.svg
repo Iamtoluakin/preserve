@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" role="img" aria-label="PreserveHQ story cover">
+  <rect width="1080" height="1920" fill="#0f172a"/>
+  <rect x="64" y="80" width="952" height="1760" rx="64" fill="#ffffff"/>
+  <rect x="112" y="142" width="88" height="88" rx="26" fill="#2563eb"/>
+  <text x="156" y="205" fill="#ffffff" font-family="Arial, sans-serif" font-size="58" font-weight="800" text-anchor="middle">P</text>
+  <text x="224" y="176" fill="#0f172a" font-family="Arial, sans-serif" font-size="44" font-weight="800">PreserveHQ</text>
+  <text x="224" y="218" fill="#64748b" font-family="Arial, sans-serif" font-size="25" font-weight="700">Managed property operations</text>
+  <clipPath id="heroClip"><rect x="112" y="312" width="856" height="760" rx="52"/></clipPath>
+  <image href="/images/preservehq-operations-hero.png" x="-24" y="312" width="1136" height="760" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)"/>
+  <text x="112" y="1266" fill="#0f172a" font-family="Arial, sans-serif" font-size="94" font-weight="900">
+    <tspan x="112" dy="0">Property</tspan>
+    <tspan x="112" dy="96">care.</tspan>
+    <tspan x="112" dy="96">Handled.</tspan>
+  </text>
+  <text x="112" y="1588" fill="#475569" font-family="Arial, sans-serif" font-size="36" font-weight="500">
+    <tspan x="112" dy="0">Request property services,</tspan>
+    <tspan x="112" dy="48">track the work, and review</tspan>
+    <tspan x="112" dy="48">the results from anywhere.</tspan>
+  </text>
+</svg>
