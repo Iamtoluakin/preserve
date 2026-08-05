@@ -25,6 +25,7 @@ import {
   type WorkOrderStatus,
   writeWorkOrders,
 } from '@/lib/localData';
+import { notifyWorkOrderProgress } from '@/lib/notificationClient';
 
 type ServiceLine = {
   id?: string;
@@ -70,6 +71,7 @@ export default function WorkOrderDetailPage() {
     const updated = readWorkOrders().map(order => (order.id === workOrder.id ? updatedOrder : order));
     writeWorkOrders(updated);
     setWorkOrder(updatedOrder);
+    void notifyWorkOrderProgress(updatedOrder, workOrder.status, status);
   };
 
   const deleteOrder = () => {

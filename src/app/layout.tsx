@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     siteName: "Preserve",
     images: [
       {
-        url: "/preserve-social.svg",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "Preserve property care",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Preserve — Property Care Made Simple",
     description: "Property preservation, handled from anywhere.",
-    images: ["/preserve-social.svg"],
+    images: ["/opengraph-image"],
   },
 };
 

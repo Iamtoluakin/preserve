@@ -27,6 +27,7 @@ import {
   type WorkOrderStatus,
   writeWorkOrders,
 } from '@/lib/localData';
+import { notifyWorkOrderProgress } from '@/lib/notificationClient';
 
 const STATUS_OPTIONS = ['all', 'pending', 'in-progress', 'completed', 'cancelled'];
 
@@ -48,6 +49,7 @@ export default function WorkOrdersPage() {
   }, [loadOrders]);
 
   const updateStatus = (id: string, newStatus: WorkOrderStatus) => {
+    const currentOrder = workOrders.find(wo => wo.id === id);
     const updated = workOrders.map(wo =>
       wo.id === id
         ? {
@@ -59,6 +61,10 @@ export default function WorkOrdersPage() {
     );
     setWorkOrders(updated);
     writeWorkOrders(updated);
+    const updatedOrder = updated.find(wo => wo.id === id);
+    if (currentOrder && updatedOrder) {
+      void notifyWorkOrderProgress(updatedOrder, currentOrder.status, newStatus);
+    }
     setUpdatingStatus(null);
   };
 

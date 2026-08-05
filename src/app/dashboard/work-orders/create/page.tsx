@@ -21,6 +21,7 @@ import {
   type PreserveWorkOrder,
   writeWorkOrders,
 } from '@/lib/localData';
+import { notifyNewWorkOrder, notifyWorkOrderProgress } from '@/lib/notificationClient';
 
 type SelectedService = {
   id: string;
@@ -224,6 +225,9 @@ export default function CreateWorkOrderV2Page() {
     };
 
     writeWorkOrders([newWorkOrder, ...readWorkOrders()]);
+    void notifyNewWorkOrder(newWorkOrder);
+    void notifyWorkOrderProgress(newWorkOrder, undefined, 'pending');
+
     setSubmitted(true);
     setTimeout(() => {
       router.push('/dashboard/work-orders');
