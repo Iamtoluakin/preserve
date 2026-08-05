@@ -1,4 +1,23 @@
-export type WorkOrderStatus = 'pending' | 'in-progress' | 'completed' | 'cancelled';
+import { formatWorkflowStatus, normalizeWorkflowStatus } from './operations.js';
+
+export type WorkOrderStatus =
+  | 'draft'
+  | 'submitted'
+  | 'under-review'
+  | 'awaiting-assignment'
+  | 'offered'
+  | 'assigned'
+  | 'accepted'
+  | 'scheduled'
+  | 'in-progress'
+  | 'awaiting-bid-approval'
+  | 'awaiting-quality-review'
+  | 'awaiting-customer-approval'
+  | 'completed'
+  | 'invoiced'
+  | 'paid'
+  | 'cancelled'
+  | 'disputed';
 
 export type PreserveProperty = {
   id: string;
@@ -53,12 +72,7 @@ function readJsonArray<T>(key: string): T[] {
 }
 
 function normalizeStatus(status: unknown): WorkOrderStatus {
-  const normalized = String(status || 'pending').toLowerCase().replace('_', '-');
-
-  if (normalized === 'in-progress') return 'in-progress';
-  if (normalized === 'completed') return 'completed';
-  if (normalized === 'cancelled' || normalized === 'canceled') return 'cancelled';
-  return 'pending';
+  return normalizeWorkflowStatus(status) as WorkOrderStatus;
 }
 
 export function normalizeWorkOrder(order: Partial<PreserveWorkOrder> & Record<string, unknown>): PreserveWorkOrder {
@@ -93,5 +107,5 @@ export function writeWorkOrders(workOrders: PreserveWorkOrder[]) {
 }
 
 export function formatWorkOrderStatus(status: string) {
-  return normalizeStatus(status).replace('-', ' ');
+  return formatWorkflowStatus(status);
 }

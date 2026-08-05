@@ -24,9 +24,27 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  overflow-x: hidden;
 }
 
 @layer base {
+  html {
+    @apply max-w-full overflow-x-hidden;
+  }
+
+  *,
+  *::before,
+  *::after {
+    @apply box-border;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    @apply max-w-full;
+  }
+
   /* Ensure all input fields have dark text by default */
   input,
   textarea,

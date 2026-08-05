@@ -182,14 +182,14 @@ export default function AddPropertyPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-xl p-12 max-w-md w-full text-center">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-8 md:p-12 max-w-md w-full text-center">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-2">Property Added Successfully!</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">Property Added Successfully!</h2>
           <p className="text-slate-600 mb-6">Your property has been added. You can now schedule services for it.</p>
           <div className="text-sm text-slate-500">Redirecting to dashboard...</div>
         </div>
@@ -201,12 +201,12 @@ export default function AddPropertyPage() {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="bg-white border-b sticky top-0 z-40">
-        <div className="px-4 md:px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4">
+          <div className="flex items-center justify-between gap-3">
             <div className="flex items-center space-x-4">
               <Link href="/dashboard" className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-2xl">P</span>
+                <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xl md:text-2xl">P</span>
                 </div>
                 <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
               </Link>
@@ -214,14 +214,15 @@ export default function AddPropertyPage() {
             <Link href="/dashboard" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition text-sm">
               <ArrowLeft className="w-5 h-5" />
               <span className="hidden sm:inline">Back to Dashboard</span>
+              <span className="sm:hidden">Dashboard</span>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 md:px-6 py-8">
-        <div className="mb-8">
+      <main className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8">
+        <div className="mb-6 md:mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Add a Property</h1>
           <p className="text-slate-600">Enter your property details to start managing and scheduling services</p>
         </div>
@@ -234,7 +235,7 @@ export default function AddPropertyPage() {
                 <MapPin className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-slate-900">Property Location</h2>
+                <h2 className="text-lg md:text-xl font-semibold text-slate-900">Property Location</h2>
                 <p className="text-sm text-slate-600">Enter the property address and location details</p>
               </div>
             </div>
@@ -351,7 +352,7 @@ export default function AddPropertyPage() {
                 <Home className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-slate-900">Property Information</h2>
+                <h2 className="text-lg md:text-xl font-semibold text-slate-900">Property Information</h2>
                 <p className="text-sm text-slate-600">Property type and identification details</p>
               </div>
             </div>
@@ -425,7 +426,7 @@ export default function AddPropertyPage() {
                 <FileText className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-slate-900">Additional Notes</h2>
+                <h2 className="text-lg md:text-xl font-semibold text-slate-900">Additional Notes</h2>
                 <p className="text-sm text-slate-600">Any special instructions or property conditions</p>
               </div>
             </div>
@@ -452,7 +453,7 @@ export default function AddPropertyPage() {
                 <Upload className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-slate-900">Documents (Optional)</h2>
+                <h2 className="text-lg md:text-xl font-semibold text-slate-900">Documents (Optional)</h2>
                 <p className="text-sm text-slate-600">Upload property documents, photos, or deeds</p>
               </div>
             </div>

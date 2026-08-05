@@ -22,46 +22,46 @@ import {
 const incomingWorkOrders = [
   {
     id: 'WO-2025-0234',
-    client: 'First National Bank',
+    customer: 'First National Bank',
     property: '1234 Main Street, Durham, NC',
     services: ['Lawn Mowing', 'Exterior Cleaning'],
     totalCost: 300,
     priority: 'normal',
-    status: 'pending',
+    status: 'submitted',
     requestedDate: '2025-12-15',
     createdAt: '2025-12-13 09:30 AM'
   },
   {
     id: 'WO-2025-0235',
-    client: 'Community Savings Bank',
+    customer: 'Community Savings Bank',
     property: '5678 Oak Avenue, Raleigh, NC',
     services: ['Winterization', 'Property Securing'],
     totalCost: 600,
     priority: 'high',
-    status: 'pending',
+    status: 'submitted',
     requestedDate: '2025-12-14',
     createdAt: '2025-12-13 10:15 AM'
   },
   {
     id: 'WO-2025-0236',
-    client: 'Regional Credit Union',
+    customer: 'Regional Credit Union',
     property: '9012 Pine Road, Charlotte, NC',
     services: ['Full Inspection', 'Photo Documentation'],
     totalCost: 250,
     priority: 'normal',
-    status: 'in_progress',
+    status: 'in-progress',
     assignedTo: 'Mike Johnson',
     requestedDate: '2025-12-13',
     createdAt: '2025-12-12 02:45 PM'
   },
   {
     id: 'WO-2025-0237',
-    client: 'First National Bank',
+    customer: 'First National Bank',
     property: '3456 Elm Court, Durham, NC',
     services: ['Debris Removal', 'Pressure Washing'],
     totalCost: 700,
     priority: 'emergency',
-    status: 'pending',
+    status: 'submitted',
     requestedDate: '2025-12-13',
     createdAt: '2025-12-13 11:00 AM'
   }
@@ -75,20 +75,20 @@ const technicians = [
 ];
 
 export default function VendorDashboardPage() {
-  const [filter, setFilter] = useState<'all' | 'pending' | 'in_progress' | 'completed'>('all');
+  const [filter, setFilter] = useState<'all' | 'submitted' | 'in-progress' | 'completed'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredOrders = incomingWorkOrders.filter(order => {
     const matchesFilter = filter === 'all' || order.status === filter;
     const matchesSearch = 
       order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.property.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
-  const pendingCount = incomingWorkOrders.filter(o => o.status === 'pending').length;
-  const inProgressCount = incomingWorkOrders.filter(o => o.status === 'in_progress').length;
+  const pendingCount = incomingWorkOrders.filter(o => o.status === 'submitted').length;
+  const inProgressCount = incomingWorkOrders.filter(o => o.status === 'in-progress').length;
   const totalRevenue = incomingWorkOrders.reduce((sum, o) => sum + o.totalCost, 0);
   const activeTechs = technicians.filter(t => t.active).length;
 
@@ -104,8 +104,8 @@ export default function VendorDashboardPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'in_progress': return 'bg-blue-100 text-blue-800';
+      case 'submitted': return 'bg-yellow-100 text-yellow-800';
+      case 'in-progress': return 'bg-blue-100 text-blue-800';
       case 'completed': return 'bg-green-100 text-green-800';
       default: return 'bg-slate-100 text-slate-800';
     }
@@ -123,7 +123,7 @@ export default function VendorDashboardPage() {
               </div>
               <div>
                 <h1 className="text-lg md:text-2xl font-bold leading-tight">Preserve</h1>
-                <p className="text-blue-100 text-xs md:text-sm">Management Portal</p>
+                <p className="text-blue-100 text-xs md:text-sm">Operations Portal</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -153,7 +153,7 @@ export default function VendorDashboardPage() {
               </div>
               <span className="text-2xl md:text-3xl font-bold">{pendingCount}</span>
             </div>
-            <h3 className="font-semibold text-sm md:text-base">Pending Orders</h3>
+            <h3 className="font-semibold text-sm md:text-base">Submitted Requests</h3>
             <p className="text-red-100 text-xs md:text-sm">Requires assignment</p>
           </div>
 
@@ -200,7 +200,7 @@ export default function VendorDashboardPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search orders, clients, properties..."
+                placeholder="Search orders, customers, properties..."
                 className="w-full pl-9 pr-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"
               />
             </div>
@@ -213,17 +213,17 @@ export default function VendorDashboardPage() {
             </Link>
           </div>
           <div className="flex gap-2 flex-wrap">
-            {(['all', 'pending', 'in_progress'] as const).map(f => (
+            {(['all', 'submitted', 'in-progress'] as const).map(f => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
                 className={`px-3 py-1.5 rounded-lg font-medium transition text-sm ${
                   filter === f
-                    ? f === 'pending' ? 'bg-yellow-600 text-white' : 'bg-blue-600 text-white'
+                    ? f === 'submitted' ? 'bg-yellow-600 text-white' : 'bg-blue-600 text-white'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                {f === 'all' ? 'All' : f === 'in_progress' ? 'In Progress' : 'Pending'}
+                {f === 'all' ? 'All' : f === 'in-progress' ? 'In Progress' : 'Submitted'}
               </button>
             ))}
           </div>
@@ -236,7 +236,7 @@ export default function VendorDashboardPage() {
               <FileText className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
               Incoming Work Orders
             </h2>
-            <p className="text-slate-600 mt-1 text-sm">New service requests from your clients</p>
+            <p className="text-slate-600 mt-1 text-sm">Service requests routed through PreserveHQ</p>
           </div>
 
           <div className="divide-y">
@@ -260,13 +260,13 @@ export default function VendorDashboardPage() {
                           {order.priority === 'emergency' ? '🚨 EMERGENCY' : order.priority.toUpperCase()}
                         </span>
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
-                          {order.status.replace('_', ' ').toUpperCase()}
+                          {order.status.replace(/-/g, ' ').toUpperCase()}
                         </span>
                       </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2 text-slate-600 text-sm">
                           <Users className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="font-medium truncate">{order.client}</span>
+                          <span className="font-medium truncate">{order.customer}</span>
                         </div>
                         <div className="flex items-center gap-2 text-slate-600 text-sm">
                           <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
@@ -295,9 +295,9 @@ export default function VendorDashboardPage() {
 
                   {/* Actions */}
                   <div className="flex flex-wrap items-center gap-2 pt-3 border-t">
-                    {order.status === 'pending' && (
+                    {order.status === 'submitted' && (
                       <button className="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium text-sm">
-                        Assign Technician
+                        Assign Field Pro
                       </button>
                     )}
                     <button className="px-3 py-1.5 border border-slate-300 text-slate-700 rounded-lg hover:border-blue-600 hover:text-blue-600 transition font-medium text-sm">
@@ -315,7 +315,7 @@ export default function VendorDashboardPage() {
         <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
           <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
             <Users className="w-5 h-5 text-blue-600" />
-            Field Technicians
+            Verified Field Pros
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
             {technicians.map((tech) => (

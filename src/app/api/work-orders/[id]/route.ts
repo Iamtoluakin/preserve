@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAuthenticatedUser } from '@/lib/serverSupabase';
+import { canTransitionWorkOrder, normalizeWorkflowStatus } from '@/lib/operations.js';
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -8,7 +9,7 @@ type RouteContext = {
 function toWorkOrderUpdate(body: Record<string, unknown>) {
   const update: Record<string, unknown> = {};
 
-  if ('status' in body) update.status = String(body.status || 'pending').toLowerCase().replace('_', '-');
+  if ('status' in body) update.status = normalizeWorkflowStatus(body.status || 'submitted');
   if ('priority' in body) update.priority = body.priority;
   if ('scheduledDate' in body || 'scheduled_date' in body) update.scheduled_date = body.scheduledDate || body.scheduled_date;
   if ('description' in body) update.description = body.description;
@@ -43,6 +44,24 @@ export async function PATCH(request: Request, context: RouteContext) {
   const update = toWorkOrderUpdate(body);
   if (Object.keys(update).length === 0) {
     return NextResponse.json({ message: 'No supported fields to update.' }, { status: 400 });
+  }
+
+  if (typeof update.status === 'string') {
+    const { data: existing, error: existingError } = await supabase
+      .from('work_orders')
+      .select('status')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single();
+
+    if (existingError) return NextResponse.json({ message: existingError.message }, { status: 404 });
+
+    if (!canTransitionWorkOrder(existing.status, update.status)) {
+      return NextResponse.json(
+        { message: `Illegal work order transition: ${existing.status} -> ${update.status}` },
+        { status: 400 }
+      );
+    }
   }
 
   const { data, error: updateError } = await supabase

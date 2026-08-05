@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getAuthenticatedUser } from '@/lib/serverSupabase';
+import { normalizeWorkflowStatus } from '@/lib/operations.js';
 
 function normalizeStatus(status: unknown) {
-  return String(status || 'pending').toLowerCase().replace('_', '-');
+  return normalizeWorkflowStatus(status || 'submitted');
 }
 
 function toDatabaseWorkOrder(body: Record<string, unknown>, userId: string) {

@@ -268,24 +268,24 @@ export default function PropertiesPage() {
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2">
+                    <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-1 min-[380px]:grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2">
                       <Link
                         href={`/dashboard/properties/${property.id}`}
-                        className="flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2.5 text-blue-600 bg-blue-50 sm:bg-transparent hover:bg-blue-50 rounded-lg transition text-sm font-medium"
+                        className="min-h-11 flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2.5 text-blue-600 bg-blue-50 sm:bg-transparent hover:bg-blue-50 rounded-lg transition text-sm font-medium"
                       >
                         <Eye className="w-4 h-4" />
                         View Details
                       </Link>
                       <Link
                         href={`/dashboard/work-orders/create?propertyId=${property.id}`}
-                        className="flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium"
+                        className="min-h-11 flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium"
                       >
                         <Plus className="w-4 h-4" />
                         Create Work Order
                       </Link>
 
                       {confirmDelete === property.id ? (
-                        <div className="col-span-2 sm:col-span-1 flex flex-wrap items-center gap-2 sm:ml-auto">
+                        <div className="min-[380px]:col-span-2 sm:col-span-1 flex flex-wrap items-center gap-2 sm:ml-auto">
                           <span className="text-xs text-red-600 font-medium">Delete this property?</span>
                           <button
                             onClick={() => deleteProperty(property.id)}
@@ -303,7 +303,7 @@ export default function PropertiesPage() {
                       ) : (
                         <button
                           onClick={() => setConfirmDelete(property.id)}
-                          className="col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition text-sm sm:ml-auto"
+                          className="min-h-11 min-[380px]:col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition text-sm sm:ml-auto"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           Delete

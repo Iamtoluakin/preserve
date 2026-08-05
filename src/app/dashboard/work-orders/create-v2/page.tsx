@@ -153,19 +153,19 @@ export default function CreateWorkOrderV2Page() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-        <div className="bg-white rounded-2xl shadow-xl p-12 max-w-2xl w-full">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6">
+        <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-8 md:p-12 max-w-2xl w-full">
           <div className="text-center">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 className="w-12 h-12 text-green-600" />
             </div>
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">Work Order Created!</h2>
-            <p className="text-lg text-slate-600 mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Work Order Created!</h2>
+            <p className="text-base sm:text-lg text-slate-600 mb-6">
               Your service request has been submitted to Preserve. We&apos;ll begin work shortly.
             </p>
             
-            <div className="bg-blue-50 rounded-xl p-6 mb-6">
-              <div className="grid grid-cols-2 gap-4 text-left">
+            <div className="bg-blue-50 rounded-xl p-4 sm:p-6 mb-6">
+              <div className="grid gap-4 min-[380px]:grid-cols-2 text-left">
                 <div>
                   <p className="text-sm text-blue-600 font-medium mb-1">Work Order Number</p>
                   <p className="text-lg font-bold text-blue-900">{orderNumber}</p>
@@ -203,28 +203,29 @@ export default function CreateWorkOrderV2Page() {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="bg-white border-b sticky top-0 z-40">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4">
+          <div className="flex items-center justify-between gap-3">
             <div className="flex items-center space-x-4">
               <Link href="/dashboard" className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-2xl">P</span>
+                <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xl md:text-2xl">P</span>
                 </div>
-                <span className="text-2xl font-bold text-slate-900">Preserve</span>
+                <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
               </Link>
             </div>
-            <Link href="/dashboard" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition">
+            <Link href="/dashboard" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition text-sm">
               <ArrowLeft className="w-5 h-5" />
-              Back to Dashboard
+              <span className="hidden sm:inline">Back to Dashboard</span>
+              <span className="sm:hidden">Dashboard</span>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Request Preservation Services</h1>
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Request Preservation Services</h1>
           <p className="text-slate-600">Select the services you need to maintain your property</p>
         </div>
 
@@ -233,13 +234,13 @@ export default function CreateWorkOrderV2Page() {
             {/* Left Column - Service Selection */}
             <div className="lg:col-span-2 space-y-6">
               {/* Property Selection */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                     <Home className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-slate-900">Select Property</h2>
+                    <h2 className="text-lg md:text-xl font-semibold text-slate-900">Select Property</h2>
                     <p className="text-sm text-slate-600">Choose the property that needs service</p>
                   </div>
                 </div>
@@ -261,13 +262,13 @@ export default function CreateWorkOrderV2Page() {
               </div>
 
               {/* Service Catalog */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                     <ShoppingCart className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-slate-900">Select Services</h2>
+                    <h2 className="text-lg md:text-xl font-semibold text-slate-900">Select Services</h2>
                     <p className="text-sm text-slate-600">Choose the services your property needs</p>
                   </div>
                 </div>
@@ -291,16 +292,16 @@ export default function CreateWorkOrderV2Page() {
                                   : 'border-slate-200 hover:border-blue-300 bg-white'
                               }`}
                             >
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-1">
+                              <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-start min-[380px]:justify-between gap-3">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-center gap-2 mb-1">
                                     <h4 className="font-semibold text-slate-900">{service.name}</h4>
                                     {isSelected && (
                                       <CheckCircle2 className="w-5 h-5 text-blue-600" />
                                     )}
                                   </div>
                                   <p className="text-sm text-slate-600 mb-2">{service.description}</p>
-                                  <div className="flex items-center gap-4 text-sm">
+                                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
                                     <span className="text-slate-500">
                                       {service.frequency === 'as-needed' ? 'As Needed' : 
                                        service.frequency.charAt(0).toUpperCase() + service.frequency.slice(1)}
@@ -309,8 +310,8 @@ export default function CreateWorkOrderV2Page() {
                                     <span className="text-slate-500">{service.unit}</span>
                                   </div>
                                 </div>
-                                <div className="text-right ml-4">
-                                  <div className="text-2xl font-bold text-blue-600">
+                                <div className="text-left min-[380px]:text-right min-[380px]:ml-4 flex-shrink-0">
+                                  <div className="text-xl md:text-2xl font-bold text-blue-600">
                                     ${service.basePrice}
                                   </div>
                                   <div className="text-xs text-slate-500">{service.unit}</div>
@@ -326,13 +327,13 @@ export default function CreateWorkOrderV2Page() {
               </div>
 
               {/* Schedule & Details */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                     <Calendar className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-slate-900">Schedule & Details</h2>
+                    <h2 className="text-lg md:text-xl font-semibold text-slate-900">Schedule & Details</h2>
                     <p className="text-sm text-slate-600">When should we start?</p>
                   </div>
                 </div>
@@ -407,10 +408,10 @@ export default function CreateWorkOrderV2Page() {
             {/* Right Column - Order Summary (Sticky) */}
             <div className="lg:col-span-1">
               <div className="sticky top-24">
-                <div className="bg-white rounded-xl shadow-lg border p-6">
+                <div className="bg-white rounded-xl shadow-lg border p-4 md:p-6">
                   <div className="flex items-center gap-3 mb-6">
                     <DollarSign className="w-6 h-6 text-blue-600" />
-                    <h2 className="text-xl font-semibold text-slate-900">Order Summary</h2>
+                    <h2 className="text-lg md:text-xl font-semibold text-slate-900">Order Summary</h2>
                   </div>
 
                   {selectedServices.length === 0 ? (

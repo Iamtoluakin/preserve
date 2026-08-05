@@ -31,7 +31,7 @@ export default function InspectionsPage() {
   }, [workOrders]);
 
   const completed = inspectionOrders.filter(order => order.status === 'completed').length;
-  const upcoming = inspectionOrders.filter(order => order.status === 'pending' || order.status === 'in-progress').length;
+  const upcoming = inspectionOrders.filter(order => ['submitted', 'under-review', 'awaiting-assignment', 'assigned', 'accepted', 'scheduled', 'in-progress'].includes(order.status)).length;
 
   return (
     <div className="min-h-screen bg-slate-50">

@@ -37,7 +37,7 @@ type ServiceLine = {
   total?: number;
 };
 
-const STATUSES: WorkOrderStatus[] = ['pending', 'in-progress', 'completed', 'cancelled'];
+const STATUSES: WorkOrderStatus[] = ['submitted', 'under-review', 'awaiting-assignment', 'assigned', 'in-progress', 'awaiting-customer-approval', 'completed', 'cancelled'];
 
 export default function WorkOrderDetailPage() {
   const params = useParams();
@@ -85,7 +85,13 @@ export default function WorkOrderDetailPage() {
     switch (status) {
       case 'completed': return 'bg-green-100 text-green-800 border-green-200';
       case 'in-progress': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'submitted':
+      case 'under-review':
+      case 'awaiting-assignment':
+      case 'awaiting-bid-approval':
+      case 'awaiting-quality-review':
+      case 'awaiting-customer-approval':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'cancelled': return 'bg-red-100 text-red-800 border-red-200';
       default: return 'bg-slate-100 text-slate-800 border-slate-200';
     }

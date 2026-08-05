@@ -191,7 +191,7 @@ export default function DashboardPage() {
             />
             <StatCard
               title="Pending Work Orders"
-              value={workOrders.filter(wo => wo.status === 'pending').length.toString()}
+              value={workOrders.filter(wo => wo.status === 'submitted' || wo.status === 'under-review' || wo.status === 'awaiting-assignment').length.toString()}
               change="-5%"
               trend="down"
               icon={<FileText className="w-6 h-6" />}
@@ -214,19 +214,19 @@ export default function DashboardPage() {
 
           {/* Actions Bar */}
           <div className="bg-white rounded-xl shadow-sm border p-3 md:p-4 mb-5 md:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 md:gap-4">
-            <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 md:gap-4">
-              <Link href="/dashboard/properties/add" className="bg-blue-600 text-white px-3 md:px-4 py-2.5 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 text-sm md:text-base font-semibold">
+            <div className="grid grid-cols-1 min-[380px]:grid-cols-2 sm:flex sm:items-center gap-2 md:gap-4">
+              <Link href="/dashboard/properties/add" className="min-h-11 bg-blue-600 text-white px-3 md:px-4 py-2.5 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 text-sm md:text-base font-semibold">
                 <Plus className="w-4 h-4 md:w-5 md:h-5" />
                 Add Property
               </Link>
-              <Link href="/dashboard/work-orders/create" className="border border-slate-300 text-slate-700 px-3 md:px-4 py-2.5 rounded-lg hover:border-blue-600 hover:text-blue-600 transition text-sm md:text-base font-semibold text-center">
+              <Link href="/dashboard/work-orders/create" className="min-h-11 border border-slate-300 text-slate-700 px-3 md:px-4 py-2.5 rounded-lg hover:border-blue-600 hover:text-blue-600 transition text-sm md:text-base font-semibold text-center flex items-center justify-center">
                 Create Work Order
               </Link>
             </div>
-            <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
+            <div className="grid grid-cols-1 min-[380px]:grid-cols-2 sm:flex sm:items-center gap-2">
               <button
                 onClick={() => setShowAnalytics(!showAnalytics)}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
+                className={`min-h-10 px-3 py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 ${
                   showAnalytics ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
@@ -235,7 +235,7 @@ export default function DashboardPage() {
               </button>
               <button
                 onClick={() => setShowCalendar(!showCalendar)}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
+                className={`min-h-10 px-3 py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 ${
                   showCalendar ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >

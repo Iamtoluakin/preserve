@@ -9,12 +9,28 @@ type EmailPayload = {
   newStatus?: WorkOrderStatus;
 };
 
-const statusLabels: Record<WorkOrderStatus, string> = {
-  pending: 'Received',
+const statusLabels: Partial<Record<WorkOrderStatus, string>> = {
+  submitted: 'Received',
+  'under-review': 'Under review',
+  'awaiting-assignment': 'Awaiting assignment',
+  offered: 'Offered',
+  assigned: 'Assigned',
+  accepted: 'Accepted',
+  scheduled: 'Scheduled',
   'in-progress': 'In progress',
+  'awaiting-bid-approval': 'Awaiting bid approval',
+  'awaiting-quality-review': 'Awaiting quality review',
+  'awaiting-customer-approval': 'Awaiting customer approval',
   completed: 'Completed',
+  invoiced: 'Invoiced',
+  paid: 'Paid',
   cancelled: 'Cancelled',
+  disputed: 'Disputed',
 };
+
+function getStatusLabel(status: WorkOrderStatus) {
+  return statusLabels[status] || status.replace(/-/g, ' ');
+}
 
 export async function POST(request: Request) {
   const payload = (await request.json()) as EmailPayload;
@@ -84,16 +100,16 @@ function buildEmail(payload: EmailPayload) {
     const status = payload.newStatus || workOrder.status;
     return {
       to,
-      subject: `Preserve update: ${statusLabels[status]} for ${orderLabel}`,
+      subject: `Preserve update: ${getStatusLabel(status)} for ${orderLabel}`,
       html: wrapEmail(`
-        <h1>Your work order is ${statusLabels[status].toLowerCase()}</h1>
+        <h1>Your work order is ${getStatusLabel(status).toLowerCase()}</h1>
         <p>We wanted to keep you updated on the progress of your Preserve service.</p>
         ${detailTable([
           ['Work order', orderLabel],
           ['Property', property],
           ['Service', service],
-          ['Previous status', payload.previousStatus ? statusLabels[payload.previousStatus] : 'Not available'],
-          ['Current status', statusLabels[status]],
+          ['Previous status', payload.previousStatus ? getStatusLabel(payload.previousStatus) : 'Not available'],
+          ['Current status', getStatusLabel(status)],
           ['Scheduled date', formatDate(workOrder.scheduledDate)],
         ])}
         <p style="margin-top:24px;">You can sign in to your Preserve dashboard to view the full work order details.</p>

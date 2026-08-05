@@ -50,7 +50,7 @@ export default function WorkOrderAnalytics({ workOrders }: WorkOrderAnalyticsPro
       });
 
       const completed = monthOrders.filter(o => getStatus(o.status) === 'completed').length;
-      const pending = monthOrders.filter(o => getStatus(o.status) === 'pending').length;
+      const pending = monthOrders.filter(o => ['submitted', 'under-review', 'awaiting-assignment'].includes(getStatus(o.status))).length;
       const inProgress = monthOrders.filter(o => getStatus(o.status) === 'in-progress').length;
 
       last6Months.push({

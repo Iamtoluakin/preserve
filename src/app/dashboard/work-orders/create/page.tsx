@@ -213,7 +213,7 @@ export default function CreateWorkOrderV2Page() {
         : '',
       serviceType: selectedServices.map(s => s.name).join(', '),
       services: selectedServices,
-      status: 'pending',
+      status: 'submitted',
       priority: formData.priority || 'medium',
       scheduledDate: formData.scheduledDate || new Date().toISOString(),
       billingFrequency,
@@ -226,7 +226,7 @@ export default function CreateWorkOrderV2Page() {
 
     writeWorkOrders([newWorkOrder, ...readWorkOrders()]);
     void notifyNewWorkOrder(newWorkOrder);
-    void notifyWorkOrderProgress(newWorkOrder, undefined, 'pending');
+    void notifyWorkOrderProgress(newWorkOrder, undefined, 'submitted');
 
     setSubmitted(true);
     setTimeout(() => {
@@ -243,19 +243,19 @@ export default function CreateWorkOrderV2Page() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-        <div className="bg-white rounded-2xl shadow-xl p-12 max-w-2xl w-full">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6">
+        <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-8 md:p-12 max-w-2xl w-full">
           <div className="text-center">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 className="w-12 h-12 text-green-600" />
             </div>
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">Work Order Created!</h2>
-            <p className="text-lg text-slate-600 mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Work Order Created!</h2>
+            <p className="text-base sm:text-lg text-slate-600 mb-6">
               Your service request has been submitted to Preserve. We&apos;ll begin work shortly.
             </p>
             
-            <div className="bg-blue-50 rounded-xl p-6 mb-6">
-              <div className="grid grid-cols-2 gap-4 text-left">
+            <div className="bg-blue-50 rounded-xl p-4 sm:p-6 mb-6">
+              <div className="grid gap-4 min-[380px]:grid-cols-2 text-left">
                 <div>
                   <p className="text-sm text-blue-600 font-medium mb-1">Work Order Number</p>
                   <p className="text-lg font-bold text-blue-900">{orderNumber}</p>
@@ -298,27 +298,28 @@ export default function CreateWorkOrderV2Page() {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="bg-white border-b sticky top-0 z-40">
-        <div className="px-4 md:px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4">
+          <div className="flex items-center justify-between gap-3">
             <div className="flex items-center space-x-4">
               <Link href="/dashboard" className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-2xl">P</span>
+                <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xl md:text-2xl">P</span>
                 </div>
                 <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
               </Link>
             </div>
-            <Link href="/dashboard" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition">
+            <Link href="/dashboard" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition text-sm">
               <ArrowLeft className="w-5 h-5" />
               <span className="hidden sm:inline">Back to Dashboard</span>
+              <span className="sm:hidden">Dashboard</span>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-8">
-        <div className="mb-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8">
+        <div className="mb-6 md:mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Request Preservation Services</h1>
           <p className="text-slate-600">Select the services you need to maintain your property</p>
         </div>
@@ -406,7 +407,7 @@ export default function CreateWorkOrderV2Page() {
                   <button
                     type="button"
                     onClick={addFullPackage}
-                    className="px-3 md:px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition font-semibold text-sm flex items-center gap-2 whitespace-nowrap"
+                    className="w-full sm:w-auto px-3 md:px-4 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition font-semibold text-sm flex items-center justify-center gap-2"
                   >
                     <CheckCircle2 className="w-4 h-4" />
                     <span className="hidden sm:inline">Full Preservation Package</span>
@@ -448,7 +449,7 @@ export default function CreateWorkOrderV2Page() {
                   const categoryServices = serviceCatalog.filter(s => s.category === category);
                   return (
                     <div key={category} className="mb-6 last:mb-0">
-                      <h3 className="font-semibold text-slate-900 mb-3 pb-2 border-b flex items-center justify-between">
+                      <h3 className="font-semibold text-slate-900 mb-3 pb-2 border-b flex flex-col min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between gap-1">
                         <span>{category}</span>
                         <span className="text-xs text-slate-500 font-normal">Click any service to add</span>
                       </h3>
@@ -467,10 +468,10 @@ export default function CreateWorkOrderV2Page() {
                                   : 'border-slate-200 hover:border-blue-400 hover:shadow-md bg-white'
                               }`}
                             >
-                              <div className="flex items-start justify-between gap-4">
+                              <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-start min-[380px]:justify-between gap-3 min-[380px]:gap-4">
                                 {/* Left Content */}
                                 <div className="flex-1 min-w-0">
-                                  <div className="flex items-start gap-2 mb-1">
+                                  <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-start gap-2 mb-1">
                                     <h4 className={`font-semibold flex-1 ${isSelected ? 'text-green-900' : 'text-slate-900'}`}>
                                       {service.name}
                                     </h4>
@@ -504,7 +505,7 @@ export default function CreateWorkOrderV2Page() {
                                   </div>
                                 </div>
                                 {/* Right Price - Always visible */}
-                                <div className="text-right flex-shrink-0 ml-2">
+                                <div className="text-left min-[380px]:text-right flex-shrink-0 min-[380px]:ml-2">
                                   <div className="text-xl md:text-2xl font-bold text-blue-600 whitespace-nowrap">
                                     ${service.basePrice}
                                   </div>
@@ -619,7 +620,7 @@ export default function CreateWorkOrderV2Page() {
                   <>
                     <div className="space-y-3 mb-4">
                       {selectedServices.map(service => (
-                        <div key={service.id} className="flex items-center justify-between gap-2 py-2 border-b last:border-b-0">
+                        <div key={service.id} className="flex flex-wrap items-center justify-between gap-2 py-2 border-b last:border-b-0">
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-slate-900 truncate">{service.name}</p>
                             <p className="text-xs text-slate-500">${service.basePrice} × {service.quantity}</p>

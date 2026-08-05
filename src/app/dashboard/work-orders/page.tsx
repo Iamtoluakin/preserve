@@ -29,7 +29,7 @@ import {
 } from '@/lib/localData';
 import { notifyWorkOrderProgress } from '@/lib/notificationClient';
 
-const STATUS_OPTIONS = ['all', 'pending', 'in-progress', 'completed', 'cancelled'];
+const STATUS_OPTIONS = ['all', 'submitted', 'under-review', 'awaiting-assignment', 'assigned', 'in-progress', 'awaiting-customer-approval', 'completed', 'cancelled', 'disputed'];
 
 export default function WorkOrdersPage() {
   const [workOrders, setWorkOrders] = useState<PreserveWorkOrder[]>([]);
@@ -86,7 +86,7 @@ export default function WorkOrdersPage() {
 
   const counts = {
     total: workOrders.length,
-    pending: workOrders.filter(wo => wo.status === 'pending').length,
+    pending: workOrders.filter(wo => wo.status === 'submitted' || wo.status === 'under-review' || wo.status === 'awaiting-assignment').length,
     inProgress: workOrders.filter(wo => wo.status === 'in-progress').length,
     completed: workOrders.filter(wo => wo.status === 'completed').length,
   };
@@ -95,7 +95,13 @@ export default function WorkOrdersPage() {
     switch (status) {
       case 'completed':   return 'bg-green-100 text-green-800';
       case 'in-progress': return 'bg-blue-100 text-blue-800';
-      case 'pending':     return 'bg-yellow-100 text-yellow-800';
+      case 'submitted':
+      case 'under-review':
+      case 'awaiting-assignment':
+      case 'awaiting-bid-approval':
+      case 'awaiting-quality-review':
+      case 'awaiting-customer-approval':
+        return 'bg-yellow-100 text-yellow-800';
       case 'cancelled':   return 'bg-red-100 text-red-800';
       default:            return 'bg-slate-100 text-slate-800';
     }
@@ -105,7 +111,13 @@ export default function WorkOrdersPage() {
     switch (status) {
       case 'completed':   return <CheckCircle2 className="w-5 h-5 text-green-600" />;
       case 'in-progress': return <Clock className="w-5 h-5 text-blue-600" />;
-      case 'pending':     return <AlertCircle className="w-5 h-5 text-yellow-500" />;
+      case 'submitted':
+      case 'under-review':
+      case 'awaiting-assignment':
+      case 'awaiting-bid-approval':
+      case 'awaiting-quality-review':
+      case 'awaiting-customer-approval':
+        return <AlertCircle className="w-5 h-5 text-yellow-500" />;
       default:            return <Clock className="w-5 h-5 text-slate-400" />;
     }
   };
@@ -156,17 +168,17 @@ export default function WorkOrdersPage() {
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-1">Work Orders</h1>
             <p className="text-sm md:text-base text-slate-600">Manage and track all service requests</p>
           </div>
-          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3">
+          <div className="grid grid-cols-1 min-[380px]:grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3">
             <button
               onClick={loadOrders}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 transition text-sm font-medium"
+              className="min-h-11 flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 transition text-sm font-medium"
             >
               <RefreshCw className="w-4 h-4" />
               Refresh
             </button>
             <Link
               href="/dashboard/work-orders/create"
-              className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 sm:px-5 py-2.5 rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
+              className="min-h-11 flex items-center justify-center gap-2 bg-blue-600 text-white px-4 sm:px-5 py-2.5 rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
             >
               <Plus className="w-4 h-4" />
               Create Work Order
@@ -310,12 +322,12 @@ export default function WorkOrdersPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2">
+                  <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-1 min-[380px]:grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2">
                     {/* Status Update */}
                     {updatingStatus === order.id ? (
-                      <div className="col-span-2 flex items-center gap-2 flex-wrap">
+                      <div className="min-[380px]:col-span-2 flex items-center gap-2 flex-wrap">
                         <span className="text-xs text-slate-500 font-medium">Set status:</span>
-                        {(['pending', 'in-progress', 'completed', 'cancelled'] as WorkOrderStatus[]).map(s => (
+                        {(['submitted', 'under-review', 'awaiting-assignment', 'assigned', 'in-progress', 'awaiting-customer-approval', 'completed', 'cancelled'] as WorkOrderStatus[]).map(s => (
                           <button
                             key={s}
                             onClick={() => updateStatus(order.id, s)}
@@ -335,7 +347,7 @@ export default function WorkOrdersPage() {
                       <>
                         <button
                           onClick={() => setUpdatingStatus(order.id)}
-                          className="flex items-center justify-center gap-1.5 px-3 py-2.5 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition text-sm"
+                          className="min-h-11 flex items-center justify-center gap-1.5 px-3 py-2.5 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition text-sm"
                         >
                           <ChevronDown className="w-3.5 h-3.5" />
                           Update Status
@@ -343,7 +355,7 @@ export default function WorkOrdersPage() {
 
                         <Link
                           href={`/dashboard/work-orders/${order.id}`}
-                          className="flex items-center justify-center gap-1.5 px-3 py-2.5 border border-blue-200 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-50 transition text-sm font-medium"
+                          className="min-h-11 flex items-center justify-center gap-1.5 px-3 py-2.5 border border-blue-200 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-50 transition text-sm font-medium"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           View Details
@@ -352,7 +364,7 @@ export default function WorkOrdersPage() {
                         {order.status !== 'completed' && (
                           <button
                             onClick={() => updateStatus(order.id, 'completed')}
-                            className="col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
+                            className="min-h-11 min-[380px]:col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
                           >
                             <CheckCircle2 className="w-3.5 h-3.5" />
                             Mark Complete
@@ -360,7 +372,7 @@ export default function WorkOrdersPage() {
                         )}
 
                         {confirmDelete === order.id ? (
-                          <div className="col-span-2 sm:col-span-1 flex flex-wrap items-center gap-2 sm:ml-auto">
+                          <div className="min-[380px]:col-span-2 sm:col-span-1 flex flex-wrap items-center gap-2 sm:ml-auto">
                             <span className="text-xs text-red-600 font-medium">Delete this order?</span>
                             <button
                               onClick={() => deleteOrder(order.id)}
@@ -378,7 +390,7 @@ export default function WorkOrdersPage() {
                         ) : (
                           <button
                             onClick={() => setConfirmDelete(order.id)}
-                            className="col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition text-sm sm:ml-auto"
+                            className="min-h-11 min-[380px]:col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition text-sm sm:ml-auto"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                             Delete

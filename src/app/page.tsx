@@ -212,10 +212,10 @@ export default function HomePage() {
   const addPropertyLoginHref = '/login?next=%2Fdashboard%2Fproperties%2Fadd';
 
   return (
-    <div className="min-h-screen min-w-[1180px] bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen overflow-x-hidden bg-gradient-to-b from-slate-50 to-white">
       {/* Nav */}
-      <nav className="border-b bg-white/80 backdrop-blur-sm fixed w-full min-w-[1180px] z-50">
-        <div className="max-w-7xl mx-auto px-8">
+      <nav className="border-b bg-white/80 backdrop-blur-sm fixed w-full z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
@@ -223,12 +223,12 @@ export default function HomePage() {
               </div>
               <span className="text-2xl font-bold text-slate-900">Preserve</span>
             </div>
-            <div className="flex items-center space-x-8">
-              <a href="#services" className="text-slate-600 hover:text-blue-600 transition text-sm">Services</a>
-              <a href="#pricing" className="text-slate-600 hover:text-blue-600 transition text-sm">Pricing</a>
-              <a href="#contact" className="text-slate-600 hover:text-blue-600 transition text-sm">Contact</a>
-              <Link href={dashboardLoginHref} className="text-slate-600 hover:text-blue-600 transition text-sm font-medium">Dashboard</Link>
-              <Link href={dashboardLoginHref} className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
+            <div className="flex items-center gap-2 sm:gap-4 lg:space-x-8">
+              <a href="#services" className="hidden sm:inline text-slate-600 hover:text-blue-600 transition text-sm">Services</a>
+              <a href="#pricing" className="hidden sm:inline text-slate-600 hover:text-blue-600 transition text-sm">Pricing</a>
+              <a href="#contact" className="hidden md:inline text-slate-600 hover:text-blue-600 transition text-sm">Contact</a>
+              <Link href={dashboardLoginHref} className="hidden sm:inline text-slate-600 hover:text-blue-600 transition text-sm font-medium">Dashboard</Link>
+              <Link href={dashboardLoginHref} className="bg-blue-600 text-white px-4 sm:px-5 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
                 Sign In
               </Link>
             </div>
@@ -237,35 +237,35 @@ export default function HomePage() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-28 pb-20 px-8">
+      <section className="pt-24 sm:pt-28 pb-14 sm:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 gap-12 items-center">
+          <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 items-center">
             <div>
               <div className="inline-block mb-4 px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
                 First Property Preservation for remote owners, landlords &amp; investors
               </div>
-              <h1 className="text-6xl font-bold text-slate-900 mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-tight">
                 Property preservation,<br />handled from anywhere
               </h1>
-              <p className="text-xl text-slate-600 mb-8">
+              <p className="text-base sm:text-lg lg:text-xl text-slate-600 mb-8">
                 Preserve coordinates lawn care, house cleaning, inspections, securing, winterization, repairs, and photo reports for every property you own.
                 Request service, track progress, and protect your asset without chasing contractors.
               </p>
-              <div className="flex flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Link href={dashboardLoginHref}
-                  className="bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700 transition font-semibold text-center flex items-center justify-center gap-2 shadow-lg shadow-blue-200">
+                  className="bg-blue-600 text-white px-5 sm:px-8 py-3.5 sm:py-4 rounded-xl hover:bg-blue-700 transition font-semibold text-center flex items-center justify-center gap-2 shadow-lg shadow-blue-200">
                   Open Your Property Dashboard <ArrowRight className="w-5 h-5" />
                 </Link>
                 <a href="#pricing"
-                  className="border-2 border-slate-300 text-slate-700 px-8 py-4 rounded-xl hover:border-green-600 hover:text-green-700 transition font-semibold text-center">
+                  className="border-2 border-slate-300 text-slate-700 px-5 sm:px-8 py-3.5 sm:py-4 rounded-xl hover:border-green-600 hover:text-green-700 transition font-semibold text-center">
                   View Pricing
                 </a>
               </div>
               <p className="text-sm text-slate-500 mt-4">Secure workspace · Sign in to view dashboard tools</p>
             </div>
             <div className="relative">
-              <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl p-8 shadow-2xl">
-                <div className="bg-white rounded-xl p-6 space-y-4">
+              <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl p-4 sm:p-8 shadow-2xl">
+                <div className="bg-white rounded-xl p-4 sm:p-6 space-y-4">
                   <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Works for</p>
                   {[
                     'Vacation & second homes',
@@ -288,19 +288,19 @@ export default function HomePage() {
       </section>
 
       {/* How it works */}
-      <section className="py-16 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-8">
+      <section className="py-14 sm:py-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-slate-900 mb-3">How It Works</h2>
             <p className="text-slate-600 max-w-xl mx-auto">Get your properties on Preserve in minutes</p>
           </div>
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid gap-4 md:grid-cols-3 md:gap-8">
             {[
               { step: '1', title: 'Open the workspace', desc: 'Jump straight into the dashboard and sketch your property care plan.', badge: 'bg-blue-600' },
               { step: '2', title: 'Add your properties', desc: 'Enter each address and pick the services you need.', badge: 'bg-green-600' },
               { step: '3', title: 'Relax', desc: "We handle everything and send you reports so you're always in the loop.", badge: 'bg-blue-600' },
             ].map(s => (
-              <div key={s.step} className="bg-white rounded-2xl p-8 shadow-sm border text-center">
+              <div key={s.step} className="bg-white rounded-2xl p-5 sm:p-8 shadow-sm border text-center">
                 <div className={`w-14 h-14 ${s.badge} text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4`}>{s.step}</div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-2">{s.title}</h3>
                 <p className="text-slate-600">{s.desc}</p>
@@ -311,15 +311,15 @@ export default function HomePage() {
       </section>
 
       {/* Services */}
-      <section id="services" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-8">
+      <section id="services" className="py-14 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-slate-900 mb-4">Everything Your Property Needs</h2>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Everything Your Property Needs</h2>
+            <p className="text-base sm:text-xl text-slate-600 max-w-2xl mx-auto">
               From regular maintenance to emergency response — all managed through one simple dashboard
             </p>
           </div>
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             {Object.entries(serviceDetails).map(([key, svc]) => (
               <ServiceCard key={key} icon={<svc.icon className="w-8 h-8" />} title={svc.title}
                 description={svc.description} price={svc.pricing.monthly}
@@ -330,23 +330,23 @@ export default function HomePage() {
       </section>
 
       {/* Coverage */}
-      <section className="py-16 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="grid grid-cols-[0.9fr_1.1fr] gap-10 items-start">
+      <section className="py-14 sm:py-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10 items-start">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-800 mb-4">
                 <MapPin className="w-4 h-4" />
                 Current launch markets
               </div>
-              <h2 className="text-4xl font-bold text-slate-900 mb-4">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
                 Starting in North Carolina and Texas
               </h2>
-              <p className="text-lg text-slate-600">
+              <p className="text-base sm:text-lg text-slate-600">
                 Preserve is rolling out city by city so every property is matched to the right service area and local crew.
                 Add your property, choose the nearest market, and we will route work orders from there.
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               {coverageMarkets.map(market => (
                 <div key={market.state} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-slate-900 mb-4">{market.state}</h3>
@@ -366,9 +366,9 @@ export default function HomePage() {
       </section>
 
       {/* Social proof */}
-      <section className="py-16 bg-blue-600 text-white">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="grid grid-cols-4 gap-8 text-center">
+      <section className="py-14 sm:py-16 bg-blue-600 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 text-center">
             {[
               { val: '1,200+', label: 'Properties Managed' },
               { val: '4.9★', label: 'Average Rating' },
@@ -376,7 +376,7 @@ export default function HomePage() {
               { val: '100%', label: 'Satisfaction Guarantee' },
             ].map(s => (
               <div key={s.label}>
-                <div className="text-5xl font-bold mb-2">{s.val}</div>
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2">{s.val}</div>
                 <div className="text-white/80">{s.label}</div>
               </div>
             ))}
@@ -385,18 +385,18 @@ export default function HomePage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-8">
+      <section id="pricing" className="py-14 sm:py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="text-4xl font-bold text-slate-900 mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-xl text-slate-600 max-w-xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Simple, Transparent Pricing</h2>
+            <p className="text-base sm:text-xl text-slate-600 max-w-xl mx-auto">
               Platform access is a flat monthly fee. Individual services are priced separately based on your needs.
             </p>
           </div>
-          <div className="grid grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid gap-4 md:grid-cols-3 md:gap-8 max-w-5xl mx-auto">
             {plans.map(plan => (
               <div key={plan.name}
-                className={`bg-white rounded-2xl p-8 border-2 flex flex-col ${plan.highlight ? 'border-blue-600 shadow-2xl shadow-blue-100 scale-105' : 'border-slate-200 shadow-sm'}`}>
+                className={`bg-white rounded-2xl p-5 sm:p-8 border-2 flex flex-col ${plan.highlight ? 'border-blue-600 shadow-2xl shadow-blue-100 md:scale-105' : 'border-slate-200 shadow-sm'}`}>
                 {plan.highlight && (
                   <div className="text-center mb-4">
                     <span className="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Most Popular</span>
@@ -429,10 +429,10 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-8">
+      <section className="py-14 sm:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-slate-900 text-center mb-12">What Our Customers Say</h2>
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid gap-4 md:grid-cols-3 md:gap-8">
             {[
               { name: 'Marcus T.', role: 'Owns 3 rental properties', text: "I live 4 hours away from my rentals. Preserve gives me eyes on the ground and handles everything. Best investment I've made." },
               { name: 'Sandra K.', role: 'Vacation home owner', text: "Our beach house sits empty 8 months a year. With Preserve, I know it's being checked, maintained, and ready whenever we show up." },
@@ -454,15 +454,15 @@ export default function HomePage() {
       </section>
 
       {/* Contact */}
-      <section id="contact" className="py-20 bg-slate-50">
-        <div className="max-w-3xl mx-auto px-8 text-center">
-          <h2 className="text-4xl font-bold text-slate-900 mb-4">Ready to Get Started?</h2>
-          <p className="text-xl text-slate-600 mb-10">Open the dashboard and add your first property in minutes.</p>
+      <section id="contact" className="py-14 sm:py-20 bg-slate-50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Ready to Get Started?</h2>
+          <p className="text-base sm:text-xl text-slate-600 mb-10">Open the dashboard and add your first property in minutes.</p>
           <Link href={dashboardLoginHref}
-            className="inline-flex items-center gap-2 bg-blue-600 text-white px-10 py-4 rounded-xl hover:bg-blue-700 transition font-semibold text-lg shadow-lg shadow-blue-200">
+            className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 sm:px-10 py-4 rounded-xl hover:bg-blue-700 transition font-semibold text-base sm:text-lg shadow-lg shadow-blue-200">
             Open Dashboard <ArrowRight className="w-5 h-5" />
           </Link>
-          <div className="grid grid-cols-3 gap-8 mt-14">
+          <div className="grid gap-8 sm:grid-cols-3 mt-14">
             {[
               { icon: <Phone className="w-6 h-6 text-blue-600" />, label: 'Phone', val: '(919) 555-0123', bg: 'bg-blue-100' },
               { icon: <Mail className="w-6 h-6 text-green-600" />, label: 'Email', val: 'hello@preserve.app', bg: 'bg-green-100' },
@@ -483,12 +483,12 @@ export default function HomePage() {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen p-0 text-center">
             <div className="fixed inset-0 bg-slate-900/75" onClick={() => setSelectedService(null)} />
-            <div className="relative inline-block bg-white rounded-2xl text-left overflow-hidden shadow-xl my-8 align-middle max-w-3xl w-full">
+            <div className="relative inline-block bg-white sm:rounded-2xl text-left overflow-hidden shadow-xl my-0 sm:my-8 align-middle max-w-3xl w-full max-h-screen sm:max-h-[calc(100vh-4rem)] overflow-y-auto">
               <button onClick={() => setSelectedService(null)}
                 className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full shadow-lg hover:bg-slate-100 transition">
                 <X className="w-6 h-6 text-slate-600" />
               </button>
-              <div className="relative h-64 bg-slate-100">
+              <div className="relative h-48 sm:h-64 bg-slate-100">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={service.images[currentImageIndex]} alt={service.title} className="w-full h-full object-cover" />
                 {service.images.length > 1 && (
@@ -500,16 +500,16 @@ export default function HomePage() {
                   </div>
                 )}
               </div>
-              <div className="p-8">
+              <div className="p-4 sm:p-8">
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">{service.title}</h2>
                 <p className="text-slate-600 mb-4">{service.longDescription}</p>
-                <div className="grid grid-cols-4 gap-4 mb-6 p-4 bg-slate-50 rounded-xl text-center text-sm">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 p-3 sm:p-4 bg-slate-50 rounded-xl text-center text-sm">
                   <div><DollarSign className="w-5 h-5 text-green-600 mx-auto mb-1" /><div className="text-slate-500">Pricing</div><div className="font-semibold text-slate-900 text-sm leading-snug">{service.pricing.monthly}</div></div>
                   <div><Clock className="w-5 h-5 text-blue-600 mx-auto mb-1" /><div className="text-slate-500">Time</div><div className="font-semibold text-slate-900">{service.timeline}</div></div>
                   <div><Users className="w-5 h-5 text-blue-600 mx-auto mb-1" /><div className="text-slate-500">Team</div><div className="font-semibold text-slate-900">{service.team}</div></div>
                   <div><CheckSquare className="w-5 h-5 text-blue-600 mx-auto mb-1" /><div className="text-slate-500">Schedule</div><div className="font-semibold text-slate-900">{service.frequency}</div></div>
                 </div>
-                <div className="grid grid-cols-2 gap-2 mb-6">
+                <div className="grid gap-2 sm:grid-cols-2 mb-6">
                   {service.includes.map((item, i) => (
                     <div key={i} className="flex items-start gap-2 text-sm">
                       <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
@@ -517,7 +517,7 @@ export default function HomePage() {
                     </div>
                   ))}
                 </div>
-                <div className="flex flex-row gap-3 pt-4 border-t">
+                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
                   <Link href={dashboardLoginHref} onClick={() => setSelectedService(null)}
                     className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition font-semibold text-center">
                     Get Started
@@ -535,9 +535,9 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="bg-slate-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="grid grid-cols-4 gap-8">
-            <div className="col-span-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="sm:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-2xl">P</span>

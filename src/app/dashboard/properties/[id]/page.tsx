@@ -27,7 +27,13 @@ export default function PropertyDetailPage() {
     switch (status) {
       case 'completed':   return 'bg-green-100 text-green-800';
       case 'in-progress': return 'bg-blue-100 text-blue-800';
-      case 'pending':     return 'bg-yellow-100 text-yellow-800';
+      case 'submitted':
+      case 'under-review':
+      case 'awaiting-assignment':
+      case 'awaiting-bid-approval':
+      case 'awaiting-quality-review':
+      case 'awaiting-customer-approval':
+        return 'bg-yellow-100 text-yellow-800';
       default:            return 'bg-slate-100 text-slate-800';
     }
   };
@@ -55,48 +61,49 @@ export default function PropertyDetailPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="bg-white border-b sticky top-0 z-40">
-        <div className="px-4 md:px-6 py-4 flex items-center justify-between">
+        <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-3">
           <Link href="/dashboard" className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-2xl">P</span>
+            <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-xl md:text-2xl">P</span>
             </div>
-            <span className="text-2xl font-bold text-slate-900">Preserve</span>
+            <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
           </Link>
           <Link href="/dashboard/properties" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition text-sm">
             <ArrowLeft className="w-4 h-4" />
-            Back to Properties
+            <span className="hidden sm:inline">Back to Properties</span>
+            <span className="sm:hidden">Properties</span>
           </Link>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 md:px-6 py-8">
+      <main className="max-w-5xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8">
         {/* Property Header */}
-        <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-          <div className="flex items-start gap-4">
-            <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Home className="w-7 h-7 text-blue-600" />
+        <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6 mb-6">
+          <div className="flex items-start gap-3 md:gap-4">
+            <div className="w-11 h-11 md:w-14 md:h-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Home className="w-6 h-6 md:w-7 md:h-7 text-blue-600" />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
-                <h1 className="text-2xl font-bold text-slate-900">{property.address}</h1>
+                <h1 className="text-xl md:text-2xl font-bold text-slate-900 break-words">{property.address}</h1>
                 <span className="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800">
                   {property.status || 'Active'}
                 </span>
               </div>
-              <p className="text-slate-600 flex items-center gap-1 mb-4">
-                <MapPin className="w-4 h-4" />
-                {property.city}, {property.state} {property.zip} · {property.county}
+              <p className="text-sm md:text-base text-slate-600 flex items-start gap-1 mb-4 break-words">
+                <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>{property.city}, {property.state} {property.zip} · {property.county}</span>
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="grid grid-cols-1 min-[380px]:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
                   <p className="text-slate-500 mb-0.5">Property Type</p>
-                  <p className="font-semibold text-slate-800 flex items-center gap-1">
+                  <p className="font-semibold text-slate-800 flex items-center gap-1 break-words">
                     <Building2 className="w-3.5 h-3.5" />{property.propertyType || 'N/A'}
                   </p>
                 </div>
                 <div>
                   <p className="text-slate-500 mb-0.5">Bank Reference</p>
-                  <p className="font-semibold text-slate-800 flex items-center gap-1">
+                  <p className="font-semibold text-slate-800 flex items-center gap-1 break-all">
                     <FileText className="w-3.5 h-3.5" />{property.bankReference || 'N/A'}
                   </p>
                 </div>
@@ -109,7 +116,7 @@ export default function PropertyDetailPage() {
                 </div>
                 <div>
                   <p className="text-slate-500 mb-0.5">Parcel ID</p>
-                  <p className="font-semibold text-slate-800">{property.parcelId || 'N/A'}</p>
+                  <p className="font-semibold text-slate-800 break-all">{property.parcelId || 'N/A'}</p>
                 </div>
               </div>
               {property.notes && (
@@ -123,13 +130,13 @@ export default function PropertyDetailPage() {
 
         {/* Work Orders */}
         <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-          <div className="px-6 py-4 border-b flex items-center justify-between">
+          <div className="px-4 md:px-6 py-4 border-b flex flex-col min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between gap-3">
             <h2 className="font-semibold text-slate-900">
               Work Orders ({workOrders.length})
             </h2>
             <Link
               href={`/dashboard/work-orders/create?propertyId=${property.id}`}
-              className="flex items-center gap-1.5 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-medium"
+              className="w-full min-[380px]:w-auto flex items-center justify-center gap-1.5 bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 transition text-sm font-medium"
             >
               <Plus className="w-4 h-4" />
               Create Work Order
@@ -154,7 +161,7 @@ export default function PropertyDetailPage() {
                 <Link
                   key={wo.id}
                   href={`/dashboard/work-orders/${wo.id}`}
-                  className="px-6 py-4 flex items-start gap-3 hover:bg-slate-50 transition"
+                  className="px-4 md:px-6 py-4 flex items-start gap-3 hover:bg-slate-50 transition"
                 >
                   <div className="mt-0.5">{getStatusIcon(wo.status)}</div>
                   <div className="flex-1 min-w-0">
@@ -164,7 +171,7 @@ export default function PropertyDetailPage() {
                         {formatWorkOrderStatus(wo.status).toUpperCase()}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-700 truncate">{wo.serviceType || 'Service not specified'}</p>
+                    <p className="text-sm text-slate-700 break-words md:truncate">{wo.serviceType || 'Service not specified'}</p>
                     <p className="text-xs text-slate-400 mt-0.5">
                       {wo.scheduledDate ? new Date(wo.scheduledDate).toLocaleDateString() : 'No date'} ·{' '}
                       {wo.totalCost > 0 ? `$${wo.totalCost.toLocaleString()}` : ''}
