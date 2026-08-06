@@ -20,6 +20,7 @@ import {
   Settings,
   ChevronRight
 } from 'lucide-react';
+import { readWorkOrders } from '@/lib/localData';
 
 // Work order interface
 interface WorkOrder {
@@ -55,6 +56,58 @@ interface Photo {
   caption: string;
   timestamp: string;
   gpsCoordinates?: string;
+}
+
+type DispatchAssignment = {
+  workOrderId: string;
+  contractorName: string;
+  companyName: string;
+  score: number;
+  assignedAt: string;
+};
+
+const ASSIGNMENTS_KEY = 'preserve_work_order_assignments';
+
+function readDispatchAssignments(): DispatchAssignment[] {
+  if (typeof window === 'undefined') return [];
+  const stored = window.localStorage.getItem(ASSIGNMENTS_KEY);
+  if (!stored) return [];
+
+  try {
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function readDispatchedVendorOrders(): WorkOrder[] {
+  const assignments = readDispatchAssignments();
+  if (assignments.length === 0) return [];
+
+  const workOrders = readWorkOrders();
+  return assignments
+    .flatMap(assignment => {
+      const order = workOrders.find(item => item.id === assignment.workOrderId);
+      if (!order) return [];
+
+      return [{
+        id: order.orderNumber || order.id,
+        client: 'PreserveHQ',
+        property: order.propertyId || order.id,
+        address: order.propertyAddress,
+        city: '',
+        services: [order.serviceType],
+        totalCost: order.totalCost,
+        priority: order.priority as WorkOrder['priority'],
+        status: order.status === 'assigned' ? 'new' : (order.status.replace('-', '_') as WorkOrder['status']),
+        requestedDate: order.scheduledDate || new Date(order.createdAt).toLocaleDateString(),
+        createdAt: new Date(order.createdAt).toLocaleString(),
+        notes: order.description || order.accessInstructions || `Assigned through PreserveHQ dispatch. Match score: ${assignment.score}/100.`,
+        progressUpdates: [],
+        photos: [],
+      } satisfies WorkOrder];
+    });
 }
 
 // ─── Detail Panel (shared between mobile and desktop) ──────────────────────
@@ -215,10 +268,32 @@ export default function VendorWorkOrdersPage() {
 
   // Load work orders from localStorage
   useEffect(() => {
-    const stored = localStorage.getItem('vendor-work-orders');
-    if (stored) {
-      setWorkOrders(JSON.parse(stored));
-    } else {
+    async function loadAssignedWorkOrders() {
+      try {
+        const response = await fetch('/api/vendor/work-orders', { cache: 'no-store' });
+        if (response.ok) {
+          const result = await response.json();
+          if (Array.isArray(result.workOrders) && result.workOrders.length > 0) {
+            setWorkOrders(result.workOrders);
+            localStorage.setItem('vendor-work-orders', JSON.stringify(result.workOrders));
+            return;
+          }
+        }
+      } catch {
+        // Fall through to local/demo data.
+      }
+
+      const dispatchedOrders = readDispatchedVendorOrders();
+      if (dispatchedOrders.length > 0) {
+        setWorkOrders(dispatchedOrders);
+        localStorage.setItem('vendor-work-orders', JSON.stringify(dispatchedOrders));
+        return;
+      }
+
+      const stored = localStorage.getItem('vendor-work-orders');
+      if (stored) {
+        setWorkOrders(JSON.parse(stored));
+      } else {
       // Initialize with sample data
       const sampleOrders: WorkOrder[] = [
         {
@@ -298,9 +373,12 @@ export default function VendorWorkOrdersPage() {
           photos: []
         }
       ];
-      setWorkOrders(sampleOrders);
-      localStorage.setItem('vendor-work-orders', JSON.stringify(sampleOrders));
+        setWorkOrders(sampleOrders);
+        localStorage.setItem('vendor-work-orders', JSON.stringify(sampleOrders));
+      }
     }
+
+    loadAssignedWorkOrders();
   }, []);
 
   // Save to localStorage whenever orders change
@@ -683,10 +761,10 @@ export default function VendorWorkOrdersPage() {
           <Home className="w-5 h-5" />
           <span className="text-xs font-medium">Client View</span>
         </Link>
-        <button className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500">
+        <Link href="/vendor/onboarding" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500">
           <Settings className="w-5 h-5" />
-          <span className="text-xs font-medium">Settings</span>
-        </button>
+          <span className="text-xs font-medium">Profile</span>
+        </Link>
       </nav>
     </div>
   );

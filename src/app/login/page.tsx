@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react';
@@ -10,7 +10,18 @@ function getSiteUrl() {
   return process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 }
 
-async function ensureUserProfile(fullName?: string) {
+type AccountType = 'customer' | 'contractor';
+
+function getRequestedAccountType(): AccountType {
+  if (typeof window === 'undefined') return 'customer';
+  return new URLSearchParams(window.location.search).get('role') === 'contractor' ? 'contractor' : 'customer';
+}
+
+function getDefaultNextPath(accountType: AccountType) {
+  return accountType === 'contractor' ? '/vendor/onboarding' : '/dashboard';
+}
+
+async function ensureUserProfile(fullName?: string, accountType: AccountType = 'customer') {
   const { data: userData, error: userError } = await supabase.auth.getUser();
   const user = userData.user;
 
@@ -23,6 +34,7 @@ async function ensureUserProfile(fullName?: string) {
         id: user.id,
         email: user.email,
         full_name: fullName || user.user_metadata?.full_name || null,
+        role: accountType,
       },
       { onConflict: 'id' }
     );
@@ -59,6 +71,7 @@ function GoogleMark() {
 export default function LoginPage() {
   const redirectingRef = useRef(false);
   const [mode, setMode] = useState<'login' | 'signup'>('login');
+  const [accountType, setAccountType] = useState<AccountType>(() => getRequestedAccountType());
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -69,10 +82,16 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [signupDone, setSignupDone] = useState(false);
 
-  const getNextPath = () => {
-    if (typeof window === 'undefined') return '/dashboard';
-    return new URLSearchParams(window.location.search).get('next') || '/dashboard';
-  };
+  const getNextPath = useCallback(() => {
+    if (typeof window === 'undefined') return getDefaultNextPath(accountType);
+    return new URLSearchParams(window.location.search).get('next') || getDefaultNextPath(accountType);
+  }, [accountType]);
+
+  useEffect(() => {
+    const requestedType = getRequestedAccountType();
+    setAccountType(requestedType);
+    if (requestedType === 'contractor') setMode('signup');
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -83,7 +102,7 @@ export default function LoginPage() {
       try {
         redirectingRef.current = true;
         await saveAppSession(accessToken);
-        void ensureUserProfile().catch(error => console.warn('Could not sync user profile:', error));
+        void ensureUserProfile(undefined, accountType).catch(error => console.warn('Could not sync user profile:', error));
 
         moveToNextPath(getNextPath());
       } catch (err: any) {
@@ -137,7 +156,7 @@ export default function LoginPage() {
       active = false;
       listener.subscription.unsubscribe();
     };
-  }, []);
+  }, [accountType, getNextPath]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,7 +172,7 @@ export default function LoginPage() {
         if (!accessToken) throw new Error('Could not create a login session. Please try again.');
 
         await saveAppSession(accessToken);
-        void ensureUserProfile().catch(error => console.warn('Could not sync user profile:', error));
+        void ensureUserProfile(undefined, accountType).catch(error => console.warn('Could not sync user profile:', error));
 
         moveToNextPath(getNextPath());
       } else {
@@ -171,9 +190,9 @@ export default function LoginPage() {
         if (data.session) {
           const accessToken = data.session.access_token;
           await saveAppSession(accessToken);
-          void ensureUserProfile(name).catch(error => console.warn('Could not sync user profile:', error));
+          void ensureUserProfile(name, accountType).catch(error => console.warn('Could not sync user profile:', error));
 
-          moveToNextPath('/dashboard');
+          moveToNextPath(getDefaultNextPath(accountType));
         } else {
           setSignupDone(true);
         }
@@ -193,7 +212,7 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${getSiteUrl()}/login?next=${encodeURIComponent(next)}`,
+        redirectTo: `${getSiteUrl()}/login?next=${encodeURIComponent(next)}&role=${accountType}`,
         queryParams: {
           access_type: 'offline',
           prompt: 'select_account',
@@ -254,11 +273,30 @@ export default function LoginPage() {
             >Create Account</button>
           </div>
 
+          <div className="mb-6 grid grid-cols-2 gap-2 rounded-xl border border-slate-200 bg-slate-50 p-1">
+            <button
+              type="button"
+              onClick={() => { setAccountType('customer'); setError(''); }}
+              className={`rounded-lg px-3 py-2 text-sm font-bold transition ${accountType === 'customer' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              Customer
+            </button>
+            <button
+              type="button"
+              onClick={() => { setAccountType('contractor'); setMode('signup'); setError(''); }}
+              className={`rounded-lg px-3 py-2 text-sm font-bold transition ${accountType === 'contractor' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              Contractor
+            </button>
+          </div>
+
           <h2 className="text-xl font-bold text-slate-900 mb-1">
-            Sign in to open Preserve
+            {accountType === 'contractor' ? 'Join the PreserveHQ field network' : 'Sign in to open Preserve'}
           </h2>
           <p className="text-slate-500 text-sm mb-6">
-            Create a secure workspace before viewing properties, pricing tools, and service requests.
+            {accountType === 'contractor'
+              ? 'Create a contractor account, submit your coverage and services, then receive assigned work after approval.'
+              : 'Create a secure workspace before viewing properties, pricing tools, and service requests.'}
           </p>
 
           {error && (
@@ -314,7 +352,7 @@ export default function LoginPage() {
               <button type="submit" disabled={loading}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition disabled:opacity-60 flex items-center justify-center gap-2 mt-2">
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                {mode === 'login' ? 'Sign In' : 'Create Free Account'}
+                {mode === 'login' ? 'Sign In' : accountType === 'contractor' ? 'Create Contractor Account' : 'Create Free Account'}
               </button>
             </form>
           )}

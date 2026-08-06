@@ -352,10 +352,10 @@ export default function VendorDashboardPage() {
           <Users className="w-5 h-5" />
           <span className="text-xs font-medium">Client View</span>
         </Link>
-        <button className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500">
+        <Link href="/vendor/onboarding" className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-slate-500">
           <Settings className="w-5 h-5" />
-          <span className="text-xs font-medium">Settings</span>
-        </button>
+          <span className="text-xs font-medium">Profile</span>
+        </Link>
       </nav>
     </div>
   );

@@ -19,6 +19,7 @@ import {
   CheckCircle2,
   BarChart3,
   LogOut,
+  UserCheck,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import WorkOrderAnalytics from '@/components/WorkOrderAnalytics';
@@ -169,6 +170,9 @@ export default function DashboardPage() {
             <Link href="/dashboard/work-orders">
               <NavItem icon={<FileText />} label="Work Orders" />
             </Link>
+            <Link href="/dashboard/dispatch">
+              <NavItem icon={<UserCheck />} label="Dispatch" />
+            </Link>
             <Link href="/dashboard/inspections">
               <NavItem icon={<Camera />} label="Inspections" />
             </Link>
@@ -221,6 +225,10 @@ export default function DashboardPage() {
               </Link>
               <Link href="/dashboard/work-orders/create" className="min-h-11 border border-slate-300 text-slate-700 px-3 md:px-4 py-2.5 rounded-lg hover:border-blue-600 hover:text-blue-600 transition text-sm md:text-base font-semibold text-center flex items-center justify-center">
                 Create Work Order
+              </Link>
+              <Link href="/dashboard/dispatch" className="min-h-11 border border-slate-300 text-slate-700 px-3 md:px-4 py-2.5 rounded-lg hover:border-blue-600 hover:text-blue-600 transition text-sm md:text-base font-semibold text-center flex items-center justify-center gap-2">
+                <UserCheck className="w-4 h-4" />
+                Dispatch
               </Link>
             </div>
             <div className="grid grid-cols-1 min-[380px]:grid-cols-2 sm:flex sm:items-center gap-2">

@@ -141,6 +141,7 @@ export default function HomePage() {
   const [selectedService, setSelectedService] = useState<(typeof serviceCategories)[number] | null>(null);
   const getStartedHref = '/login?next=%2Fdashboard%2Fproperties%2Fadd';
   const signInHref = '/login?next=%2Fdashboard';
+  const contractorHref = '/login?role=contractor&next=%2Fvendor%2Fonboarding';
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#f7fbff] text-slate-950">
@@ -290,6 +291,12 @@ export default function HomePage() {
                 <p className="text-sm font-semibold text-slate-700">{point}</p>
               </div>
             ))}
+            <Link
+              href={contractorHref}
+              className="inline-flex min-h-12 items-center justify-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100"
+            >
+              Apply as a Contractor
+            </Link>
           </div>
         </div>
       </section>
