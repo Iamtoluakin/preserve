@@ -6,8 +6,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://preservehq.com"),
-  title: "Request work. We dispatch the pro.",
-  description: "PreserveHQ lets customers request property work, assigns approved contractors, tracks the job, and returns photo proof.",
+  title: "Property care. Handled.",
+  description: "From one home to an entire portfolio, PreserveHQ coordinates trusted local professionals to keep properties cared for.",
   alternates: {
     canonical: "https://preservehq.com",
   },
@@ -18,25 +18,25 @@ export const metadata: Metadata = {
     apple: "/preserve-icon.svg",
   },
   openGraph: {
-    title: "Request work. We dispatch the pro.",
-    description: "PreserveHQ lets customers request property work, assigns approved contractors, tracks the job, and returns photo proof.",
+    title: "Property care. Handled.",
+    description: "From one home to an entire portfolio, PreserveHQ coordinates trusted local professionals to keep properties cared for.",
     url: "https://preservehq.com",
     siteName: "PreserveHQ",
     images: [
       {
-        url: "/opengraph-image?v=4",
+        url: "/opengraph-image?v=5",
         width: 1200,
         height: 630,
-        alt: "PreserveHQ request work and dispatch approved pros",
+        alt: "PreserveHQ property care and preservation operations",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Request work. We dispatch the pro.",
-    description: "PreserveHQ lets customers request property work, assigns approved contractors, tracks the job, and returns photo proof.",
-    images: ["/opengraph-image?v=4"],
+    title: "Property care. Handled.",
+    description: "From one home to an entire portfolio, PreserveHQ coordinates trusted local professionals to keep properties cared for.",
+    images: ["/opengraph-image?v=5"],
   },
 };
 
