@@ -3,6 +3,13 @@ import { getAuthenticatedUser } from '@/lib/serverSupabase';
 import { normalizeWorkflowStatus } from '@/lib/operations.js';
 
 function fromDatabaseWorkOrder(order: Record<string, any>) {
+  const status = normalizeWorkflowStatus(order.status);
+  const vendorStatus = status === 'assigned' || status === 'offered'
+    ? 'new'
+    : status === 'in-progress'
+      ? 'in_progress'
+      : status;
+
   return {
     id: order.id,
     client: order.client_name || order.customer_name || 'PreserveHQ customer',
@@ -12,7 +19,7 @@ function fromDatabaseWorkOrder(order: Record<string, any>) {
     services: [order.service_type || 'Property service'],
     totalCost: Number(order.total_cost || 0),
     priority: order.priority || 'normal',
-    status: normalizeWorkflowStatus(order.status).replace(/-/g, '_'),
+    status: vendorStatus,
     requestedDate: order.scheduled_date || order.created_at || '',
     acceptedDate: order.accepted_at || null,
     startedDate: order.started_at || null,

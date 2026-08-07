@@ -21,6 +21,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { readWorkOrders } from '@/lib/localData';
+import { supabase } from '@/lib/supabase';
 
 // Work order interface
 interface WorkOrder {
@@ -270,7 +271,12 @@ export default function VendorWorkOrdersPage() {
   useEffect(() => {
     async function loadAssignedWorkOrders() {
       try {
-        const response = await fetch('/api/vendor/work-orders', { cache: 'no-store' });
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
+        const response = await fetch('/api/vendor/work-orders', {
+          cache: 'no-store',
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        });
         if (response.ok) {
           const result = await response.json();
           if (Array.isArray(result.workOrders) && result.workOrders.length > 0) {

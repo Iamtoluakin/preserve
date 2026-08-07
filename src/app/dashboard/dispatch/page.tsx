@@ -21,8 +21,10 @@ import {
   writeWorkOrders,
   formatWorkOrderStatus,
 } from '@/lib/localData';
+import { supabase } from '@/lib/supabase';
 import {
   AssignmentRecommendation,
+  ContractorProfile,
   buildAssignmentRecommendations,
   readContractorProfiles,
 } from '@/lib/vendorData';
@@ -109,13 +111,69 @@ export default function DispatchPage() {
   const [workOrders, setWorkOrders] = useState<PreserveWorkOrder[]>([]);
   const [selectedId, setSelectedId] = useState('');
   const [assignments, setAssignments] = useState<Assignment[]>([]);
-  const contractors = useMemo(() => readContractorProfiles(), []);
+  const [contractors, setContractors] = useState<ContractorProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [notice, setNotice] = useState('');
+  const [assigningId, setAssigningId] = useState('');
 
   useEffect(() => {
-    const orders = seedDispatchOrders();
-    setWorkOrders(orders);
-    setSelectedId(orders.find(order => ['submitted', 'under-review', 'awaiting-assignment'].includes(order.status))?.id || orders[0]?.id || '');
-    setAssignments(readAssignments());
+    async function loadDispatchData() {
+      setLoading(true);
+      setNotice('');
+
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+
+      try {
+        const [ordersResponse, contractorsResponse] = await Promise.all([
+          fetch('/api/dispatch/work-orders', { cache: 'no-store', headers }),
+          fetch('/api/dispatch/contractors', { cache: 'no-store', headers }),
+        ]);
+
+        if (!ordersResponse.ok || !contractorsResponse.ok) {
+          throw new Error('Dispatch APIs are not available yet.');
+        }
+
+        const [ordersResult, contractorsResult] = await Promise.all([
+          ordersResponse.json(),
+          contractorsResponse.json(),
+        ]);
+
+        const apiOrders = Array.isArray(ordersResult.workOrders) ? ordersResult.workOrders : [];
+        const apiContractors = Array.isArray(contractorsResult.contractors) ? contractorsResult.contractors : [];
+
+        if (apiOrders.length > 0) {
+          setWorkOrders(apiOrders);
+          setSelectedId(apiOrders.find((order: PreserveWorkOrder) => ['submitted', 'under-review', 'awaiting-assignment'].includes(order.status))?.id || apiOrders[0]?.id || '');
+        } else {
+          const fallbackOrders = seedDispatchOrders();
+          setWorkOrders(fallbackOrders);
+          setSelectedId(fallbackOrders.find(order => ['submitted', 'under-review', 'awaiting-assignment'].includes(order.status))?.id || fallbackOrders[0]?.id || '');
+          setNotice('No live dispatch queue found yet. Showing starter work orders.');
+        }
+
+        if (apiContractors.length > 0) {
+          setContractors(apiContractors);
+        } else {
+          setContractors(readContractorProfiles());
+          setNotice(current => current || 'No approved live contractors found yet. Showing starter contractor profiles.');
+        }
+
+        setAssignments(readAssignments());
+      } catch (err: any) {
+        const orders = seedDispatchOrders();
+        setWorkOrders(orders);
+        setSelectedId(orders.find(order => ['submitted', 'under-review', 'awaiting-assignment'].includes(order.status))?.id || orders[0]?.id || '');
+        setContractors(readContractorProfiles());
+        setAssignments(readAssignments());
+        setNotice(err.message || 'Using local dispatch data until Supabase is available.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadDispatchData();
   }, []);
 
   const selectedOrder = workOrders.find(order => order.id === selectedId) || workOrders[0];
@@ -124,8 +182,10 @@ export default function DispatchPage() {
     ? buildAssignmentRecommendations(selectedOrder, contractors)
     : [];
 
-  const assignContractor = (recommendation: AssignmentRecommendation) => {
+  const assignContractor = async (recommendation: AssignmentRecommendation) => {
     if (!selectedOrder) return;
+    setAssigningId(recommendation.contractor.id);
+    setNotice('');
 
     const assignment: Assignment = {
       workOrderId: selectedOrder.id,
@@ -142,10 +202,59 @@ export default function DispatchPage() {
     ];
     const nextOrders = workOrders.map(order => order.id === selectedOrder.id ? { ...order, status: 'assigned' as const } : order);
 
-    setAssignments(nextAssignments);
-    setWorkOrders(nextOrders);
-    writeAssignments(nextAssignments);
-    writeWorkOrders(nextOrders);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+
+      if (!token) throw new Error('No Supabase session found. Saved locally for now.');
+
+      const response = await fetch('/api/dispatch/assign', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          workOrderId: selectedOrder.id,
+          contractorId: recommendation.contractor.id,
+          score: recommendation.score,
+          scoreBreakdown: { reasons: recommendation.reasons },
+        }),
+      });
+
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        throw new Error(result.message || 'Could not save assignment to Supabase.');
+      }
+
+      const result = await response.json();
+      const savedAssignment = result.assignment ? {
+        workOrderId: result.assignment.workOrderId,
+        contractorId: result.assignment.contractorId,
+        contractorName: result.assignment.contractorName,
+        companyName: result.assignment.companyName,
+        score: result.assignment.score,
+        assignedAt: result.assignment.assignedAt,
+      } : assignment;
+
+      const savedAssignments = [
+        savedAssignment,
+        ...assignments.filter(item => item.workOrderId !== selectedOrder.id),
+      ];
+      setAssignments(savedAssignments);
+      setWorkOrders(nextOrders);
+      writeAssignments(savedAssignments);
+      writeWorkOrders(nextOrders);
+      setNotice(`Assigned to ${savedAssignment.companyName}.`);
+    } catch (err: any) {
+      setAssignments(nextAssignments);
+      setWorkOrders(nextOrders);
+      writeAssignments(nextAssignments);
+      writeWorkOrders(nextOrders);
+      setNotice(err.message || 'Assignment saved locally.');
+    } finally {
+      setAssigningId('');
+    }
   };
 
   return (
@@ -169,6 +278,11 @@ export default function DispatchPage() {
       </header>
 
       <main className="mx-auto max-w-7xl px-3 py-6 pb-28 sm:px-4 md:px-6 lg:pb-8">
+        {notice && (
+          <div className="mb-5 rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm font-semibold text-blue-800">
+            {notice}
+          </div>
+        )}
         <div className="mb-6 grid gap-4 md:grid-cols-3">
           <Metric title="Needs assignment" value={workOrders.filter(order => ['submitted', 'under-review', 'awaiting-assignment'].includes(order.status)).length.toString()} />
           <Metric title="Assigned" value={workOrders.filter(order => order.status === 'assigned').length.toString()} />
@@ -185,7 +299,9 @@ export default function DispatchPage() {
               <p className="mt-1 text-sm text-slate-500">Select a job to see ranked contractor matches.</p>
             </div>
             <div className="divide-y">
-              {workOrders.map(order => (
+              {loading ? (
+                <div className="p-8 text-center text-sm font-semibold text-slate-500">Loading dispatch queue...</div>
+              ) : workOrders.map(order => (
                 <button
                   key={order.id}
                   onClick={() => setSelectedId(order.id)}
@@ -266,9 +382,10 @@ export default function DispatchPage() {
                         </div>
                         <button
                           onClick={() => assignContractor(recommendation)}
+                          disabled={assigningId === recommendation.contractor.id}
                           className="inline-flex min-h-11 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-bold text-white transition hover:bg-blue-700"
                         >
-                          Assign Job
+                          {assigningId === recommendation.contractor.id ? 'Assigning...' : 'Assign Job'}
                         </button>
                       </div>
                     </article>
