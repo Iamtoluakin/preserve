@@ -4,15 +4,16 @@
   <rect x="112" y="112" width="84" height="84" rx="24" fill="#2563eb"/>
   <text x="154" y="172" fill="#ffffff" font-family="Arial, sans-serif" font-size="56" font-weight="800" text-anchor="middle">P</text>
   <text x="220" y="145" fill="#0f172a" font-family="Arial, sans-serif" font-size="42" font-weight="800">PreserveHQ</text>
-  <text x="220" y="184" fill="#64748b" font-family="Arial, sans-serif" font-size="24" font-weight="700">Managed property operations</text>
-  <text x="112" y="350" fill="#0f172a" font-family="Arial, sans-serif" font-size="86" font-weight="900">
-    <tspan x="112" dy="0">Property care.</tspan>
-    <tspan x="112" dy="86">Handled.</tspan>
+  <text x="220" y="184" fill="#64748b" font-family="Arial, sans-serif" font-size="24" font-weight="700">Managed property work</text>
+  <text x="112" y="336" fill="#0f172a" font-family="Arial, sans-serif" font-size="78" font-weight="900">
+    <tspan x="112" dy="0">Request work.</tspan>
+    <tspan x="112" dy="82">We dispatch</tspan>
+    <tspan x="112" dy="82">the pro.</tspan>
   </text>
-  <text x="112" y="542" fill="#475569" font-family="Arial, sans-serif" font-size="34" font-weight="500">
-    <tspan x="112" dy="0">PreserveHQ coordinates verified</tspan>
-    <tspan x="112" dy="44">local professionals from request</tspan>
-    <tspan x="112" dy="44">to completion.</tspan>
+  <text x="112" y="588" fill="#475569" font-family="Arial, sans-serif" font-size="32" font-weight="500">
+    <tspan x="112" dy="0">Approved contractors.</tspan>
+    <tspan x="112" dy="42">Tracked jobs.</tspan>
+    <tspan x="112" dy="42">Photo proof.</tspan>
   </text>
   <clipPath id="heroClip"><rect x="112" y="690" width="856" height="520" rx="44"/></clipPath>
   <image href="/images/preservehq-operations-hero.jpg" x="112" y="650" width="856" height="570" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)"/>

@@ -4,14 +4,15 @@
   <rect x="92" y="92" width="72" height="72" rx="20" fill="#2563eb"/>
   <text x="128" y="144" fill="#ffffff" font-family="Arial, sans-serif" font-size="48" font-weight="800" text-anchor="middle">P</text>
   <text x="180" y="122" fill="#0f172a" font-family="Arial, sans-serif" font-size="36" font-weight="800">PreserveHQ</text>
-  <text x="180" y="153" fill="#64748b" font-family="Arial, sans-serif" font-size="18" font-weight="700">Managed property operations</text>
-  <text x="92" y="336" fill="#0f172a" font-family="Arial, sans-serif" font-size="82" font-weight="900">
-    <tspan x="92" dy="0">Property care.</tspan>
-    <tspan x="92" dy="82">Handled.</tspan>
+  <text x="180" y="153" fill="#64748b" font-family="Arial, sans-serif" font-size="18" font-weight="700">Managed property work</text>
+  <text x="92" y="312" fill="#0f172a" font-family="Arial, sans-serif" font-size="70" font-weight="900">
+    <tspan x="92" dy="0">Request work.</tspan>
+    <tspan x="92" dy="72">We dispatch</tspan>
+    <tspan x="92" dy="72">the pro.</tspan>
   </text>
-  <text x="92" y="508" fill="#475569" font-family="Arial, sans-serif" font-size="28" font-weight="500">
-    <tspan x="92" dy="0">Request property services, track the work,</tspan>
-    <tspan x="92" dy="36">and review the results from anywhere.</tspan>
+  <text x="92" y="532" fill="#475569" font-family="Arial, sans-serif" font-size="24" font-weight="500">
+    <tspan x="92" dy="0">Approved contractors. Tracked jobs.</tspan>
+    <tspan x="92" dy="32">Photo proof when the work is done.</tspan>
   </text>
   <clipPath id="heroClip"><rect x="668" y="92" width="440" height="446" rx="34"/></clipPath>
   <image href="/images/preservehq-operations-hero.jpg" x="590" y="92" width="668" height="446" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)"/>

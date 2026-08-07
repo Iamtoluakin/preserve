@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
-export const alt = "PreserveHQ property care handled";
+export const alt = "PreserveHQ request work and dispatch approved pros";
 export const size = {
   width: 1200,
   height: 630,
@@ -67,7 +67,7 @@ export default function Image() {
                   PreserveHQ
                 </div>
                 <div style={{ color: "#64748b", fontSize: 18, fontWeight: 700 }}>
-                  Managed property operations
+                  Managed property work
                 </div>
               </div>
             </div>
@@ -82,7 +82,7 @@ export default function Image() {
                   letterSpacing: 0,
                 }}
               >
-                Property care. Handled.
+                Request work. We dispatch the pro.
               </div>
               <div
                 style={{
@@ -93,7 +93,7 @@ export default function Image() {
                   fontWeight: 500,
                 }}
               >
-                PreserveHQ coordinates verified local professionals and manages work from request to completion.
+                Customers request property work. PreserveHQ assigns approved contractors and returns photo proof.
               </div>
             </div>
           </div>
@@ -149,7 +149,7 @@ export default function Image() {
                 ✓
               </div>
               <div style={{ color: "#0f172a", fontSize: 22, fontWeight: 800 }}>
-                Photo report ready
+                Proof ready to review
               </div>
             </div>
           </div>

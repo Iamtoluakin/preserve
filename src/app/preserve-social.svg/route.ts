@@ -1,24 +1,25 @@
-const socialSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="PreserveHQ property care handled">
+const socialSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="PreserveHQ request work and dispatch approved pros">
   <rect width="1200" height="630" fill="#0f172a"/>
   <rect x="48" y="48" width="1104" height="534" rx="42" fill="#ffffff"/>
   <rect x="92" y="92" width="72" height="72" rx="20" fill="#2563eb"/>
   <text x="128" y="144" fill="#ffffff" font-family="Arial, sans-serif" font-size="48" font-weight="800" text-anchor="middle">P</text>
   <text x="180" y="122" fill="#0f172a" font-family="Arial, sans-serif" font-size="36" font-weight="800">PreserveHQ</text>
-  <text x="180" y="153" fill="#64748b" font-family="Arial, sans-serif" font-size="18" font-weight="700">Managed property operations</text>
-  <text x="92" y="336" fill="#0f172a" font-family="Arial, sans-serif" font-size="82" font-weight="900">
-    <tspan x="92" dy="0">Property care.</tspan>
-    <tspan x="92" dy="82">Handled.</tspan>
+  <text x="180" y="153" fill="#64748b" font-family="Arial, sans-serif" font-size="18" font-weight="700">Managed property work</text>
+  <text x="92" y="312" fill="#0f172a" font-family="Arial, sans-serif" font-size="70" font-weight="900">
+    <tspan x="92" dy="0">Request work.</tspan>
+    <tspan x="92" dy="72">We dispatch</tspan>
+    <tspan x="92" dy="72">the pro.</tspan>
   </text>
-  <text x="92" y="508" fill="#475569" font-family="Arial, sans-serif" font-size="28" font-weight="500">
-    <tspan x="92" dy="0">PreserveHQ coordinates verified local professionals</tspan>
-    <tspan x="92" dy="36">and manages work from request to completion.</tspan>
+  <text x="92" y="532" fill="#475569" font-family="Arial, sans-serif" font-size="24" font-weight="500">
+    <tspan x="92" dy="0">Approved contractors. Tracked jobs.</tspan>
+    <tspan x="92" dy="32">Photo proof when the work is done.</tspan>
   </text>
   <clipPath id="heroClip"><rect x="668" y="92" width="440" height="446" rx="34"/></clipPath>
   <image href="/images/preservehq-operations-hero.jpg" x="590" y="92" width="668" height="446" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)"/>
   <rect x="694" y="468" width="294" height="58" rx="24" fill="#ffffff" opacity="0.94"/>
   <circle cx="730" cy="497" r="18" fill="#16a34a"/>
   <text x="730" y="505" fill="#ffffff" font-family="Arial, sans-serif" font-size="24" font-weight="900" text-anchor="middle">✓</text>
-  <text x="758" y="505" fill="#0f172a" font-family="Arial, sans-serif" font-size="22" font-weight="800">Photo report ready</text>
+  <text x="758" y="505" fill="#0f172a" font-family="Arial, sans-serif" font-size="22" font-weight="800">Proof ready to review</text>
 </svg>`;
 
 export function GET() {
