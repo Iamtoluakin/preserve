@@ -4,18 +4,12 @@ import Link from 'next/link';
 import { useState } from 'react';
 import {
   ArrowRight,
-  BriefcaseBusiness,
-  Building2,
-  Camera,
   CheckCircle2,
   ClipboardCheck,
-  ClipboardList,
   Clock,
-  History,
   Home,
   LockKeyhole,
   MapPin,
-  MessageSquare,
   Repeat,
   Shield,
   Sparkles,
@@ -41,100 +35,31 @@ const serviceCategories = [
 const steps = [
   {
     number: '01',
-    title: 'Request',
-    text: 'Tell us what your property needs and upload any helpful details or photos.',
+    title: 'Customer requests work',
+    text: 'Add the property, choose the service, and include access notes, timing, and photos.',
   },
   {
     number: '02',
-    title: 'We Assign',
-    text: 'We match the work with a verified local professional.',
+    title: 'PreserveHQ dispatches',
+    text: 'We rank approved contractors by coverage, service fit, insurance, availability, and quality.',
   },
   {
     number: '03',
-    title: 'Track the Work',
-    text: 'Follow progress, messages, photos, and updates in one place.',
+    title: 'Field pro completes it',
+    text: 'The assigned contractor accepts, starts, sends updates, uploads photos, and marks the job complete.',
   },
   {
     number: '04',
-    title: 'Review and Approve',
-    text: 'Review the completed work and keep the full record attached to the property.',
-  },
-];
-
-const outcomes = [
-  {
-    title: 'Work without chasing contractors',
-    text: 'PreserveHQ handles assignment, communication, progress tracking, and follow-up.',
-    icon: MessageSquare,
-  },
-  {
-    title: 'Proof you can trust',
-    text: 'Review timestamps, updates, and before-and-after photos from anywhere.',
-    icon: Camera,
-  },
-  {
-    title: 'Every property has a history',
-    text: 'Keep completed work, reports, invoices, notes, and service records organized by property.',
-    icon: History,
-  },
-  {
-    title: 'One platform for recurring needs',
-    text: 'Manage inspections, lawn care, cleanings, repairs, preservation, and recurring maintenance.',
-    icon: Repeat,
-  },
-];
-
-const audiences = [
-  {
-    title: 'Property owners',
-    icon: Home,
-    text: 'Protect remote, vacant, inherited, or second homes without coordinating every job yourself.',
-  },
-  {
-    title: 'Landlords and investors',
-    icon: Building2,
-    text: 'Keep service requests, repairs, turns, and records organized across every unit.',
-  },
-  {
-    title: 'Property managers',
-    icon: ClipboardList,
-    text: 'Centralize requests, status updates, photo proof, and approvals across portfolios.',
-  },
-  {
-    title: 'Asset and regional operators',
-    icon: BriefcaseBusiness,
-    text: 'Create repeatable operating visibility across markets, vendors, and field work.',
+    title: 'Customer reviews proof',
+    text: 'Updates, completion photos, notes, and history stay attached to the property record.',
   },
 ];
 
 const trustPoints = [
-  'Professionals are reviewed before receiving work',
-  'Work is tracked through PreserveHQ',
-  'Required updates and photo proof stay attached to the job',
-  'Property history remains available to the customer',
-  'Issues can be reviewed through the platform',
-];
-
-const plans = [
-  {
-    name: 'Starter',
-    price: 49,
-    description: 'For one property and essential service tracking.',
-    features: ['1 property', 'Work order management', 'Photo documentation', 'Email support'],
-  },
-  {
-    name: 'Essential',
-    price: 99,
-    description: 'For owners managing several properties.',
-    features: ['Up to 5 properties', 'Priority work orders', 'Recurring services', 'Phone and email support'],
-    featured: true,
-  },
-  {
-    name: 'Portfolio',
-    price: 199,
-    description: 'For investors and operators with ongoing needs.',
-    features: ['Unlimited properties', 'Portfolio tracking', 'Team and vendor access', 'Dedicated account support'],
-  },
+  'Contractors apply, submit coverage and service categories, and wait for approval',
+  'Dispatch uses service fit, location, workload, availability, insurance, and performance',
+  'Workers receive assigned jobs through the vendor portal',
+  'Customers see progress updates, photos, completion notes, and property history',
 ];
 
 export default function HomePage() {
@@ -152,16 +77,16 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-12">
           <div className="animate-[fadeUp_700ms_ease-out_both]">
             <p className="mb-5 inline-flex rounded-full border border-blue-200 bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-blue-700 shadow-sm">
-              Property operations, simplified
+              Managed property work
             </p>
             <h1 className="max-w-3xl text-5xl font-black leading-[0.95] tracking-normal text-slate-950 sm:text-6xl lg:text-7xl">
-              Property care.
+              Request the work.
               <span className="block bg-gradient-to-r from-blue-600 to-sky-500 bg-clip-text text-transparent">
-                Handled.
+                We dispatch the pro.
               </span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
-              Request inspections, maintenance, cleaning, repairs, and preservation services. We assign verified local professionals and manage the work from start to finish.
+              PreserveHQ connects property owners with approved field contractors, manages assignment, tracks progress, and returns photo proof when the job is done.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -180,9 +105,9 @@ export default function HomePage() {
             <div className="mt-6 space-y-2 text-sm font-medium text-slate-600">
               <p className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-green-600" />
-                Trusted property care through verified local professionals.
+                Built around customer requests, PreserveHQ dispatch, contractor execution, and proof.
               </p>
-              <p>Built for property owners, landlords, investors, and property managers.</p>
+              <p>For owners, landlords, investors, property managers, and approved field pros.</p>
             </div>
           </div>
 
@@ -190,14 +115,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <ProductPreview />
-
       <section id="how-it-works" className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <SectionIntro
-            label="How it works"
-            title="From request to completion."
-            text="PreserveHQ coordinates the entire job so you do not have to manage contractors, photos, updates, and paperwork separately."
+            label="Workflow"
+            title="The whole loop, from request to proof."
+            text="Customers do not browse a contractor directory. PreserveHQ turns the request into an assigned, tracked, reviewable job."
           />
           <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {steps.map((step) => (
@@ -211,31 +134,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="owners" className="bg-white px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <SectionIntro
-            label="Visibility"
-            title="Know what is happening at every property."
-            text="Request the work. Track the progress. Review the proof."
-          />
-          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {outcomes.map((outcome) => (
-              <article key={outcome.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                <outcome.icon className="h-7 w-7 text-blue-600" aria-hidden="true" />
-                <h3 className="mt-5 text-lg font-bold text-slate-950">{outcome.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">{outcome.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section id="services" className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <SectionIntro
             label="Services"
-            title="One trusted platform for the work your properties need."
-            text="Choose the service category and PreserveHQ coordinates the operating details."
+            title="The common jobs PreserveHQ can coordinate."
+            text="Start with the service category. PreserveHQ handles dispatch, field updates, completion proof, and the property record."
           />
           <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {serviceCategories.map((service) => (
@@ -253,36 +157,30 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-slate-950 px-4 py-16 text-white sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-sky-300">Who it is for</p>
-            <h2 className="mt-4 text-3xl font-black tracking-normal sm:text-4xl">
-              Built for operators who need property work to be visible, repeatable, and reviewable.
-            </h2>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {audiences.map((audience) => (
-              <article key={audience.title} className="rounded-2xl border border-white/10 bg-white/5 p-6">
-                <audience.icon className="h-7 w-7 text-sky-300" aria-hidden="true" />
-                <h3 className="mt-4 text-lg font-bold">{audience.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-300">{audience.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section id="contractors" className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 rounded-[2rem] border border-blue-100 bg-gradient-to-br from-white to-blue-50 p-6 shadow-sm sm:p-10 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-blue-700">Trust</p>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-blue-700">Network</p>
             <h2 className="mt-4 text-3xl font-black tracking-normal text-slate-950 sm:text-4xl">
-              Local professionals. PreserveHQ accountability.
+              Approved contractors, assigned with context.
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-600">
-              PreserveHQ is not a public contractor directory. Customers request outcomes, and the platform manages assignment, communication, proof, and review.
+              Workers sign in through the contractor portal, complete onboarding, and receive jobs only after PreserveHQ approves their coverage, services, and compliance details.
             </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={contractorHref}
+                className="inline-flex min-h-12 items-center justify-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100"
+              >
+                Apply as a Contractor
+              </Link>
+              <Link
+                href="/vendor/dashboard"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-800 transition hover:border-blue-300 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100"
+              >
+                Contractor Portal
+              </Link>
+            </div>
           </div>
           <div className="grid gap-3">
             {trustPoints.map((point) => (
@@ -291,57 +189,6 @@ export default function HomePage() {
                 <p className="text-sm font-semibold text-slate-700">{point}</p>
               </div>
             ))}
-            <Link
-              href={contractorHref}
-              className="inline-flex min-h-12 items-center justify-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100"
-            >
-              Apply as a Contractor
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section id="pricing" className="bg-white px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <SectionIntro
-            label="Pricing"
-            title="Simple plans for property operations."
-            text="Platform access is a monthly fee. Individual services are priced based on property needs and scope."
-          />
-          <div className="mt-10 grid gap-4 lg:grid-cols-3">
-            {plans.map((plan) => (
-              <article
-                key={plan.name}
-                className={`rounded-2xl border p-6 shadow-sm ${plan.featured ? 'border-blue-500 bg-blue-50 shadow-blue-100' : 'border-slate-200 bg-white'}`}
-              >
-                {plan.featured && (
-                  <span className="mb-4 inline-flex rounded-full bg-blue-600 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
-                    Most popular
-                  </span>
-                )}
-                <h3 className="text-xl font-black text-slate-950">{plan.name}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{plan.description}</p>
-                <div className="mt-6">
-                  <span className="text-4xl font-black text-slate-950">${plan.price}</span>
-                  <span className="font-semibold text-slate-500">/mo</span>
-                </div>
-                <p className="mt-1 text-xs text-slate-500">+ service costs</p>
-                <ul className="mt-6 space-y-3">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2 text-sm font-medium text-slate-700">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href={getStartedHref}
-                  className={`mt-8 inline-flex min-h-11 w-full items-center justify-center rounded-xl px-5 py-3 text-sm font-bold transition focus:outline-none focus:ring-4 focus:ring-blue-100 ${plan.featured ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'}`}
-                >
-                  Get Started
-                </Link>
-              </article>
-            ))}
           </div>
         </div>
       </section>
@@ -349,10 +196,10 @@ export default function HomePage() {
       <section id="final-cta" className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl rounded-[2rem] bg-slate-950 px-6 py-12 text-center text-white shadow-2xl shadow-slate-200 sm:px-10 sm:py-16">
           <h2 className="text-4xl font-black tracking-normal sm:text-5xl">
-            Take care of every property from one place.
+            Submit the job. Track the proof.
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-            Request the work, follow the progress, and review the results without managing every contractor yourself.
+            PreserveHQ gives customers one place to request property work and gives approved contractors one place to complete it.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
@@ -391,11 +238,9 @@ function Header({ getStartedHref, signInHref }: { getStartedHref: string; signIn
           <span className="text-xl font-black text-slate-950">PreserveHQ</span>
         </Link>
         <div className="hidden items-center gap-6 lg:flex">
-          <a href="#how-it-works" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">How It Works</a>
+          <a href="#how-it-works" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">Workflow</a>
           <a href="#services" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">Services</a>
-          <a href="#owners" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">For Property Owners</a>
-          <a href="#contractors" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">For Contractors</a>
-          <a href="#pricing" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">Pricing</a>
+          <a href="#contractors" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">Network</a>
         </div>
         <div className="flex items-center gap-2">
           <Link href={signInHref} className="hidden min-h-11 items-center rounded-xl px-4 text-sm font-bold text-slate-700 transition hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100 sm:inline-flex">
@@ -443,93 +288,6 @@ function HeroVisual() {
         </div>
       </div>
     </div>
-  );
-}
-
-function ProductPreview() {
-  return (
-    <section className="px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-xl shadow-blue-100/50 sm:p-6 lg:p-8">
-          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-blue-700">Product preview</p>
-              <h2 className="mt-3 text-2xl font-black tracking-normal text-slate-950 sm:text-3xl">
-                One place to request, track, review, and manage property work.
-              </h2>
-            </div>
-            <span className="inline-flex w-fit rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
-              Ready for review
-            </span>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm font-bold text-slate-500">Property overview</p>
-                  <h3 className="mt-2 text-xl font-black text-slate-950">Oak Ridge Rental</h3>
-                  <p className="mt-1 text-sm text-slate-600">Raleigh, NC · Single family</p>
-                </div>
-                <div className="rounded-xl bg-blue-100 p-3 text-blue-700">
-                  <Home className="h-6 w-6" />
-                </div>
-              </div>
-              <div className="mt-6 space-y-3">
-                {['Inspection completed', 'Cleaning scheduled', 'Lawn care recurring'].map((item) => (
-                  <div key={item} className="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm">
-                    <span className="font-semibold text-slate-700">{item}</span>
-                    <CheckCircle2 className="h-4 w-4 text-green-600" />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-slate-200 bg-white p-5">
-              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                <div>
-                  <p className="text-sm font-bold text-blue-700">Active service request</p>
-                  <h3 className="mt-2 text-xl font-black text-slate-950">Exterior inspection and photo report</h3>
-                  <p className="mt-1 text-sm text-slate-600">Assigned professional · Field workflow in progress</p>
-                </div>
-                <div className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-bold text-yellow-800">
-                  Awaiting customer approval
-                </div>
-              </div>
-
-              <div className="mt-6 grid gap-4 md:grid-cols-[1fr_0.8fr]">
-                <div className="space-y-3">
-                  {[
-                    ['Request submitted', 'Customer details captured'],
-                    ['Professional assigned', 'Coverage and availability confirmed'],
-                    ['Photo evidence uploaded', 'Before and after set attached'],
-                    ['Ready for review', 'Completion package prepared'],
-                  ].map(([title, text], index) => (
-                    <div key={title} className="flex gap-3">
-                      <div className={`mt-1 h-3 w-3 rounded-full ${index === 3 ? 'bg-blue-600' : 'bg-green-500'}`} />
-                      <div>
-                        <p className="text-sm font-bold text-slate-900">{title}</p>
-                        <p className="text-xs text-slate-500">{text}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-2xl bg-slate-100 p-3">
-                    <div className="aspect-[4/3] rounded-xl bg-gradient-to-br from-slate-300 to-slate-100" />
-                    <p className="mt-2 text-xs font-bold text-slate-600">Before</p>
-                  </div>
-                  <div className="rounded-2xl bg-blue-50 p-3">
-                    <div className="aspect-[4/3] rounded-xl bg-gradient-to-br from-green-200 to-blue-100" />
-                    <p className="mt-2 text-xs font-bold text-blue-700">After</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -610,7 +368,7 @@ function Footer({ signInHref }: { signInHref: string }) {
         <div className="flex flex-wrap gap-4 text-sm font-semibold text-slate-600">
           <a href="#how-it-works" className="hover:text-blue-700">How It Works</a>
           <a href="#services" className="hover:text-blue-700">Services</a>
-          <a href="#pricing" className="hover:text-blue-700">Pricing</a>
+          <a href="#contractors" className="hover:text-blue-700">Network</a>
           <Link href={signInHref} className="hover:text-blue-700">Sign In</Link>
         </div>
       </div>
