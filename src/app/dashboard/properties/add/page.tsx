@@ -10,8 +10,8 @@ const NC_COUNTIES = ['Alamance','Alexander','Alleghany','Anson','Ashe','Avery','
 
 type Step = 'search'|'confirm'|'manual'|'saving'|'done';
 type LookupResult = { address:string; city:string; state:string; zip:string; county:string; beds:number|null; baths:number|null; sqft:number|null; year_built:number|null; property_type:string|null; stories:number|null; lot_size:number|null; apn:string|null; owner_name:string|null; estimated_value:number|null; };
-type Extras = { nickname:string; notes:string; county:string; };
-const defaultManual = { address:'', city:'', state:'NC', zip:'', county:'', propertyType:'', parcelId:'', notes:'' };
+type Extras = { nickname:string; notes:string; county:string; purpose:string; };
+const defaultManual = { address:'', city:'', state:'NC', zip:'', county:'', propertyType:'', parcelId:'', notes:'', purpose:'' };
 
 export default function AddPropertyPage() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function AddPropertyPage() {
   const [lookingUp, setLookingUp] = useState(false);
   const [lookupError, setLookupError] = useState('');
   const [result, setResult] = useState<LookupResult|null>(null);
-  const [extras, setExtras] = useState<Extras>({ nickname:'', notes:'', county:'' });
+  const [extras, setExtras] = useState<Extras>({ nickname:'', notes:'', county:'', purpose:'' });
   const [manual, setManual] = useState(defaultManual);
 
   const handleLookup = async () => {
@@ -35,7 +35,7 @@ export default function AddPropertyPage() {
       const data = await res.json();
       if (!res.ok) { setLookupError(data.error || 'Property not found. You can add it manually.'); return; }
       setResult(data);
-      setExtras({ nickname:'', notes:'', county: data.county?.replace(' County','') || '' });
+      setExtras({ nickname:'', notes:'', county: data.county?.replace(' County','') || '', purpose:'' });
       setStep('confirm');
     } catch { setLookupError('Lookup failed. Please try again or add manually.'); }
     finally { setLookingUp(false); }
@@ -73,7 +73,8 @@ export default function AddPropertyPage() {
         </div>
       </header>
       <main className="max-w-2xl mx-auto px-4 md:px-6 py-6 md:py-8 pb-24">
-        <div className="mb-6"><h1 className="text-2xl font-bold text-slate-900">Add New Property</h1><p className="text-slate-500 text-sm mt-1">Search by address — we&apos;ll pull in the property details for you to confirm.</p></div>
+        <div className="mb-6"><h1 className="text-2xl font-bold text-slate-900">Add New Property</h1><p className="text-slate-500 text-sm mt-1">Personal homes, rentals, foreclosures &amp; investments — search by address and we&apos;ll pull in the details.</p></div>
+
         {step !== 'done' && step !== 'manual' && (
           <div className="flex items-center gap-2 mb-6">
             {[{l:'Search'},{l:'Confirm'},{l:'Save'}].map((s,i) => (
@@ -129,6 +130,23 @@ export default function AddPropertyPage() {
             <div className="bg-white rounded-2xl shadow-sm border p-5">
               <p className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2"><Edit3 className="w-4 h-4 text-blue-500"/>Add Your Details (Optional)</p>
               <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-medium text-slate-600 mb-1">Property Purpose *</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { value:'personal', label:'🏠 Personal Home', desc:'Primary or vacation home' },
+                      { value:'rental', label:'🏘️ Rental Property', desc:'Tenant occupied' },
+                      { value:'foreclosure', label:'🏦 Foreclosure / REO', desc:'Bank or lender owned' },
+                      { value:'investment', label:'📈 Investment', desc:'Vacant or for sale' },
+                    ].map(opt => (
+                      <button key={opt.value} type="button" onClick={()=>setExtras(p=>({...p,purpose:opt.value}))}
+                        className={`text-left p-3 rounded-xl border-2 transition-all ${extras.purpose===opt.value?'border-blue-500 bg-blue-50':'border-slate-200 hover:border-slate-300 bg-white'}`}>
+                        <p className="text-xs font-semibold text-slate-900">{opt.label}</p>
+                        <p className="text-xs text-slate-400 mt-0.5">{opt.desc}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div><label className="block text-xs font-medium text-slate-600 mb-1">County</label><select value={extras.county} onChange={e=>setExtras(p=>({...p,county:e.target.value}))} className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm bg-white"><option value="">Select county</option>{NC_COUNTIES.map(c=><option key={c} value={c}>{c} County</option>)}</select></div>
                   <div><label className="block text-xs font-medium text-slate-600 mb-1">Nickname</label><input type="text" value={extras.nickname} onChange={e=>setExtras(p=>({...p,nickname:e.target.value}))} placeholder="e.g. Beach House" className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
@@ -156,6 +174,23 @@ export default function AddPropertyPage() {
               <div><label className="block text-sm font-medium text-slate-700 mb-1">Property Type</label><select value={manual.propertyType} onChange={e=>setManual(p=>({...p,propertyType:e.target.value}))} className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm bg-white"><option value="">Select type</option><option>Single Family</option><option>Condo</option><option>Townhouse</option><option>Multi-Family</option><option>Commercial</option><option>Vacant Land</option></select></div>
             </div>
             <div><label className="block text-sm font-medium text-slate-700 mb-1">Notes</label><textarea value={manual.notes} onChange={e=>setManual(p=>({...p,notes:e.target.value}))} rows={2} placeholder="Any additional notes…" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm resize-none"/></div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Property Purpose</label>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { value:'personal', label:'🏠 Personal Home', desc:'Primary or vacation home' },
+                  { value:'rental', label:'🏘️ Rental Property', desc:'Tenant occupied' },
+                  { value:'foreclosure', label:'🏦 Foreclosure / REO', desc:'Bank or lender owned' },
+                  { value:'investment', label:'📈 Investment', desc:'Vacant or for sale' },
+                ].map(opt => (
+                  <button key={opt.value} type="button" onClick={()=>setManual(p=>({...p,purpose:opt.value}))}
+                    className={`text-left p-3 rounded-xl border-2 transition-all ${manual.purpose===opt.value?'border-blue-500 bg-blue-50':'border-slate-200 hover:border-slate-300 bg-white'}`}>
+                    <p className="text-xs font-semibold text-slate-900">{opt.label}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">{opt.desc}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
               <button type="button" onClick={()=>setStep('search')} className="flex-1 py-3 border border-slate-300 rounded-xl text-slate-600 font-medium hover:bg-slate-50 text-sm">← Back to Search</button>
               <button type="submit" className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 text-sm">Add Property</button>
