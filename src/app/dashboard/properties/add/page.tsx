@@ -1,492 +1,173 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
-import { ArrowLeft, Home, MapPin, FileText, Upload } from 'lucide-react';
-import { readProperties, type PreserveProperty, writeProperties } from '@/lib/localData';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, MapPin, Home, FileText, Loader2, CheckCircle2, Sparkles, BedDouble, Bath, Ruler, Calendar, TreePine, Building2, User, AlertCircle, ArrowRight, Edit3 } from 'lucide-react';
+import { readProperties, writeProperties, type PreserveProperty } from '@/lib/localData';
 
-const SERVICE_AREAS = {
-  NC: [
-    {
-      name: 'Triangle',
-      counties: ['Wake', 'Durham', 'Orange', 'Chatham', 'Johnston'],
-      cities: [
-        { name: 'Raleigh', county: 'Wake' },
-        { name: 'Durham', county: 'Durham' },
-        { name: 'Chapel Hill', county: 'Orange' },
-        { name: 'Cary', county: 'Wake' },
-        { name: 'Apex', county: 'Wake' },
-        { name: 'Garner', county: 'Wake' },
-        { name: 'Wake Forest', county: 'Wake' },
-        { name: 'Clayton', county: 'Johnston' },
-      ],
-    },
-    {
-      name: 'Charlotte Metro',
-      counties: ['Mecklenburg', 'Union', 'Cabarrus', 'Gaston', 'Iredell'],
-      cities: [
-        { name: 'Charlotte', county: 'Mecklenburg' },
-        { name: 'Concord', county: 'Cabarrus' },
-        { name: 'Gastonia', county: 'Gaston' },
-        { name: 'Matthews', county: 'Mecklenburg' },
-        { name: 'Huntersville', county: 'Mecklenburg' },
-        { name: 'Mooresville', county: 'Iredell' },
-        { name: 'Monroe', county: 'Union' },
-      ],
-    },
-    {
-      name: 'Triad',
-      counties: ['Guilford', 'Forsyth', 'Alamance', 'Davidson', 'Randolph'],
-      cities: [
-        { name: 'Greensboro', county: 'Guilford' },
-        { name: 'Winston-Salem', county: 'Forsyth' },
-        { name: 'High Point', county: 'Guilford' },
-        { name: 'Burlington', county: 'Alamance' },
-        { name: 'Lexington', county: 'Davidson' },
-        { name: 'Asheboro', county: 'Randolph' },
-      ],
-    },
-    {
-      name: 'Coastal NC',
-      counties: ['New Hanover', 'Brunswick', 'Onslow', 'Pender', 'Carteret'],
-      cities: [
-        { name: 'Wilmington', county: 'New Hanover' },
-        { name: 'Leland', county: 'Brunswick' },
-        { name: 'Jacksonville', county: 'Onslow' },
-        { name: 'Hampstead', county: 'Pender' },
-        { name: 'Morehead City', county: 'Carteret' },
-      ],
-    },
-  ],
-  TX: [
-    {
-      name: 'Dallas-Fort Worth',
-      counties: ['Dallas', 'Tarrant', 'Collin', 'Denton', 'Rockwall'],
-      cities: [
-        { name: 'Dallas', county: 'Dallas' },
-        { name: 'Fort Worth', county: 'Tarrant' },
-        { name: 'Arlington', county: 'Tarrant' },
-        { name: 'Plano', county: 'Collin' },
-        { name: 'Frisco', county: 'Collin' },
-        { name: 'Denton', county: 'Denton' },
-        { name: 'Rockwall', county: 'Rockwall' },
-      ],
-    },
-    {
-      name: 'Houston Metro',
-      counties: ['Harris', 'Fort Bend', 'Montgomery', 'Brazoria', 'Galveston'],
-      cities: [
-        { name: 'Houston', county: 'Harris' },
-        { name: 'Katy', county: 'Harris' },
-        { name: 'Sugar Land', county: 'Fort Bend' },
-        { name: 'The Woodlands', county: 'Montgomery' },
-        { name: 'Pearland', county: 'Brazoria' },
-        { name: 'Galveston', county: 'Galveston' },
-      ],
-    },
-    {
-      name: 'Austin-San Antonio',
-      counties: ['Travis', 'Williamson', 'Hays', 'Bexar', 'Comal'],
-      cities: [
-        { name: 'Austin', county: 'Travis' },
-        { name: 'Round Rock', county: 'Williamson' },
-        { name: 'San Marcos', county: 'Hays' },
-        { name: 'San Antonio', county: 'Bexar' },
-        { name: 'New Braunfels', county: 'Comal' },
-      ],
-    },
-    {
-      name: 'East Texas',
-      counties: ['Smith', 'Gregg', 'Bowie', 'Nacogdoches', 'Angelina'],
-      cities: [
-        { name: 'Tyler', county: 'Smith' },
-        { name: 'Longview', county: 'Gregg' },
-        { name: 'Texarkana', county: 'Bowie' },
-        { name: 'Nacogdoches', county: 'Nacogdoches' },
-        { name: 'Lufkin', county: 'Angelina' },
-      ],
-    },
-  ],
-} as const;
+const NC_COUNTIES = ['Alamance','Alexander','Alleghany','Anson','Ashe','Avery','Beaufort','Bertie','Bladen','Brunswick','Buncombe','Burke','Cabarrus','Caldwell','Camden','Carteret','Caswell','Catawba','Chatham','Cherokee','Chowan','Clay','Cleveland','Columbus','Craven','Cumberland','Currituck','Dare','Davidson','Davie','Duplin','Durham','Edgecombe','Forsyth','Franklin','Gaston','Gates','Graham','Granville','Greene','Guilford','Halifax','Harnett','Haywood','Henderson','Hertford','Hoke','Hyde','Iredell','Jackson','Johnston','Jones','Lee','Lenoir','Lincoln','Macon','Madison','Martin','McDowell','Mecklenburg','Mitchell','Montgomery','Moore','Nash','New Hanover','Northampton','Onslow','Orange','Pamlico','Pasquotank','Pender','Perquimans','Person','Pitt','Polk','Randolph','Richmond','Robeson','Rockingham','Rowan','Rutherford','Sampson','Scotland','Stanly','Stokes','Surry','Swain','Transylvania','Tyrrell','Union','Vance','Wake','Warren','Washington','Watauga','Wayne','Wilkes','Wilson','Yadkin','Yancey'];
+
+type Step = 'search'|'confirm'|'manual'|'saving'|'done';
+type LookupResult = { address:string; city:string; state:string; zip:string; county:string; beds:number|null; baths:number|null; sqft:number|null; year_built:number|null; property_type:string|null; stories:number|null; lot_size:number|null; apn:string|null; owner_name:string|null; estimated_value:number|null; };
+type Extras = { nickname:string; notes:string; county:string; };
+const defaultManual = { address:'', city:'', state:'NC', zip:'', county:'', propertyType:'', parcelId:'', notes:'' };
 
 export default function AddPropertyPage() {
-  const [formData, setFormData] = useState({
-    address: '',
-    city: '',
-    county: '',
-    state: 'NC',
-    serviceArea: '',
-    zip: '',
-    parcelId: '',
-    propertyType: 'single_family',
-    acquisitionDate: '',
-    bankReference: '',
-    notes: ''
-  });
+  const router = useRouter();
+  const [step, setStep] = useState<Step>('search');
+  const [searchAddress, setSearchAddress] = useState('');
+  const [searchCity, setSearchCity] = useState('');
+  const [searchState, setSearchState] = useState('NC');
+  const [searchZip, setSearchZip] = useState('');
+  const [lookingUp, setLookingUp] = useState(false);
+  const [lookupError, setLookupError] = useState('');
+  const [result, setResult] = useState<LookupResult|null>(null);
+  const [extras, setExtras] = useState<Extras>({ nickname:'', notes:'', county:'' });
+  const [manual, setManual] = useState(defaultManual);
 
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Create new property object
-    const newProperty: PreserveProperty = {
-      id: Date.now().toString(),
-      address: formData.address,
-      city: formData.city,
-      county: formData.county,
-      state: formData.state,
-      serviceArea: formData.serviceArea,
-      zip: formData.zip,
-      propertyType: formData.propertyType,
-      acquisitionDate: formData.acquisitionDate || new Date().toISOString().split('T')[0],
-      status: 'Active',
-      bankReference: formData.bankReference || `REF-${Date.now()}`,
-      parcelId: formData.parcelId,
-      notes: formData.notes,
-    };
-
-    writeProperties([newProperty, ...readProperties()]);
-    setSubmitted(true);
-    
-    // Redirect to properties list after 2 seconds
-    setTimeout(() => {
-      setSubmitted(false);
-      window.location.href = '/dashboard/properties';
-    }, 2000);
+  const handleLookup = async () => {
+    if (!searchAddress || !searchCity) { setLookupError('Please enter a street address and city.'); return; }
+    setLookingUp(true); setLookupError('');
+    try {
+      const params = new URLSearchParams({ street: searchAddress, city: searchCity, state: searchState, zip: searchZip });
+      const res = await fetch(`/api/property-lookup?${params}`);
+      const data = await res.json();
+      if (!res.ok) { setLookupError(data.error || 'Property not found. You can add it manually.'); return; }
+      setResult(data);
+      setExtras({ nickname:'', notes:'', county: data.county?.replace(' County','') || '' });
+      setStep('confirm');
+    } catch { setLookupError('Lookup failed. Please try again or add manually.'); }
+    finally { setLookingUp(false); }
   };
 
-  const stateAreas = SERVICE_AREAS[formData.state as keyof typeof SERVICE_AREAS] || [];
-  const selectedArea = stateAreas.find(area => area.name === formData.serviceArea);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-
-    setFormData(previous => {
-      if (name === 'state') {
-        return { ...previous, state: value, serviceArea: '', city: '', county: '' };
-      }
-
-      if (name === 'serviceArea') {
-        return { ...previous, serviceArea: value, city: '', county: '' };
-      }
-
-      if (name === 'city') {
-        const city = selectedArea?.cities.find(option => option.name === value);
-        return { ...previous, city: value, county: city?.county || previous.county };
-      }
-
-      return { ...previous, [name]: value };
-    });
+  const handleSaveFromLookup = () => {
+    if (!result) return;
+    setStep('saving');
+    const p: PreserveProperty = { id:`prop_${Date.now()}`, address:result.address, city:result.city, state:result.state, zip:result.zip, county:extras.county, propertyType:result.property_type||'', parcelId:result.apn||'', notes:extras.notes, status:'active' };
+    writeProperties([...readProperties(), p]);
+    setStep('done');
+    setTimeout(() => router.push('/dashboard/properties'), 1500);
   };
 
-  if (submitted) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-8 md:p-12 max-w-md w-full text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">Property Added Successfully!</h2>
-          <p className="text-slate-600 mb-6">Your property has been added. You can now schedule services for it.</p>
-          <div className="text-sm text-slate-500">Redirecting to dashboard...</div>
-        </div>
-      </div>
-    );
-  }
+  const handleSaveManual = (e: React.FormEvent) => {
+    e.preventDefault(); setStep('saving');
+    const p: PreserveProperty = { id:`prop_${Date.now()}`, address:manual.address, city:manual.city, state:manual.state, zip:manual.zip, county:manual.county, propertyType:manual.propertyType, parcelId:manual.parcelId, notes:manual.notes, status:'active' };
+    writeProperties([...readProperties(), p]);
+    setStep('done');
+    setTimeout(() => router.push('/dashboard/properties'), 1500);
+  };
+
+  const fmt = (v: number|null|undefined, suffix='') => v != null ? `${v.toLocaleString()}${suffix}` : '—';
+  const stepIdx = step==='confirm' ? 1 : (step==='saving'||step==='done') ? 2 : 0;
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Header */}
       <header className="bg-white border-b sticky top-0 z-40">
-        <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="flex items-center space-x-3">
-                <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-xl md:text-2xl">P</span>
-                </div>
-                <span className="text-xl md:text-2xl font-bold text-slate-900">Preserve</span>
-              </Link>
-            </div>
-            <Link href="/dashboard" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition text-sm">
-              <ArrowLeft className="w-5 h-5" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
-              <span className="sm:hidden">Dashboard</span>
-            </Link>
-          </div>
+        <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
+          <Link href="/dashboard" className="flex items-center space-x-2">
+            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center"><span className="text-white font-bold text-lg">P</span></div>
+            <span className="text-xl font-bold text-slate-900">Preserve</span>
+          </Link>
+          <Link href="/dashboard/properties" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 text-sm"><ArrowLeft className="w-4 h-4" /><span className="hidden sm:inline">Back to Properties</span></Link>
         </div>
       </header>
-
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8">
-        <div className="mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Add a Property</h1>
-          <p className="text-slate-600">Enter your property details to start managing and scheduling services</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Property Address Section */}
-          <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <MapPin className="w-6 h-6 text-blue-600" />
+      <main className="max-w-2xl mx-auto px-4 md:px-6 py-6 md:py-8 pb-24">
+        <div className="mb-6"><h1 className="text-2xl font-bold text-slate-900">Add New Property</h1><p className="text-slate-500 text-sm mt-1">Search by address — we&apos;ll pull in the property details for you to confirm.</p></div>
+        {step !== 'done' && step !== 'manual' && (
+          <div className="flex items-center gap-2 mb-6">
+            {[{l:'Search'},{l:'Confirm'},{l:'Save'}].map((s,i) => (
+              <div key={i} className="flex items-center gap-2">
+                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${i<stepIdx?'bg-green-100 text-green-700':i===stepIdx?'bg-blue-600 text-white':'bg-slate-100 text-slate-400'}`}>
+                  {i<stepIdx?<CheckCircle2 className="w-3 h-3"/>:<span>{i+1}.</span>}{s.l}
+                </div>
+                {i<2&&<div className="w-8 h-px bg-slate-200"/>}
               </div>
-              <div>
-                <h2 className="text-lg md:text-xl font-semibold text-slate-900">Property Location</h2>
-                <p className="text-sm text-slate-600">Enter the property address and location details</p>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Street Address *
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
-                  placeholder="1234 Main Street"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  State *
-                </label>
-                <select
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white"
-                >
-                  <option value="NC">North Carolina</option>
-                  <option value="TX">Texas</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Service Area *
-                </label>
-                <select
-                  name="serviceArea"
-                  value={formData.serviceArea}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white"
-                >
-                  <option value="">Select nearest market</option>
-                  {stateAreas.map(area => (
-                    <option key={area.name} value={area.name}>
-                      {area.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  City *
-                </label>
-                <select
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  required
-                  disabled={!selectedArea}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white disabled:bg-slate-50 disabled:text-slate-400"
-                >
-                  <option value="">{selectedArea ? 'Select city' : 'Select service area first'}</option>
-                  {selectedArea?.cities.map(city => (
-                    <option key={`${city.name}-${city.county}`} value={city.name}>
-                      {city.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  County
-                </label>
-                <input
-                  type="text"
-                  name="county"
-                  value={formData.county}
-                  readOnly
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 text-slate-900"
-                  placeholder="Auto-filled from city"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  ZIP Code *
-                </label>
-                <input
-                  type="text"
-                  name="zip"
-                  value={formData.zip}
-                  onChange={handleChange}
-                  required
-                  pattern="[0-9]{5}"
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
-                  placeholder="27701"
-                />
-              </div>
-            </div>
+            ))}
           </div>
+        )}
 
-          {/* Property Details Section */}
-          <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Home className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <h2 className="text-lg md:text-xl font-semibold text-slate-900">Property Information</h2>
-                <p className="text-sm text-slate-600">Property type and identification details</p>
-              </div>
+        {step==='search'&&(
+          <div className="bg-white rounded-2xl shadow-sm border p-6 space-y-4">
+            <div className="flex items-center gap-3 mb-2"><div className="w-11 h-11 bg-blue-100 rounded-xl flex items-center justify-center"><MapPin className="w-5 h-5 text-blue-600"/></div><div><h2 className="font-semibold text-slate-900">Enter Property Address</h2><p className="text-sm text-slate-500">We&apos;ll look up beds, baths, sqft &amp; more</p></div></div>
+            <div><label className="block text-sm font-medium text-slate-700 mb-1">Street Address *</label><input type="text" value={searchAddress} onChange={e=>setSearchAddress(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleLookup()} placeholder="e.g. 123 Oak Street" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><label className="block text-sm font-medium text-slate-700 mb-1">City *</label><input type="text" value={searchCity} onChange={e=>setSearchCity(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleLookup()} placeholder="Charlotte" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
+              <div><label className="block text-sm font-medium text-slate-700 mb-1">ZIP Code</label><input type="text" value={searchZip} onChange={e=>setSearchZip(e.target.value)} placeholder="28201" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
             </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Property Type *
-                </label>
-                <select
-                  name="propertyType"
-                  value={formData.propertyType}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
-                >
-                  <option value="single_family">Single Family Home</option>
-                  <option value="condo">Condo/Townhouse</option>
-                  <option value="multi_family">Multi-Family</option>
-                  <option value="commercial">Commercial</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Parcel ID / Tax ID
-                </label>
-                <input
-                  type="text"
-                  name="parcelId"
-                  value={formData.parcelId}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
-                  placeholder="123-456-789"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Date Added to Portfolio
-                </label>
-                <input
-                  type="date"
-                  name="acquisitionDate"
-                  value={formData.acquisitionDate}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Property Nickname / Reference (Optional)
-                </label>
-                <input
-                  type="text"
-                  name="bankReference"
-                  value={formData.bankReference}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
-                  placeholder="e.g. Beach House, Rental Unit A"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Additional Information */}
-          <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <FileText className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <h2 className="text-lg md:text-xl font-semibold text-slate-900">Additional Notes</h2>
-                <p className="text-sm text-slate-600">Any special instructions or property conditions</p>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Property Notes
-              </label>
-              <textarea
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}
-                rows={4}
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
-                placeholder="Enter any special instructions, access codes, known issues, or other relevant information..."
-              />
-            </div>
-          </div>
-
-          {/* Documents Upload (UI Only) */}
-          <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Upload className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <h2 className="text-lg md:text-xl font-semibold text-slate-900">Documents (Optional)</h2>
-                <p className="text-sm text-slate-600">Upload property documents, photos, or deeds</p>
-              </div>
-            </div>
-
-            <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 md:p-8 text-center hover:border-blue-400 transition">
-              <Upload className="w-10 h-10 md:w-12 md:h-12 text-slate-400 mx-auto mb-3" />
-              <p className="text-slate-600 mb-2 text-sm md:text-base">Drag and drop files here, or click to browse</p>
-              <p className="text-sm text-slate-500">Supported: PDF, JPG, PNG (Max 10MB)</p>
-              <button
-                type="button"
-                className="mt-4 px-6 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition text-sm"
-              >
-                Choose Files
-              </button>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 pb-8">
-            <Link
-              href="/dashboard"
-              className="px-6 py-3 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition text-center"
-            >
-              Cancel
-            </Link>
-            <button
-              type="submit"
-              className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-center"
-            >
-              Add Property
+            <div><label className="block text-sm font-medium text-slate-700 mb-1">State</label><input type="text" value={searchState} onChange={e=>setSearchState(e.target.value)} className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
+            {lookupError&&(<div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm"><AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5"/><div><p className="font-medium text-amber-800">{lookupError}</p><button onClick={()=>setStep('manual')} className="mt-1 text-blue-600 underline text-xs">Add manually instead →</button></div></div>)}
+            <button onClick={handleLookup} disabled={lookingUp||!searchAddress||!searchCity} className="w-full py-3.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm">
+              {lookingUp?<><Loader2 className="w-5 h-5 animate-spin"/>Looking up property…</>:<><Sparkles className="w-5 h-5"/>Look Up Property Details</>}
             </button>
+            <div className="text-center"><button onClick={()=>setStep('manual')} className="text-xs text-slate-400 hover:text-slate-600 underline">Skip — enter manually</button></div>
           </div>
-        </form>
+        )}
+
+        {step==='confirm'&&result&&(
+          <div className="space-y-5">
+            <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 text-white shadow-lg">
+              <p className="text-blue-200 text-xs font-semibold uppercase tracking-wide mb-2">✅ Property Found</p>
+              <h2 className="text-xl font-bold">{result.address}</h2>
+              <p className="text-blue-100 mt-1">{result.city}, {result.state} {result.zip}</p>
+              {result.county&&<p className="text-blue-200 text-sm mt-0.5">{result.county} County</p>}
+              {result.estimated_value!=null&&(<div className="mt-4 pt-4 border-t border-blue-500/60"><p className="text-blue-200 text-sm">Estimated Value</p><p className="text-2xl font-bold">${result.estimated_value.toLocaleString()}</p></div>)}
+            </div>
+            <div className="bg-white rounded-2xl shadow-sm border p-5">
+              <p className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2"><Building2 className="w-4 h-4 text-blue-500"/>Property Details — Please Confirm</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {[{icon:BedDouble,label:'Bedrooms',value:fmt(result.beds)},{icon:Bath,label:'Bathrooms',value:fmt(result.baths)},{icon:Ruler,label:'Sq Ft',value:fmt(result.sqft,' sq ft')},{icon:Calendar,label:'Year Built',value:fmt(result.year_built)},{icon:TreePine,label:'Lot Size',value:fmt(result.lot_size,' sq ft')},{icon:Home,label:'Stories',value:fmt(result.stories)}].map(({icon:Icon,label,value})=>(
+                  <div key={label} className="bg-slate-50 rounded-xl p-3"><div className="flex items-center gap-1.5 mb-1"><Icon className="w-3.5 h-3.5 text-blue-500"/><span className="text-xs text-slate-400">{label}</span></div><p className="font-semibold text-slate-900 text-sm">{value}</p></div>
+                ))}
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <div className="bg-slate-50 rounded-xl p-3"><p className="text-xs text-slate-400 mb-1">Property Type</p><p className="font-semibold text-slate-900 text-sm">{result.property_type||'—'}</p></div>
+                <div className="bg-slate-50 rounded-xl p-3"><p className="text-xs text-slate-400 mb-1">APN / Parcel ID</p><p className="font-semibold text-slate-900 text-sm truncate">{result.apn||'—'}</p></div>
+              </div>
+              {result.owner_name&&(<div className="mt-3 flex items-center gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100"><User className="w-4 h-4 text-blue-600 shrink-0"/><div><p className="text-xs text-blue-600 font-medium">Owner on Record</p><p className="font-semibold text-slate-900 text-sm">{result.owner_name}</p></div></div>)}
+            </div>
+            <div className="bg-white rounded-2xl shadow-sm border p-5">
+              <p className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2"><Edit3 className="w-4 h-4 text-blue-500"/>Add Your Details (Optional)</p>
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div><label className="block text-xs font-medium text-slate-600 mb-1">County</label><select value={extras.county} onChange={e=>setExtras(p=>({...p,county:e.target.value}))} className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm bg-white"><option value="">Select county</option>{NC_COUNTIES.map(c=><option key={c} value={c}>{c} County</option>)}</select></div>
+                  <div><label className="block text-xs font-medium text-slate-600 mb-1">Nickname</label><input type="text" value={extras.nickname} onChange={e=>setExtras(p=>({...p,nickname:e.target.value}))} placeholder="e.g. Beach House" className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
+                </div>
+                <div><label className="block text-xs font-medium text-slate-600 mb-1">Notes / Access Instructions</label><textarea value={extras.notes} onChange={e=>setExtras(p=>({...p,notes:e.target.value}))} rows={2} placeholder="Access code, gate info, special notes…" className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm resize-none"/></div>
+              </div>
+            </div>
+            <div className="flex flex-col-reverse sm:flex-row gap-3">
+              <button onClick={()=>setStep('search')} className="flex-1 py-3 px-4 border border-slate-300 rounded-xl text-slate-600 font-medium hover:bg-slate-50 text-sm flex items-center justify-center gap-2"><ArrowLeft className="w-4 h-4"/>Search Again</button>
+              <button onClick={handleSaveFromLookup} className="flex-1 py-3 px-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 text-sm flex items-center justify-center gap-2"><CheckCircle2 className="w-4 h-4"/>Confirm &amp; Add Property<ArrowRight className="w-4 h-4"/></button>
+            </div>
+          </div>
+        )}
+
+        {step==='manual'&&(
+          <form onSubmit={handleSaveManual} className="bg-white rounded-2xl shadow-sm border p-6 space-y-4">
+            <div className="flex items-center gap-3 mb-2"><div className="w-11 h-11 bg-purple-100 rounded-xl flex items-center justify-center"><FileText className="w-5 h-5 text-purple-600"/></div><div><h2 className="font-semibold text-slate-900">Manual Entry</h2><p className="text-sm text-slate-500">Fill in the property details below</p></div></div>
+            <div><label className="block text-sm font-medium text-slate-700 mb-1">Street Address *</label><input required type="text" value={manual.address} onChange={e=>setManual(p=>({...p,address:e.target.value}))} placeholder="123 Main Street" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><label className="block text-sm font-medium text-slate-700 mb-1">City *</label><input required type="text" value={manual.city} onChange={e=>setManual(p=>({...p,city:e.target.value}))} placeholder="Charlotte" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
+              <div><label className="block text-sm font-medium text-slate-700 mb-1">ZIP</label><input type="text" value={manual.zip} onChange={e=>setManual(p=>({...p,zip:e.target.value}))} placeholder="28201" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><label className="block text-sm font-medium text-slate-700 mb-1">County</label><select value={manual.county} onChange={e=>setManual(p=>({...p,county:e.target.value}))} className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm bg-white"><option value="">Select county</option>{NC_COUNTIES.map(c=><option key={c} value={c}>{c} County</option>)}</select></div>
+              <div><label className="block text-sm font-medium text-slate-700 mb-1">Property Type</label><select value={manual.propertyType} onChange={e=>setManual(p=>({...p,propertyType:e.target.value}))} className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm bg-white"><option value="">Select type</option><option>Single Family</option><option>Condo</option><option>Townhouse</option><option>Multi-Family</option><option>Commercial</option><option>Vacant Land</option></select></div>
+            </div>
+            <div><label className="block text-sm font-medium text-slate-700 mb-1">Notes</label><textarea value={manual.notes} onChange={e=>setManual(p=>({...p,notes:e.target.value}))} rows={2} placeholder="Any additional notes…" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm resize-none"/></div>
+            <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+              <button type="button" onClick={()=>setStep('search')} className="flex-1 py-3 border border-slate-300 rounded-xl text-slate-600 font-medium hover:bg-slate-50 text-sm">← Back to Search</button>
+              <button type="submit" className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 text-sm">Add Property</button>
+            </div>
+          </form>
+        )}
+
+        {(step==='saving'||step==='done')&&(
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            {step==='saving'?<><Loader2 className="w-12 h-12 text-blue-500 animate-spin"/><p className="text-slate-600 text-sm">Saving property…</p></>:<><div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center"><CheckCircle2 className="w-8 h-8 text-green-600"/></div><p className="text-xl font-bold text-slate-900">Property Added!</p><p className="text-slate-500 text-sm">Redirecting to your properties…</p></>}
+          </div>
+        )}
       </main>
     </div>
   );
