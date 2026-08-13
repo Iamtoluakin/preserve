@@ -61,6 +61,20 @@ export default function AddPropertyPage() {
   const fmt = (v: number|null|undefined, suffix='') => v != null ? `${v.toLocaleString()}${suffix}` : '—';
   const stepIdx = step==='confirm' ? 1 : (step==='saving'||step==='done') ? 2 : 0;
 
+  const getServiceEstimates = (r: LookupResult) => {
+    const stories = r.stories && r.stories > 0 ? r.stories : 1;
+    const buildingFootprint = r.sqft ? r.sqft / stories : 0;
+    const lawnSqFt = r.lot_size ? Math.max(0, r.lot_size - buildingFootprint) : 0;
+    const lawnPrice = lawnSqFt > 10000 ? 'Custom quote' : `$${lawnSqFt < 2000 ? 45 : lawnSqFt <= 5000 ? 65 : 95}`;
+    const inspectPrice = !r.sqft ? 249 : r.sqft < 1500 ? 199 : r.sqft < 3000 ? 249 : r.sqft < 5000 ? 299 : 349;
+    const isOlderHome = r.year_built ? r.year_built < 1980 : false;
+    const winterBase = !r.baths ? 249 : r.baths <= 1 ? 199 : r.baths <= 2 ? 249 : r.baths <= 3 ? 299 : 349;
+    const winterPrice = winterBase + (isOlderHome ? 50 : 0);
+    const roomCount = (r.beds || 0) + (r.baths || 0);
+    const boardUpPrice = roomCount <= 3 ? 299 : roomCount <= 5 ? 349 : roomCount <= 7 ? 399 : 449;
+    return { lawnSqFt: Math.round(lawnSqFt), lawnPrice, inspectPrice, winterPrice, boardUpPrice, isOlderHome };
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="bg-white border-b sticky top-0 z-40">
@@ -127,6 +141,36 @@ export default function AddPropertyPage() {
               </div>
               {result.owner_name&&(<div className="mt-3 flex items-center gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100"><User className="w-4 h-4 text-blue-600 shrink-0"/><div><p className="text-xs text-blue-600 font-medium">Owner on Record</p><p className="font-semibold text-slate-900 text-sm">{result.owner_name}</p></div></div>)}
             </div>
+
+            {(() => {
+              const { lawnSqFt, lawnPrice, inspectPrice, winterPrice, boardUpPrice, isOlderHome } = getServiceEstimates(result);
+              return (
+                <div className="bg-white rounded-2xl shadow-sm border p-5">
+                  <p className="text-sm font-semibold text-slate-700 mb-1 flex items-center gap-2">🛠️ Recommended Services &amp; Estimated Pricing</p>
+                  <p className="text-xs text-slate-400 mb-4">Estimated based on your property&apos;s size and features</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-3 p-3 bg-green-50 rounded-xl border border-green-100">
+                      <div><p className="text-sm font-semibold text-slate-900">🌿 Lawn Care</p><p className="text-xs text-slate-500">~{lawnSqFt.toLocaleString()} sq ft lawn · lot minus house footprint · per cut</p></div>
+                      <p className="text-lg font-bold text-green-700 text-right">{lawnPrice}</p>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-xl border border-blue-100">
+                      <div><p className="text-sm font-semibold text-slate-900">🔍 Property Inspection</p><p className="text-xs text-slate-500">{result.sqft?.toLocaleString() || '—'} sq ft interior</p></div>
+                      <p className="text-lg font-bold text-blue-700">${inspectPrice}</p>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-sky-50 rounded-xl border border-sky-100">
+                      <div><p className="text-sm font-semibold text-slate-900">❄️ Winterization</p><p className="text-xs text-slate-500">{result.baths || '—'} bath{result.baths !== 1 ? 's' : ''}{isOlderHome ? ' · older-home risk' : ''} · pipes, HVAC prep</p></div>
+                      <p className="text-lg font-bold text-sky-700">${winterPrice}</p>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-amber-50 rounded-xl border border-amber-100">
+                      <div><p className="text-sm font-semibold text-slate-900">🪟 Board-Up / Securing</p><p className="text-xs text-slate-500">{result.beds || '—'} bed{result.beds !== 1 ? 's' : ''} · {result.baths || '—'} bath{result.baths !== 1 ? 's' : ''} · windows &amp; doors</p></div>
+                      <p className="text-lg font-bold text-amber-700">${boardUpPrice}</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-3 text-center">* Estimates only — final pricing confirmed at booking</p>
+                </div>
+              );
+            })()}
+
             <div className="bg-white rounded-2xl shadow-sm border p-5">
               <p className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2"><Edit3 className="w-4 h-4 text-blue-500"/>Add Your Details (Optional)</p>
               <div className="space-y-3">
