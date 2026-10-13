@@ -38,26 +38,6 @@ const steps = [
   },
 ];
 
-const membershipServices = [
-  { frequency: 'Monthly', tasks: ['Test smoke alarms and GFCI outlets', 'Check tile, grout, and shower seals', 'Replace HVAC filters during Year 1'] },
-  { frequency: 'Every other month after Year 1', tasks: ['Replace HVAC return-air filters'] },
-  { frequency: 'Quarterly', tasks: ['Check caulk, door thresholds, gutters, and drainage', 'Review exterior paint, steps, and rails'] },
-  { frequency: 'Twice yearly', tasks: ['Check washer hoses, dryer vents, and crawlspace lines', 'Schedule a professional HVAC inspection'] },
-  { frequency: 'Annually / as needed', tasks: ['Wash exterior and seal exposed wood', 'Flush water heater; check shutoff valve and termite plan', 'Steam-clean carpet as needed'] },
-];
-
-const preservationServices = [
-  'Inspections',
-  'Securing',
-  'Lock changes',
-  'Winterization',
-  'Lawn care',
-  'Debris removal',
-  'Trash-outs',
-  'Repairs',
-  'Photo documentation',
-];
-
 const proofItems = [
   { label: 'Dispatch status', value: 'Assigned', icon: Users },
   { label: 'Field update', value: 'Work in progress', icon: ClipboardCheck },
@@ -137,22 +117,24 @@ export default function HomePage() {
       </section>
 
       <section id="membership" className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-2">
-          <AudienceCard
-            eyebrow="Home maintenance membership"
-            title="Know what your home needs, and when it needs it."
-            text="Add a newly purchased home or one you have owned for years. Subscribe for a coordinated maintenance plan, with tasks scheduled through the year and local pros arranged by Preserve."
-            icon={Home}
-            items={membershipServices}
-          />
-          <AudienceCard
-            eyebrow="Foreclosure & REO property preservation"
-            title="Vacant, bank-owned, and foreclosure property work managed end to end."
-            text="REO (Real Estate Owned) is typically a property that has gone through foreclosure and is now owned by a bank or lender."
-            icon={Shield}
-            items={preservationServices}
-            highlighted
-          />
+        <div className="mx-auto max-w-5xl rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-9">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-700">Home maintenance membership</p>
+              <h2 className="mt-3 text-3xl font-black tracking-normal text-slate-950 sm:text-4xl">Know what your home needs, and when.</h2>
+              <p className="mt-4 text-base leading-7 text-slate-600">
+                Get a personalized upkeep schedule and help coordinating trusted local professionals, all in one place.
+              </p>
+            </div>
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+              <Home className="h-6 w-6" />
+            </div>
+          </div>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {['Seasonal checkups', 'HVAC filter changes', 'Safety checks'].map((item) => (
+              <span key={item} className="rounded-full bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700">{item}</span>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -247,7 +229,6 @@ function Header({ getStartedHref, signInHref }: { getStartedHref: string; signIn
         <div className="hidden items-center gap-6 lg:flex">
           <a href="#how-it-works" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">How It Works</a>
           <a href="#membership" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">Membership</a>
-          <a href="#vendors" className="text-sm font-semibold text-slate-600 transition hover:text-blue-700">Network</a>
         </div>
         <div className="flex flex-shrink-0 items-center gap-2">
           <Link href={signInHref} className="hidden min-h-11 items-center rounded-xl px-4 text-sm font-bold text-slate-700 transition hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100 sm:inline-flex">

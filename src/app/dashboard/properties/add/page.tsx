@@ -76,8 +76,8 @@ export default function AddPropertyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-white border-b sticky top-0 z-40">
+    <div className="min-h-screen bg-[#f7fbff] text-slate-950">
+      <header className="sticky top-0 z-40 border-b border-blue-100 bg-white/90 shadow-sm backdrop-blur-xl">
         <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center space-x-2">
             <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center"><span className="text-white font-bold text-lg">P</span></div>
@@ -86,14 +86,14 @@ export default function AddPropertyPage() {
           <Link href="/dashboard/properties" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 text-sm"><ArrowLeft className="w-4 h-4" /><span className="hidden sm:inline">Back to Properties</span></Link>
         </div>
       </header>
-      <main className="max-w-2xl mx-auto px-4 md:px-6 py-6 md:py-8 pb-24">
-        <div className="mb-6"><h1 className="text-2xl font-bold text-slate-900">Add New Property</h1><p className="text-slate-500 text-sm mt-1">Personal homes, rentals, foreclosures &amp; investments — search by address and we&apos;ll pull in the details.</p></div>
+      <main className="mx-auto max-w-2xl px-4 py-6 md:px-6 md:py-8 pb-24">
+        <div className="relative isolate mb-6 overflow-hidden rounded-[1.75rem] border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-sky-50 p-5 shadow-sm md:p-7"><div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-20 -z-10 h-56 w-56 rounded-full bg-blue-200/40 blur-3xl"/><p className="inline-flex rounded-full border border-blue-200 bg-white/85 px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.18em] text-blue-700 shadow-sm">Start with your home</p><h1 className="mt-3 text-2xl font-black tracking-tight text-slate-950 md:text-3xl">Add New Property</h1><p className="mt-2 text-sm leading-6 text-slate-600">Add a home to build its maintenance schedule and keep service history in one place.</p></div>
 
         {step !== 'done' && step !== 'manual' && (
           <div className="flex items-center gap-2 mb-6">
             {[{l:'Search'},{l:'Confirm'},{l:'Save'}].map((s,i) => (
               <div key={i} className="flex items-center gap-2">
-                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${i<stepIdx?'bg-green-100 text-green-700':i===stepIdx?'bg-blue-600 text-white':'bg-slate-100 text-slate-400'}`}>
+                <div className={`flex items-center gap-1.5 rounded-full px-2.5 py-2 text-xs font-bold min-[420px]:px-3 ${i<stepIdx?'bg-green-100 text-green-700':i===stepIdx?'bg-blue-600 text-white':'bg-slate-100 text-slate-400'}`}>
                   {i<stepIdx?<CheckCircle2 className="w-3 h-3"/>:<span>{i+1}.</span>}{s.l}
                 </div>
                 {i<2&&<div className="w-8 h-px bg-slate-200"/>}
@@ -103,16 +103,16 @@ export default function AddPropertyPage() {
         )}
 
         {step==='search'&&(
-          <div className="bg-white rounded-2xl shadow-sm border p-6 space-y-4">
-            <div className="flex items-center gap-3 mb-2"><div className="w-11 h-11 bg-blue-100 rounded-xl flex items-center justify-center"><MapPin className="w-5 h-5 text-blue-600"/></div><div><h2 className="font-semibold text-slate-900">Enter Property Address</h2><p className="text-sm text-slate-500">We&apos;ll look up beds, baths, sqft &amp; more</p></div></div>
-            <div><label className="block text-sm font-medium text-slate-700 mb-1">Street Address *</label><input type="text" value={searchAddress} onChange={e=>setSearchAddress(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleLookup()} placeholder="e.g. 123 Oak Street" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
-            <div className="grid grid-cols-2 gap-3">
-              <div><label className="block text-sm font-medium text-slate-700 mb-1">City *</label><input type="text" value={searchCity} onChange={e=>setSearchCity(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleLookup()} placeholder="Charlotte" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
-              <div><label className="block text-sm font-medium text-slate-700 mb-1">ZIP Code</label><input type="text" value={searchZip} onChange={e=>setSearchZip(e.target.value)} placeholder="28201" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
+          <div className="space-y-4 rounded-[1.5rem] border border-blue-100 bg-white p-5 shadow-sm md:p-6">
+            <div className="mb-2 flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 shadow-md shadow-blue-100"><MapPin className="h-5 w-5 text-white"/></div><div><h2 className="font-semibold text-slate-900">Enter Property Address</h2><p className="text-sm text-slate-500">We&apos;ll look up beds, baths, sqft &amp; more</p></div></div>
+            <div><label className="block text-sm font-medium text-slate-700 mb-1">Street Address *</label><input type="text" value={searchAddress} onChange={e=>setSearchAddress(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleLookup()} placeholder="e.g. 123 Oak Street" className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"/></div>
+            <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
+              <div><label className="block text-sm font-medium text-slate-700 mb-1">City *</label><input type="text" value={searchCity} onChange={e=>setSearchCity(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleLookup()} placeholder="Charlotte" className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"/></div>
+              <div><label className="block text-sm font-medium text-slate-700 mb-1">ZIP Code</label><input type="text" value={searchZip} onChange={e=>setSearchZip(e.target.value)} placeholder="28201" className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"/></div>
             </div>
-            <div><label className="block text-sm font-medium text-slate-700 mb-1">State</label><input type="text" value={searchState} onChange={e=>setSearchState(e.target.value)} className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
+            <div><label className="block text-sm font-medium text-slate-700 mb-1">State</label><input type="text" value={searchState} onChange={e=>setSearchState(e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"/></div>
             {lookupError&&(<div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm"><AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5"/><div><p className="font-medium text-amber-800">{lookupError}</p><button onClick={()=>setStep('manual')} className="mt-1 text-blue-600 underline text-xs">Add manually instead →</button></div></div>)}
-            <button onClick={handleLookup} disabled={lookingUp||!searchAddress||!searchCity} className="w-full py-3.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm">
+            <button onClick={handleLookup} disabled={lookingUp||!searchAddress||!searchCity} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 py-3.5 text-sm font-black text-white shadow-lg shadow-blue-200 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50">
               {lookingUp?<><Loader2 className="w-5 h-5 animate-spin"/>Looking up property…</>:<><Sparkles className="w-5 h-5"/>Look Up Property Details</>}
             </button>
             <div className="text-center"><button onClick={()=>setStep('manual')} className="text-xs text-slate-400 hover:text-slate-600 underline">Skip — enter manually</button></div>
@@ -121,7 +121,7 @@ export default function AddPropertyPage() {
 
         {step==='confirm'&&result&&(
           <div className="space-y-5">
-            <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 text-white shadow-lg">
+            <div className="rounded-[1.5rem] bg-gradient-to-br from-blue-600 to-sky-500 p-6 text-white shadow-xl shadow-blue-200/60">
               <p className="text-blue-200 text-xs font-semibold uppercase tracking-wide mb-2">✅ Property Found</p>
               <h2 className="text-xl font-bold">{result.address}</h2>
               <p className="text-blue-100 mt-1">{result.city}, {result.state} {result.zip}</p>
@@ -130,12 +130,12 @@ export default function AddPropertyPage() {
             </div>
             <div className="bg-white rounded-2xl shadow-sm border p-5">
               <p className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2"><Building2 className="w-4 h-4 text-blue-500"/>Property Details — Please Confirm</p>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 md:grid-cols-3">
                 {[{icon:BedDouble,label:'Bedrooms',value:fmt(result.beds)},{icon:Bath,label:'Bathrooms',value:fmt(result.baths)},{icon:Ruler,label:'Sq Ft',value:fmt(result.sqft,' sq ft')},{icon:Calendar,label:'Year Built',value:fmt(result.year_built)},{icon:TreePine,label:'Lot Size',value:fmt(result.lot_size,' sq ft')},{icon:Home,label:'Stories',value:fmt(result.stories)}].map(({icon:Icon,label,value})=>(
                   <div key={label} className="bg-slate-50 rounded-xl p-3"><div className="flex items-center gap-1.5 mb-1"><Icon className="w-3.5 h-3.5 text-blue-500"/><span className="text-xs text-slate-400">{label}</span></div><p className="font-semibold text-slate-900 text-sm">{value}</p></div>
                 ))}
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-3">
+              <div className="mt-3 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
                 <div className="bg-slate-50 rounded-xl p-3"><p className="text-xs text-slate-400 mb-1">Property Type</p><p className="font-semibold text-slate-900 text-sm">{result.property_type||'—'}</p></div>
                 <div className="bg-slate-50 rounded-xl p-3"><p className="text-xs text-slate-400 mb-1">APN / Parcel ID</p><p className="font-semibold text-slate-900 text-sm truncate">{result.apn||'—'}</p></div>
               </div>
@@ -149,19 +149,19 @@ export default function AddPropertyPage() {
                   <p className="text-sm font-semibold text-slate-700 mb-1 flex items-center gap-2">🛠️ Recommended Services &amp; Estimated Pricing</p>
                   <p className="text-xs text-slate-400 mb-4">Estimated based on your property&apos;s size and features</p>
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between gap-3 p-3 bg-green-50 rounded-xl border border-green-100">
+                    <div className="flex flex-col items-start justify-between gap-2 rounded-xl border border-green-100 bg-green-50 p-3 min-[400px]:flex-row min-[400px]:items-center">
                       <div><p className="text-sm font-semibold text-slate-900">🌿 Lawn Care</p><p className="text-xs text-slate-500">~{lawnSqFt.toLocaleString()} sq ft lawn · lot minus house footprint · per cut</p></div>
                       <p className="text-lg font-bold text-green-700 text-right">{lawnPrice}</p>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-xl border border-blue-100">
+                    <div className="flex flex-col items-start justify-between gap-2 rounded-xl border border-blue-100 bg-blue-50 p-3 min-[400px]:flex-row min-[400px]:items-center">
                       <div><p className="text-sm font-semibold text-slate-900">🔍 Property Inspection</p><p className="text-xs text-slate-500">{result.sqft?.toLocaleString() || '—'} sq ft interior</p></div>
                       <p className="text-lg font-bold text-blue-700">${inspectPrice}</p>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-sky-50 rounded-xl border border-sky-100">
+                    <div className="flex flex-col items-start justify-between gap-2 rounded-xl border border-sky-100 bg-sky-50 p-3 min-[400px]:flex-row min-[400px]:items-center">
                       <div><p className="text-sm font-semibold text-slate-900">❄️ Winterization</p><p className="text-xs text-slate-500">{result.baths || '—'} bath{result.baths !== 1 ? 's' : ''}{isOlderHome ? ' · older-home risk' : ''} · pipes, HVAC prep</p></div>
                       <p className="text-lg font-bold text-sky-700">${winterPrice}</p>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-amber-50 rounded-xl border border-amber-100">
+                    <div className="flex flex-col items-start justify-between gap-2 rounded-xl border border-amber-100 bg-amber-50 p-3 min-[400px]:flex-row min-[400px]:items-center">
                       <div><p className="text-sm font-semibold text-slate-900">🪟 Board-Up / Securing</p><p className="text-xs text-slate-500">{result.beds || '—'} bed{result.beds !== 1 ? 's' : ''} · {result.baths || '—'} bath{result.baths !== 1 ? 's' : ''} · windows &amp; doors</p></div>
                       <p className="text-lg font-bold text-amber-700">${boardUpPrice}</p>
                     </div>
@@ -176,7 +176,7 @@ export default function AddPropertyPage() {
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">Property Purpose *</label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
                     {[
                       { value:'personal', label:'🏠 Personal Home', desc:'Primary or vacation home' },
                       { value:'rental', label:'🏘️ Rental Property', desc:'Tenant occupied' },
@@ -191,36 +191,36 @@ export default function AddPropertyPage() {
                     ))}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
                   <div><label className="block text-xs font-medium text-slate-600 mb-1">County</label><select value={extras.county} onChange={e=>setExtras(p=>({...p,county:e.target.value}))} className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm bg-white"><option value="">Select county</option>{NC_COUNTIES.map(c=><option key={c} value={c}>{c} County</option>)}</select></div>
                   <div><label className="block text-xs font-medium text-slate-600 mb-1">Nickname</label><input type="text" value={extras.nickname} onChange={e=>setExtras(p=>({...p,nickname:e.target.value}))} placeholder="e.g. Beach House" className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
                 </div>
                 <div><label className="block text-xs font-medium text-slate-600 mb-1">Notes / Access Instructions</label><textarea value={extras.notes} onChange={e=>setExtras(p=>({...p,notes:e.target.value}))} rows={2} placeholder="Access code, gate info, special notes…" className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm resize-none"/></div>
               </div>
             </div>
-            <div className="flex flex-col-reverse sm:flex-row gap-3">
+            <div className="flex flex-col-reverse gap-3 sm:flex-row">
               <button onClick={()=>setStep('search')} className="flex-1 py-3 px-4 border border-slate-300 rounded-xl text-slate-600 font-medium hover:bg-slate-50 text-sm flex items-center justify-center gap-2"><ArrowLeft className="w-4 h-4"/>Search Again</button>
-              <button onClick={handleSaveFromLookup} className="flex-1 py-3 px-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 text-sm flex items-center justify-center gap-2"><CheckCircle2 className="w-4 h-4"/>Confirm &amp; Add Property<ArrowRight className="w-4 h-4"/></button>
+              <button onClick={handleSaveFromLookup} className="flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-3 text-sm font-bold text-white shadow-md shadow-blue-100"><CheckCircle2 className="w-4 h-4"/>Confirm &amp; Add Property<ArrowRight className="w-4 h-4"/></button>
             </div>
           </div>
         )}
 
         {step==='manual'&&(
-          <form onSubmit={handleSaveManual} className="bg-white rounded-2xl shadow-sm border p-6 space-y-4">
+          <form onSubmit={handleSaveManual} className="space-y-4 rounded-[1.5rem] border border-blue-100 bg-white p-5 shadow-sm md:p-6">
             <div className="flex items-center gap-3 mb-2"><div className="w-11 h-11 bg-purple-100 rounded-xl flex items-center justify-center"><FileText className="w-5 h-5 text-purple-600"/></div><div><h2 className="font-semibold text-slate-900">Manual Entry</h2><p className="text-sm text-slate-500">Fill in the property details below</p></div></div>
-            <div><label className="block text-sm font-medium text-slate-700 mb-1">Street Address *</label><input required type="text" value={manual.address} onChange={e=>setManual(p=>({...p,address:e.target.value}))} placeholder="123 Main Street" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
-            <div className="grid grid-cols-2 gap-3">
-              <div><label className="block text-sm font-medium text-slate-700 mb-1">City *</label><input required type="text" value={manual.city} onChange={e=>setManual(p=>({...p,city:e.target.value}))} placeholder="Charlotte" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
-              <div><label className="block text-sm font-medium text-slate-700 mb-1">ZIP</label><input type="text" value={manual.zip} onChange={e=>setManual(p=>({...p,zip:e.target.value}))} placeholder="28201" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm"/></div>
+            <div><label className="block text-sm font-medium text-slate-700 mb-1">Street Address *</label><input required type="text" value={manual.address} onChange={e=>setManual(p=>({...p,address:e.target.value}))} placeholder="123 Main Street" className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"/></div>
+            <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
+              <div><label className="block text-sm font-medium text-slate-700 mb-1">City *</label><input required type="text" value={manual.city} onChange={e=>setManual(p=>({...p,city:e.target.value}))} placeholder="Charlotte" className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"/></div>
+              <div><label className="block text-sm font-medium text-slate-700 mb-1">ZIP</label><input type="text" value={manual.zip} onChange={e=>setManual(p=>({...p,zip:e.target.value}))} placeholder="28201" className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"/></div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
               <div><label className="block text-sm font-medium text-slate-700 mb-1">County</label><select value={manual.county} onChange={e=>setManual(p=>({...p,county:e.target.value}))} className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm bg-white"><option value="">Select county</option>{NC_COUNTIES.map(c=><option key={c} value={c}>{c} County</option>)}</select></div>
               <div><label className="block text-sm font-medium text-slate-700 mb-1">Property Type</label><select value={manual.propertyType} onChange={e=>setManual(p=>({...p,propertyType:e.target.value}))} className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm bg-white"><option value="">Select type</option><option>Single Family</option><option>Condo</option><option>Townhouse</option><option>Multi-Family</option><option>Commercial</option><option>Vacant Land</option></select></div>
             </div>
             <div><label className="block text-sm font-medium text-slate-700 mb-1">Notes</label><textarea value={manual.notes} onChange={e=>setManual(p=>({...p,notes:e.target.value}))} rows={2} placeholder="Any additional notes…" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm resize-none"/></div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Property Purpose</label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
                 {[
                   { value:'personal', label:'🏠 Personal Home', desc:'Primary or vacation home' },
                   { value:'rental', label:'🏘️ Rental Property', desc:'Tenant occupied' },
@@ -235,9 +235,9 @@ export default function AddPropertyPage() {
                 ))}
               </div>
             </div>
-            <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+            <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row">
               <button type="button" onClick={()=>setStep('search')} className="flex-1 py-3 border border-slate-300 rounded-xl text-slate-600 font-medium hover:bg-slate-50 text-sm">← Back to Search</button>
-              <button type="submit" className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 text-sm">Add Property</button>
+              <button type="submit" className="min-h-12 flex-1 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 py-3 text-sm font-bold text-white shadow-md shadow-blue-100">Add Property</button>
             </div>
           </form>
         )}

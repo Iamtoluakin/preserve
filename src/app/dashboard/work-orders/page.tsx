@@ -163,22 +163,24 @@ export default function WorkOrdersPage() {
 
       <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8 pb-28 lg:pb-8">
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 md:mb-8">
+        <div className="relative isolate mb-6 flex flex-col gap-4 overflow-hidden rounded-[1.75rem] border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-sky-50 p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between md:mb-8 md:p-7">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-20 -z-10 h-56 w-56 rounded-full bg-blue-200/40 blur-3xl" />
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-1">Work Orders</h1>
-            <p className="text-sm md:text-base text-slate-600">Manage and track all service requests</p>
+            <p className="inline-flex rounded-full border border-blue-200 bg-white/85 px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.18em] text-blue-700 shadow-sm">Home care, coordinated</p>
+            <h1 className="mt-3 text-2xl font-black tracking-tight text-slate-950 md:text-3xl">Work Orders</h1>
+            <p className="text-sm leading-6 text-slate-600 md:text-base">Manage and track all service requests</p>
           </div>
           <div className="grid grid-cols-1 min-[380px]:grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3">
             <button
               onClick={loadOrders}
-              className="min-h-11 flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 transition text-sm font-medium"
+              className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-blue-700 sm:min-h-11 sm:py-2.5"
             >
               <RefreshCw className="w-4 h-4" />
               Refresh
             </button>
             <Link
               href="/dashboard/work-orders/create"
-              className="min-h-11 flex items-center justify-center gap-2 bg-blue-600 text-white px-4 sm:px-5 py-2.5 rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
+              className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-3 text-sm font-bold text-white shadow-md shadow-blue-200 transition hover:-translate-y-0.5 sm:min-h-11 sm:py-2.5 sm:px-5"
             >
               <Plus className="w-4 h-4" />
               Create Work Order
@@ -205,7 +207,7 @@ export default function WorkOrdersPage() {
         </div>
 
         {/* Search & Filter */}
-        <div className="bg-white rounded-xl border shadow-sm p-3 md:p-4 mb-6 grid gap-3 sm:flex sm:flex-wrap">
+        <div className="mb-6 grid gap-3 rounded-2xl border border-blue-100 bg-white p-3 shadow-sm md:p-4 sm:flex sm:flex-wrap">
           <div className="relative sm:flex-1 sm:min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
@@ -213,7 +215,7 @@ export default function WorkOrdersPage() {
               placeholder="Search by order #, address, or service..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-3 pl-9 pr-4 text-sm text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
             />
           </div>
           <div className="relative sm:w-auto">
@@ -221,7 +223,7 @@ export default function WorkOrdersPage() {
             <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
-              className="w-full sm:w-auto pl-9 pr-8 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white"
+              className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-9 pr-8 text-sm text-slate-900 transition focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100 sm:w-auto"
             >
               {STATUS_OPTIONS.map(s => (
                 <option key={s} value={s}>
@@ -233,7 +235,7 @@ export default function WorkOrdersPage() {
         </div>
 
         {/* Work Orders List */}
-        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+        <div className="overflow-hidden rounded-[1.5rem] border border-blue-100 bg-white shadow-sm">
           <div className="px-4 md:px-6 py-4 border-b flex items-center justify-between">
             <h2 className="font-semibold text-slate-900">
               {filtered.length} Work Order{filtered.length !== 1 ? 's' : ''}
@@ -263,7 +265,7 @@ export default function WorkOrdersPage() {
           ) : (
             <div className="divide-y divide-slate-100">
               {filtered.map(order => (
-                <div key={order.id} className="p-4 md:p-6 hover:bg-slate-50 transition">
+                <div key={order.id} className="p-4 transition hover:bg-blue-50/40 sm:p-5 md:p-6">
                   <div className="flex items-start gap-3 md:gap-4">
                     <div className="mt-0.5 flex-shrink-0">{getStatusIcon(order.status)}</div>
 
@@ -322,7 +324,7 @@ export default function WorkOrdersPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-1 min-[380px]:grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2">
+                  <div className="mt-4 grid grid-cols-1 gap-2 border-t border-blue-50 pt-4 min-[440px]:grid-cols-2 sm:flex sm:flex-wrap sm:items-center">
                     {/* Status Update */}
                     {updatingStatus === order.id ? (
                       <div className="min-[380px]:col-span-2 flex items-center gap-2 flex-wrap">
@@ -347,7 +349,7 @@ export default function WorkOrdersPage() {
                       <>
                         <button
                           onClick={() => setUpdatingStatus(order.id)}
-                          className="min-h-11 flex items-center justify-center gap-1.5 px-3 py-2.5 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition text-sm"
+                          className="flex min-h-12 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:min-h-11 sm:py-2.5"
                         >
                           <ChevronDown className="w-3.5 h-3.5" />
                           Update Status
@@ -355,7 +357,7 @@ export default function WorkOrdersPage() {
 
                         <Link
                           href={`/dashboard/work-orders/${order.id}`}
-                          className="min-h-11 flex items-center justify-center gap-1.5 px-3 py-2.5 border border-blue-200 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-50 transition text-sm font-medium"
+                          className="flex min-h-12 items-center justify-center gap-1.5 rounded-xl border border-blue-100 bg-white px-3 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50 sm:min-h-11 sm:py-2.5"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           View Details
@@ -364,7 +366,7 @@ export default function WorkOrdersPage() {
                         {order.status !== 'completed' && (
                           <button
                             onClick={() => updateStatus(order.id, 'completed')}
-                            className="min-h-11 min-[380px]:col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
+                            className="flex min-h-12 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 px-3 py-3 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 min-[440px]:col-span-2 sm:min-h-11 sm:py-2.5"
                           >
                             <CheckCircle2 className="w-3.5 h-3.5" />
                             Mark Complete
@@ -390,7 +392,7 @@ export default function WorkOrdersPage() {
                         ) : (
                           <button
                             onClick={() => setConfirmDelete(order.id)}
-                            className="min-h-11 min-[380px]:col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition text-sm sm:ml-auto"
+                            className="flex min-h-12 items-center justify-center gap-1.5 rounded-xl border border-red-200 px-3 py-3 text-sm text-red-600 transition hover:bg-red-50 min-[440px]:col-span-2 sm:min-h-11 sm:ml-auto sm:py-2"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                             Delete

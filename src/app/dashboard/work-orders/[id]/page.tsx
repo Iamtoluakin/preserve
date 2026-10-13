@@ -136,8 +136,8 @@ export default function WorkOrderDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-white border-b sticky top-0 z-40">
+    <div className="min-h-screen bg-[#f7fbff] text-slate-950">
+      <header className="sticky top-0 z-40 border-b border-blue-100 bg-white/90 shadow-sm backdrop-blur-xl">
         <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-3">
           <Link href="/dashboard/work-orders" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition text-sm">
             <ArrowLeft className="w-4 h-4" />
@@ -153,8 +153,9 @@ export default function WorkOrderDetailPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8 pb-10">
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
+      <main className="mx-auto max-w-6xl px-3 py-6 sm:px-4 md:px-6 md:py-8 pb-10">
+        <div className="relative isolate mb-6 flex flex-col gap-4 overflow-hidden rounded-[1.75rem] border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-sky-50 p-5 shadow-sm lg:flex-row lg:items-start lg:justify-between md:p-7">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-20 -z-10 h-56 w-56 rounded-full bg-blue-200/40 blur-3xl"/>
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <span className={`px-3 py-1 rounded-full border text-xs font-bold ${getStatusColor(workOrder.status)}`}>
@@ -164,16 +165,16 @@ export default function WorkOrderDetailPage() {
                 {workOrder.priority.toUpperCase()} PRIORITY
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 break-words">{workOrder.orderNumber || `WO-${workOrder.id}`}</h1>
+            <h1 className="text-2xl font-black tracking-tight text-slate-950 break-words md:text-3xl">{workOrder.orderNumber || `WO-${workOrder.id}`}</h1>
             <p className="text-sm md:text-base text-slate-600 mt-1 break-words">{workOrder.serviceType || 'Service request'}</p>
           </div>
 
-          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+          <div className="-mx-1 flex snap-x gap-2 overflow-x-auto px-1 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
             {STATUSES.map(status => (
               <button
                 key={status}
                 onClick={() => updateStatus(status)}
-                className={`px-3 py-2.5 rounded-lg border text-sm font-semibold transition ${
+                className={`min-h-11 min-w-36 shrink-0 snap-start rounded-xl border px-3 py-2.5 text-sm font-bold transition sm:min-w-0 ${
                   workOrder.status === status
                     ? getStatusColor(status)
                     : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-700'
@@ -187,7 +188,7 @@ export default function WorkOrderDetailPage() {
 
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <section className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
+            <section className="rounded-[1.5rem] border border-blue-100 bg-white p-4 shadow-sm md:p-6">
               <div className="flex items-center gap-3 mb-5">
                 <ShieldCheck className="w-5 h-5 text-blue-600" />
                 <h2 className="text-lg font-semibold text-slate-900">Job Overview</h2>
@@ -210,7 +211,7 @@ export default function WorkOrderDetailPage() {
               )}
             </section>
 
-            <section className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
+            <section className="rounded-[1.5rem] border border-blue-100 bg-white p-4 shadow-sm md:p-6">
               <div className="flex items-center gap-3 mb-5">
                 <FileText className="w-5 h-5 text-blue-600" />
                 <h2 className="text-lg font-semibold text-slate-900">Services</h2>
@@ -253,7 +254,7 @@ export default function WorkOrderDetailPage() {
               )}
             </section>
 
-            <section className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
+            <section className="rounded-[1.5rem] border border-blue-100 bg-white p-4 shadow-sm md:p-6">
               <div className="flex items-center gap-3 mb-5">
                 <NotebookText className="w-5 h-5 text-blue-600" />
                 <h2 className="text-lg font-semibold text-slate-900">Instructions</h2>
@@ -266,7 +267,7 @@ export default function WorkOrderDetailPage() {
           </div>
 
           <aside className="space-y-6">
-            <section className="bg-white rounded-xl shadow-sm border p-4 md:p-5">
+            <section className="rounded-[1.5rem] border border-blue-100 bg-white p-4 shadow-sm md:p-5">
               <h2 className="font-semibold text-slate-900 mb-4">Timeline</h2>
               <div className="space-y-4">
                 <TimelineItem icon={<FileText className="w-4 h-4" />} title="Created" detail={formatDate(workOrder.createdAt, true)} active />
@@ -276,7 +277,7 @@ export default function WorkOrderDetailPage() {
               </div>
             </section>
 
-            <section className="bg-white rounded-xl shadow-sm border p-4 md:p-5">
+            <section className="rounded-[1.5rem] border border-blue-100 bg-white p-4 shadow-sm md:p-5">
               <h2 className="font-semibold text-slate-900 mb-4">Service Cost</h2>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between gap-4">
@@ -294,7 +295,7 @@ export default function WorkOrderDetailPage() {
               </div>
             </section>
 
-            <section className="bg-white rounded-xl shadow-sm border p-4 md:p-5">
+            <section className="rounded-[1.5rem] border border-blue-100 bg-white p-4 shadow-sm md:p-5">
               <h2 className="font-semibold text-slate-900 mb-4">Danger Zone</h2>
               {confirmDelete ? (
                 <div className="space-y-3">
@@ -327,7 +328,7 @@ export default function WorkOrderDetailPage() {
 
 function InfoItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="border border-slate-200 rounded-lg p-4">
+    <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
       <div className="flex items-center gap-2 text-slate-500 text-sm mb-1">
         {icon}
         <span>{label}</span>

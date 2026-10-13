@@ -58,6 +58,22 @@ const serviceFolders: {
   { id: 'lawn', title: 'Lawn', summary: 'Mowing, yard cleanup, and grounds care', icon: Home, serviceIds: ['lawn_mowing', 'lawn_cleanup'] },
 ];
 
+const maintenanceTaskPriceService: Record<string, string> = {
+  'exterior-wash': 'pressure_washing',
+  'hvac-service': 'hvac_check',
+  'gutters-roof': 'gutter_cleaning',
+  'termite-plan': 'pest_control',
+};
+
+const visitsPerYear: Record<MaintenanceFrequency, number | null> = {
+  'Monthly': 12,
+  'Every 2 months': 6,
+  'Quarterly': 4,
+  'Twice a year': 2,
+  'Annually': 1,
+  'As needed': null,
+};
+
 const WORK_ORDER_DRAFT_KEY = 'preserve_work_order_draft';
 
 export default function CreateWorkOrderV2Page() {
@@ -115,6 +131,18 @@ export default function CreateWorkOrderV2Page() {
   const categories = [...new Set(folderServices.map(service => service.category))];
   const maintenanceCategories = [...new Set(homeMaintenanceTasks.map(task => task.category))];
   const maintenancePlan = Object.values(selectedMaintenanceTasks);
+  const maintenancePricePreview = maintenancePlan.map(task => {
+    const catalogService = serviceCatalog.find(service => service.id === maintenanceTaskPriceService[task.id]);
+    const yearlyVisits = visitsPerYear[task.firstYearFrequency];
+    return {
+      task,
+      visitPrice: catalogService?.basePrice,
+      monthlyEstimate: catalogService && yearlyVisits ? catalogService.basePrice * yearlyVisits / 12 : null,
+    };
+  });
+  const pricedMaintenanceTasks = maintenancePricePreview.filter(item => item.monthlyEstimate !== null);
+  const pendingMaintenancePriceCount = maintenancePricePreview.length - pricedMaintenanceTasks.length;
+  const maintenanceMonthlyEstimate = pricedMaintenanceTasks.reduce((sum, item) => sum + (item.monthlyEstimate || 0), 0);
   const selectedCount = selectedServices.length + maintenancePlan.length;
   const preferredBillingFrequency = maintenancePlan.length ? planBillingFrequency : billingFrequency;
 
@@ -409,7 +437,7 @@ export default function CreateWorkOrderV2Page() {
 
         {/* Mobile Order Summary Bar */}
         {selectedCount > 0 && (
-          <div className="sticky top-16 z-30 flex items-center justify-between gap-3 rounded-2xl border border-blue-100 bg-white/95 px-4 py-3 shadow-lg shadow-blue-100/60 backdrop-blur lg:hidden">
+          <div className="sticky top-16 z-30 flex items-center justify-between gap-2 rounded-2xl border border-blue-100 bg-white/95 px-3 py-2.5 shadow-lg shadow-blue-100/60 backdrop-blur lg:hidden">
             <div className="flex items-center gap-3 min-w-0">
               <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 shadow-sm">
                 <span className="text-white text-xs font-bold">{selectedServices.length}</span>
@@ -429,7 +457,7 @@ export default function CreateWorkOrderV2Page() {
               type="submit"
               form="work-order-form"
               disabled={!formData.propertyId || selectedCount === 0}
-              className="flex-shrink-0 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-11 flex-shrink-0 rounded-xl bg-blue-600 px-3 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Submit
             </button>
@@ -487,7 +515,7 @@ export default function CreateWorkOrderV2Page() {
                   </div>
                   {selectedCount > 0 && <span className="inline-flex w-fit items-center gap-2 rounded-full border border-blue-200 bg-white/90 px-3 py-2 text-sm font-bold text-blue-800 shadow-sm"><CheckCircle2 className="h-4 w-4" />{selectedCount} selected</span>}
                 </div>
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                <div className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-3 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 xl:grid-cols-5">
                   {serviceFolders.map(folder => {
                     const FolderIcon = folder.icon;
                     const folderServiceCount = selectedServices.filter(service => folder.serviceIds.includes(service.id)).length;
@@ -495,7 +523,7 @@ export default function CreateWorkOrderV2Page() {
                     const selected = activeServiceFolder === folder.id;
                     return (
                       <button key={folder.id} type="button" onClick={() => setActiveServiceFolder(folder.id)} aria-pressed={selected}
-                        className={`group relative overflow-hidden rounded-2xl border p-4 text-left shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-100 ${selected ? 'border-blue-400 bg-gradient-to-br from-blue-600 to-sky-500 text-white shadow-lg shadow-blue-200/70' : 'border-white/80 bg-white/90 hover:border-blue-200'}`}>
+                        className={`group relative w-[min(78vw,17rem)] shrink-0 snap-start overflow-hidden rounded-2xl border p-4 text-left shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-100 sm:w-auto sm:shrink sm:snap-align-none ${selected ? 'border-blue-400 bg-gradient-to-br from-blue-600 to-sky-500 text-white shadow-lg shadow-blue-200/70' : 'border-white/80 bg-white/90 hover:border-blue-200'}`}>
                         {selected && <span aria-hidden="true" className="absolute -right-7 -top-8 h-24 w-24 rounded-full bg-white/15 blur-xl" />}
                         <div className={`relative flex h-11 w-11 items-center justify-center rounded-xl transition ${selected ? 'bg-white/20 text-white' : 'bg-blue-50 text-blue-700 group-hover:bg-blue-100'}`}>
                           <FolderIcon className="h-5 w-5" />
@@ -523,12 +551,12 @@ export default function CreateWorkOrderV2Page() {
                       Pick the jobs you want Preserve to coordinate. Set a first-year cadence and an ongoing cadence for each task.
                     </p>
                   </div>
-                  <div className="flex shrink-0 gap-2">
-                    <button type="button" onClick={addRecommendedMaintenancePlan} className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700">
+                  <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row">
+                    <button type="button" onClick={addRecommendedMaintenancePlan} className="min-h-12 rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white shadow-md shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700 sm:min-h-0 sm:py-2.5">
                       Add suggested checklist
                     </button>
                     {maintenancePlan.length > 0 && (
-                    <button type="button" onClick={() => setSelectedMaintenanceTasks({})} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-blue-200 hover:text-blue-700">
+                    <button type="button" onClick={() => setSelectedMaintenanceTasks({})} className="min-h-12 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-blue-200 hover:text-blue-700 sm:min-h-0 sm:py-2.5">
                         Clear
                       </button>
                     )}
@@ -540,26 +568,64 @@ export default function CreateWorkOrderV2Page() {
                 </div>
 
                 {maintenancePlan.length > 0 && (
-                  <div className="mt-4 grid gap-3 rounded-lg border border-slate-200 p-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                  <section className="mt-4 overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm" aria-labelledby="maintenance-preview-heading">
+                    <div className="flex flex-col gap-3 border-b border-blue-50 bg-gradient-to-r from-blue-50/80 to-sky-50/50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="text-[0.65rem] font-black uppercase tracking-[0.16em] text-blue-700">Live selection</p>
+                        <h3 id="maintenance-preview-heading" className="mt-1 text-base font-black text-slate-950">Your plan preview</h3>
+                      </div>
+                      <div className="rounded-xl border border-blue-100 bg-white px-3 py-2 sm:text-right">
+                        <p className="text-[0.65rem] font-bold uppercase tracking-wide text-slate-500">Known monthly estimate</p>
+                        <p className="text-xl font-black text-blue-700">${maintenanceMonthlyEstimate.toFixed(2)}<span className="ml-1 text-xs font-bold text-slate-500">/mo</span></p>
+                      </div>
+                    </div>
+                    <div className="divide-y divide-slate-100">
+                      {maintenancePricePreview.map(({ task, visitPrice, monthlyEstimate }) => (
+                        <div key={task.id} className="flex items-start gap-3 px-4 py-3">
+                          <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[0.65rem] font-black text-blue-700">✓</span>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-bold leading-5 text-slate-900">{task.name}</p>
+                            <p className="mt-0.5 text-xs leading-5 text-slate-500">Year 1: {task.firstYearFrequency} · After Year 1: {task.ongoingFrequency}</p>
+                          </div>
+                          <div className="shrink-0 text-right">
+                            {monthlyEstimate !== null ? (
+                              <><p className="text-sm font-black text-slate-900">${monthlyEstimate.toFixed(2)}<span className="text-xs font-semibold text-slate-500">/mo</span></p><p className="text-[0.65rem] text-slate-500">${visitPrice} per visit</p></>
+                            ) : <p className="max-w-24 text-xs font-bold leading-4 text-amber-700">Price confirmed after review</p>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="border-t border-blue-50 bg-slate-50/70 px-4 py-3">
+                      <p className="text-xs leading-5 text-slate-600">
+                        {pendingMaintenancePriceCount > 0
+                          ? `${pendingMaintenancePriceCount} selected task${pendingMaintenancePriceCount === 1 ? '' : 's'} need vendor pricing, so the ${planBillingFrequency} subscription total is still a quote pending. The estimate above includes only tasks with a matching catalog rate.`
+                          : 'Monthly estimate uses the selected Year 1 cadence and matching catalog rates. Preserve confirms the final plan price before activation.'}
+                      </p>
+                    </div>
+                  </section>
+                )}
+
+                {maintenancePlan.length > 0 && (
+                  <div className="mt-4 grid gap-3 rounded-2xl border border-slate-200 bg-white/80 p-3 sm:grid-cols-[1fr_auto] sm:items-end">
                     <label className="text-sm font-medium text-slate-700">
                       Preferred subscription billing interval
-                      <select value={planBillingFrequency} onChange={event => setPlanBillingFrequency(event.target.value as SubscriptionInterval)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-900 sm:max-w-xs">
+                      <select value={planBillingFrequency} onChange={event => setPlanBillingFrequency(event.target.value as SubscriptionInterval)} className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-3 text-slate-900 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 sm:max-w-xs">
                         <option value="monthly">Monthly</option>
                         <option value="quarterly">Quarterly</option>
                         <option value="yearly">Yearly</option>
                       </select>
                     </label>
-                    <button type="submit" disabled={!formData.propertyId} className="rounded-lg bg-green-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50">
+                    <button type="submit" disabled={!formData.propertyId} className="min-h-12 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-3 text-sm font-black text-white shadow-md shadow-blue-200 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50">
                       Request plan review
                     </button>
                   </div>
                 )}
 
-                <div className="mt-5 space-y-5">
+                <div className="mt-5 space-y-4">
                   {maintenanceCategories.map(category => (
                     <div key={category} className="rounded-2xl border border-slate-100 bg-white/75 p-4 shadow-sm">
                       <h3 className="mb-3 flex items-center gap-2 text-sm font-black text-slate-900"><span className="h-2 w-2 rounded-full bg-blue-500" />{category}</h3>
-                      <div className="grid gap-2">
+                      <div className="grid gap-2 sm:grid-cols-2">
                         {homeMaintenanceTasks.filter(task => task.category === category).map(task => {
                           const selected = selectedMaintenanceTasks[task.id];
                           return (
@@ -575,19 +641,19 @@ export default function CreateWorkOrderV2Page() {
                                 <div className="mt-3 grid gap-2 pl-7 sm:grid-cols-3">
                                   <label className="text-xs font-medium text-slate-600">
                                     First due from plan start
-                                    <select value={selected.firstDueMonth} onChange={event => updateMaintenanceTask(task.id, 'firstDueMonth', Number(event.target.value))} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900">
+                                    <select value={selected.firstDueMonth} onChange={event => updateMaintenanceTask(task.id, 'firstDueMonth', Number(event.target.value))} className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-2 py-3 text-sm text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100">
                                       {Array.from({ length: 12 }, (_, index) => index + 1).map(month => <option key={month} value={month}>Month {month}</option>)}
                                     </select>
                                   </label>
                                   <label className="text-xs font-medium text-slate-600">
                                     During Year 1
-                                    <select value={selected.firstYearFrequency} onChange={event => updateMaintenanceTask(task.id, 'firstYearFrequency', event.target.value as MaintenanceFrequency)} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900">
+                                    <select value={selected.firstYearFrequency} onChange={event => updateMaintenanceTask(task.id, 'firstYearFrequency', event.target.value as MaintenanceFrequency)} className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-2 py-3 text-sm text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100">
                                       {maintenanceFrequencyOptions.map(frequency => <option key={frequency}>{frequency}</option>)}
                                     </select>
                                   </label>
                                   <label className="text-xs font-medium text-slate-600">
                                     After Year 1
-                                    <select value={selected.ongoingFrequency} onChange={event => updateMaintenanceTask(task.id, 'ongoingFrequency', event.target.value as MaintenanceFrequency)} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900">
+                                    <select value={selected.ongoingFrequency} onChange={event => updateMaintenanceTask(task.id, 'ongoingFrequency', event.target.value as MaintenanceFrequency)} className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-2 py-3 text-sm text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100">
                                       {maintenanceFrequencyOptions.map(frequency => <option key={frequency}>{frequency}</option>)}
                                     </select>
                                   </label>
@@ -804,10 +870,16 @@ export default function CreateWorkOrderV2Page() {
                 </div>
 
                 {selectedServices.length === 0 ? (
-                  <div className="text-center py-6">
-                    <ShoppingCart className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                    <p className="text-slate-500 text-sm">{maintenancePlan.length ? `${maintenancePlan.length} maintenance plan tasks selected` : 'No services selected yet'}</p>
-                  </div>
+                  maintenancePlan.length > 0 ? (
+                    <div className="rounded-xl border border-blue-100 bg-white p-4">
+                      <p className="text-sm font-bold text-slate-900">{maintenancePlan.length} maintenance tasks selected</p>
+                      <p className="mt-1 text-xs text-slate-500">Known Year 1 monthly equivalent</p>
+                      <p className="mt-1 text-2xl font-black text-blue-700">${maintenanceMonthlyEstimate.toFixed(2)}<span className="ml-1 text-sm font-bold text-slate-500">/mo</span></p>
+                      <p className="mt-2 text-xs leading-5 text-slate-600">{pendingMaintenancePriceCount > 0 ? `${pendingMaintenancePriceCount} task prices still need review; final subscription quote pending.` : 'Final subscription quote pending review.'}</p>
+                    </div>
+                  ) : (
+                    <div className="py-6 text-center"><ShoppingCart className="mx-auto mb-2 h-10 w-10 text-slate-300" /><p className="text-sm text-slate-500">No services selected yet</p></div>
+                  )
                 ) : (
                   <>
                     <div className="space-y-3 mb-4">
@@ -819,12 +891,12 @@ export default function CreateWorkOrderV2Page() {
                           </div>
                           <div className="flex items-center gap-1.5 flex-shrink-0">
                             <button type="button" onClick={() => updateQuantity(service.id, -1)}
-                              className="w-6 h-6 bg-slate-100 rounded flex items-center justify-center">
+                              className="flex h-9 w-9 items-center justify-center rounded-lg bg-white shadow-sm">
                               <Minus className="w-3 h-3 text-slate-600" />
                             </button>
                             <span className="text-sm font-medium w-5 text-center">{service.quantity}</span>
                             <button type="button" onClick={() => updateQuantity(service.id, 1)}
-                              className="w-6 h-6 bg-slate-100 rounded flex items-center justify-center">
+                              className="flex h-9 w-9 items-center justify-center rounded-lg bg-white shadow-sm">
                               <Plus className="w-3 h-3 text-slate-600" />
                             </button>
                             <button type="button" onClick={() => removeService(service.id)}
@@ -861,7 +933,7 @@ export default function CreateWorkOrderV2Page() {
                     <button
                       type="submit"
                       disabled={selectedServices.length === 0 || !formData.propertyId}
-                      className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 py-3.5 text-base font-black text-white shadow-lg shadow-blue-200 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="min-h-12 w-full rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 py-3.5 text-base font-black text-white shadow-lg shadow-blue-200 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {billingFrequency === 'one-time' ? '🛒 Request Service Quote' : '✅ Request Subscription Quote'}
                     </button>
@@ -883,11 +955,16 @@ export default function CreateWorkOrderV2Page() {
                   </div>
 
                   {selectedServices.length === 0 ? (
-                    <div className="text-center py-8">
-                      <ShoppingCart className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                      <p className="text-slate-500 text-sm">{maintenancePlan.length ? `${maintenancePlan.length} maintenance plan tasks selected` : 'No services selected yet'}</p>
-                      <p className="text-slate-400 text-xs mt-1">{maintenancePlan.length ? 'Final price will be confirmed after review' : 'Choose services from the left'}</p>
-                    </div>
+                    maintenancePlan.length > 0 ? (
+                      <div className="rounded-2xl border border-blue-100 bg-white p-4">
+                        <p className="text-sm font-bold text-slate-900">{maintenancePlan.length} maintenance tasks selected</p>
+                        <p className="mt-2 text-xs text-slate-500">Known Year 1 monthly equivalent</p>
+                        <p className="mt-1 text-2xl font-black text-blue-700">${maintenanceMonthlyEstimate.toFixed(2)}<span className="ml-1 text-sm font-bold text-slate-500">/mo</span></p>
+                        <p className="mt-2 text-xs leading-5 text-slate-600">{pendingMaintenancePriceCount > 0 ? `${pendingMaintenancePriceCount} task prices need review. The total subscription price is quote pending.` : 'The total subscription price is quote pending review.'}</p>
+                      </div>
+                    ) : (
+                      <div className="py-8 text-center"><ShoppingCart className="mx-auto mb-3 h-12 w-12 text-slate-300" /><p className="text-sm text-slate-500">No services selected yet</p><p className="mt-1 text-xs text-slate-400">Choose services from the left</p></div>
+                    )
                   ) : (
                     <>
                       <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">

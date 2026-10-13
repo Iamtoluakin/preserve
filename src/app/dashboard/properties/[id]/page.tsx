@@ -59,8 +59,8 @@ export default function PropertyDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-white border-b sticky top-0 z-40">
+    <div className="min-h-screen bg-[#f7fbff] text-slate-950">
+      <header className="sticky top-0 z-40 border-b border-blue-100 bg-white/90 shadow-sm backdrop-blur-xl">
         <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-3">
           <Link href="/dashboard" className="flex items-center space-x-3">
             <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
@@ -76,16 +76,22 @@ export default function PropertyDetailPage() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8">
+      <main className="mx-auto max-w-5xl px-3 py-6 sm:px-4 md:px-6 md:py-8">
+        <div className="relative isolate mb-6 overflow-hidden rounded-[1.75rem] border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-sky-50 p-5 shadow-sm md:p-7">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-20 -z-10 h-56 w-56 rounded-full bg-blue-200/40 blur-3xl" />
+          <p className="inline-flex rounded-full border border-blue-200 bg-white/85 px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.18em] text-blue-700 shadow-sm">Property profile</p>
+          <h1 className="mt-3 text-2xl font-black tracking-tight text-slate-950 md:text-3xl">Home details and care history</h1>
+          <p className="mt-1 text-sm leading-6 text-slate-600">Review this home and keep its maintenance and service work organized.</p>
+        </div>
         {/* Property Header */}
-        <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6 mb-6">
-          <div className="flex items-start gap-3 md:gap-4">
-            <div className="w-11 h-11 md:w-14 md:h-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Home className="w-6 h-6 md:w-7 md:h-7 text-blue-600" />
+        <div className="mb-6 rounded-[1.5rem] border border-blue-100 bg-white p-4 shadow-sm md:p-6">
+          <div className="flex flex-col gap-4 min-[520px]:flex-row min-[520px]:items-start md:gap-4">
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 shadow-md shadow-blue-100 md:h-14 md:w-14">
+              <Home className="h-6 w-6 text-white md:h-7 md:w-7" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
-                <h1 className="text-xl md:text-2xl font-bold text-slate-900 break-words">{property.address}</h1>
+              <div className="mb-1 flex flex-col-reverse items-start justify-between gap-2 min-[440px]:flex-row">
+                <h2 className="break-words text-xl font-black text-slate-950 md:text-2xl">{property.address}</h2>
                 <span className="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800">
                   {property.status || 'Active'}
                 </span>
@@ -94,7 +100,7 @@ export default function PropertyDetailPage() {
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <span>{property.city}, {property.state} {property.zip} · {property.county}</span>
               </p>
-              <div className="grid grid-cols-1 min-[380px]:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 md:grid-cols-4 md:gap-4 text-sm">
                 <div>
                   <p className="text-slate-500 mb-0.5">Property Type</p>
                   <p className="font-semibold text-slate-800 flex items-center gap-1 break-words">
@@ -129,14 +135,14 @@ export default function PropertyDetailPage() {
         </div>
 
         {/* Work Orders */}
-        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-          <div className="px-4 md:px-6 py-4 border-b flex flex-col min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between gap-3">
+        <div className="overflow-hidden rounded-[1.5rem] border border-blue-100 bg-white shadow-sm">
+          <div className="flex flex-col gap-3 border-b border-blue-50 px-4 py-4 min-[440px]:flex-row min-[440px]:items-center min-[440px]:justify-between md:px-6">
             <h2 className="font-semibold text-slate-900">
-              Work Orders ({workOrders.length})
+              Work Orders &amp; Maintenance ({workOrders.length})
             </h2>
             <Link
               href={`/dashboard/work-orders/create?propertyId=${property.id}`}
-              className="w-full min-[380px]:w-auto flex items-center justify-center gap-1.5 bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 transition text-sm font-medium"
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-100 transition hover:-translate-y-0.5 hover:from-blue-700 hover:to-sky-600 min-[380px]:w-auto"
             >
               <Plus className="w-4 h-4" />
               Create Work Order
@@ -149,7 +155,7 @@ export default function PropertyDetailPage() {
               <p className="text-slate-500 mb-4 text-sm">No work orders for this property yet.</p>
               <Link
                 href={`/dashboard/work-orders/create?propertyId=${property.id}`}
-                className="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-100 transition hover:-translate-y-0.5"
               >
                 <Plus className="w-4 h-4" />
                 Create First Work Order
@@ -161,7 +167,7 @@ export default function PropertyDetailPage() {
                 <Link
                   key={wo.id}
                   href={`/dashboard/work-orders/${wo.id}`}
-                  className="px-4 md:px-6 py-4 flex items-start gap-3 hover:bg-slate-50 transition"
+                  className="flex items-start gap-3 px-4 py-4 transition hover:bg-blue-50/40 md:px-6"
                 >
                   <div className="mt-0.5">{getStatusIcon(wo.status)}</div>
                   <div className="flex-1 min-w-0">
@@ -172,6 +178,8 @@ export default function PropertyDetailPage() {
                       </span>
                     </div>
                     <p className="text-sm text-slate-700 break-words md:truncate">{wo.serviceType || 'Service not specified'}</p>
+                    {wo.maintenancePlan?.length ? <span className="mt-1 inline-flex rounded-full bg-sky-50 px-2 py-0.5 text-xs font-bold text-sky-800">Maintenance plan · {wo.maintenancePlan.length} tasks · {wo.billingFrequency} preferred</span> : null}
+                    {wo.pricingStatus === 'quote-pending' && <span className="ml-2 mt-1 inline-flex rounded-full bg-amber-50 px-2 py-0.5 text-xs font-bold text-amber-800">Quote pending</span>}
                     <p className="text-xs text-slate-400 mt-0.5">
                       {wo.scheduledDate ? new Date(wo.scheduledDate).toLocaleDateString() : 'No date'} ·{' '}
                       {wo.totalCost > 0 ? `$${wo.totalCost.toLocaleString()}` : ''}

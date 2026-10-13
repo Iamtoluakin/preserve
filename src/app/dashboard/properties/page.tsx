@@ -73,9 +73,9 @@ export default function PropertiesPage() {
   }).length;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#f7fbff] text-slate-950">
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-40">
+      <header className="sticky top-0 z-40 border-b border-blue-100 bg-white/90 shadow-sm backdrop-blur-xl">
         <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4">
           <div className="flex items-center justify-between gap-3">
             <Link href="/dashboard" className="flex items-center space-x-3">
@@ -91,14 +91,14 @@ export default function PropertiesPage() {
               </Link>
               <button
                 onClick={loadData}
-                className="h-10 w-10 sm:w-auto flex items-center justify-center gap-2 px-0 sm:px-4 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 transition text-sm"
+                className="flex h-10 w-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-0 text-sm text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-blue-700 sm:w-auto sm:px-4"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span className="hidden sm:inline">Refresh</span>
               </button>
               <Link
                 href="/dashboard/properties/add"
-                className="h-10 flex items-center gap-2 bg-blue-600 text-white px-3 sm:px-5 rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
+                className="flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 px-3 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 sm:px-5"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add<span className="hidden sm:inline"> Property</span></span>
@@ -108,22 +108,17 @@ export default function PropertiesPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8 pb-28 lg:pb-8">
+      <main className="mx-auto max-w-7xl px-3 py-6 sm:px-4 md:px-6 md:py-8 pb-28 lg:pb-8">
         {/* Page Header */}
-        <div className="mb-6 md:mb-8">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Building2 className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
-            </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Your Properties</h1>
-              <p className="text-sm md:text-base text-slate-600">Manage and track all your foreclosed and REO properties</p>
-            </div>
-          </div>
+        <div className="relative isolate mb-6 overflow-hidden rounded-[1.75rem] border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-sky-50 p-5 shadow-sm md:mb-8 md:p-7">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-20 -z-10 h-56 w-56 rounded-full bg-blue-200/40 blur-3xl" />
+          <p className="inline-flex rounded-full border border-blue-200 bg-white/85 px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.18em] text-blue-700 shadow-sm">Your homes in one place</p>
+          <h1 className="mt-3 text-2xl font-black tracking-tight text-slate-950 md:text-3xl">Your Properties</h1>
+          <p className="mt-1 text-sm leading-6 text-slate-600 md:text-base">Manage your homes and start a care plan for any property.</p>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
+        <div className="mb-6 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 md:mb-8 md:grid-cols-3 md:gap-4">
           {[
             {
               label: 'Total Properties',
@@ -137,17 +132,17 @@ export default function PropertiesPage() {
               value: workOrders.length,
               sub: 'Across all properties',
               icon: <FileText className="w-5 h-5 text-green-600" />,
-              bg: 'bg-green-100',
+              bg: 'bg-sky-50',
             },
             {
               label: 'Added This Month',
               value: thisMonthCount,
               sub: 'New properties',
               icon: <Calendar className="w-5 h-5 text-purple-600" />,
-              bg: 'bg-purple-100',
+              bg: 'bg-blue-50',
             },
           ].map(s => (
-            <div key={s.label} className="bg-white rounded-xl shadow-sm border p-3 md:p-5">
+            <div key={s.label} className={`rounded-2xl border border-blue-100 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:p-5 ${s.label === 'Added This Month' ? 'min-[420px]:col-span-2 md:col-span-1' : ''}`}>
               <div className="flex items-start justify-between gap-2 mb-2">
                 <span className="text-xs md:text-sm font-medium text-slate-600 leading-snug">{s.label}</span>
                 <div className={`w-9 h-9 ${s.bg} rounded-lg flex items-center justify-center`}>{s.icon}</div>
@@ -159,7 +154,7 @@ export default function PropertiesPage() {
         </div>
 
         {/* Search & Filter */}
-        <div className="bg-white rounded-xl shadow-sm border p-3 md:p-4 mb-6 grid gap-3 sm:flex sm:flex-wrap">
+        <div className="mb-6 grid gap-3 rounded-2xl border border-blue-100 bg-white p-3 shadow-sm sm:flex sm:flex-wrap md:p-4">
           <div className="relative sm:flex-1 sm:min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
             <input
@@ -167,7 +162,7 @@ export default function PropertiesPage() {
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search by address, city, county, or reference..."
-              className="w-full pl-9 pr-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
+              className="w-full pl-9 pr-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50/70 text-sm text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
             />
           </div>
           <div className="relative sm:w-auto">
@@ -175,7 +170,7 @@ export default function PropertiesPage() {
             <select
               value={filterType}
               onChange={e => setFilterType(e.target.value)}
-              className="w-full sm:w-auto pl-9 pr-8 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 bg-white"
+              className="w-full sm:w-auto pl-9 pr-8 py-2.5 border border-slate-200 rounded-xl bg-slate-50/70 text-sm text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 bg-white"
             >
               <option value="all">All Property Types</option>
               <option value="single_family">Single Family</option>
@@ -188,7 +183,7 @@ export default function PropertiesPage() {
 
         {/* Properties List */}
         {filteredProperties.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border px-5 py-12 md:p-14 text-center">
+          <div className="rounded-[1.5rem] border border-blue-100 bg-gradient-to-br from-white via-blue-50/40 to-white px-5 py-12 text-center shadow-sm md:p-14">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Home className="w-8 h-8 text-slate-400" />
             </div>
@@ -213,19 +208,19 @@ export default function PropertiesPage() {
             {filteredProperties.map(property => {
               const woCount = getWorkOrderCount(property.id);
               return (
-                <div key={property.id} className="bg-white rounded-xl shadow-sm border hover:shadow-md transition">
-                  <div className="p-4 md:p-6">
+                <div key={property.id} className="rounded-[1.5rem] border border-blue-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
+                  <div className="p-4 sm:p-5 md:p-6">
                     <div className="flex items-start gap-3 md:gap-4">
                       {/* Icon */}
-                      <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Home className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
+                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 shadow-md shadow-blue-100 md:h-12 md:w-12">
+                        <Home className="h-5 w-5 text-white md:h-6 md:w-6" />
                       </div>
 
                       {/* Main Info */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
-                          <h3 className="text-base md:text-lg font-semibold text-slate-900 break-words">{property.address}</h3>
-                          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 flex-shrink-0">
+                        <div className="mb-1 flex flex-col-reverse items-start justify-between gap-2 min-[440px]:flex-row min-[440px]:items-start">
+                          <h3 className="break-words text-base font-black text-slate-950 md:text-lg">{property.address}</h3>
+                          <span className="shrink-0 rounded-full bg-green-100 px-2.5 py-1 text-xs font-bold text-green-800">
                             {property.status || 'Active'}
                           </span>
                         </div>
@@ -243,6 +238,7 @@ export default function PropertiesPage() {
                           )}
                         </div>
 
+                        {woCount === 0 && <p className="mb-3 text-xs font-medium text-blue-700">Ready for its first home-care schedule?</p>}
                         <div className="flex flex-wrap gap-3 text-xs text-slate-500">
                           <span className="flex items-center gap-1">
                             <Building2 className="w-3.5 h-3.5" />
@@ -268,20 +264,20 @@ export default function PropertiesPage() {
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-1 min-[380px]:grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2">
+                    <div className="mt-4 grid grid-cols-1 gap-2 border-t border-blue-50 pt-4 min-[440px]:grid-cols-2 sm:flex sm:flex-wrap sm:items-center">
                       <Link
                         href={`/dashboard/properties/${property.id}`}
-                        className="min-h-11 flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2.5 text-blue-600 bg-blue-50 sm:bg-transparent hover:bg-blue-50 rounded-lg transition text-sm font-medium"
+                        className="flex min-h-12 items-center justify-center gap-1.5 rounded-xl border border-blue-100 bg-white px-3 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-50 sm:min-h-11 sm:border-transparent sm:py-2.5"
                       >
                         <Eye className="w-4 h-4" />
                         View Details
                       </Link>
                       <Link
                         href={`/dashboard/work-orders/create?propertyId=${property.id}`}
-                        className="min-h-11 flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium"
+                        className="flex min-h-12 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 px-3 py-3 text-sm font-bold text-white shadow-md shadow-blue-100 transition hover:-translate-y-0.5 sm:min-h-11 sm:py-2.5"
                       >
                         <Plus className="w-4 h-4" />
-                        Create Work Order
+                        Start a Care Plan
                       </Link>
 
                       {confirmDelete === property.id ? (
@@ -303,7 +299,7 @@ export default function PropertiesPage() {
                       ) : (
                         <button
                           onClick={() => setConfirmDelete(property.id)}
-                          className="min-h-11 min-[380px]:col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition text-sm sm:ml-auto"
+                          className="flex min-h-12 items-center justify-center gap-1.5 rounded-xl border border-red-200 px-3 py-3 text-sm text-red-600 transition hover:bg-red-50 min-[440px]:col-span-2 sm:min-h-11 sm:ml-auto sm:py-2"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           Delete
