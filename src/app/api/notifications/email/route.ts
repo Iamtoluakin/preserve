@@ -80,7 +80,9 @@ function buildEmail(payload: EmailPayload) {
           ['Service', service],
           ['Priority', workOrder.priority || 'normal'],
           ['Scheduled date', formatDate(workOrder.scheduledDate)],
-          ['Billing', `$${Number(workOrder.billingAmount || 0).toLocaleString()} ${workOrder.billingFrequency || 'one-time'}`],
+          ['Billing', workOrder.pricingStatus === 'quote-pending'
+            ? `Quote pending; preferred ${workOrder.billingFrequency || 'monthly'} interval; not charged`
+            : `$${Number(workOrder.billingAmount || 0).toLocaleString()} ${workOrder.billingFrequency || 'one-time'}`],
         ])}
       `),
     };

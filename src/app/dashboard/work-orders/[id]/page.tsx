@@ -196,7 +196,7 @@ export default function WorkOrderDetailPage() {
                 <InfoItem icon={<MapPin className="w-4 h-4" />} label="Property" value={workOrder.propertyAddress || 'Not assigned'} />
                 <InfoItem icon={<Calendar className="w-4 h-4" />} label="Scheduled" value={formatDate(workOrder.scheduledDate)} />
                 <InfoItem icon={<Clock className="w-4 h-4" />} label="Created" value={formatDate(workOrder.createdAt, true)} />
-                <InfoItem icon={<DollarSign className="w-4 h-4" />} label="Billing" value={`$${workOrder.billingAmount.toLocaleString()} ${workOrder.billingFrequency === 'one-time' ? 'one-time' : `/ ${workOrder.billingFrequency}`}`} />
+                <InfoItem icon={<DollarSign className="w-4 h-4" />} label={workOrder.pricingStatus === 'quote-pending' ? 'Subscription pricing' : 'Billing'} value={workOrder.pricingStatus === 'quote-pending' ? 'Quote pending; not charged' : `$${workOrder.billingAmount.toLocaleString()} ${workOrder.billingFrequency === 'one-time' ? 'one-time' : `/ ${workOrder.billingFrequency}`}`} />
               </div>
 
               {property && (
@@ -235,6 +235,22 @@ export default function WorkOrderDetailPage() {
               ) : (
                 <p className="text-sm text-slate-500">No itemized service lines were saved for this order.</p>
               )}
+
+              {workOrder.maintenancePlan && workOrder.maintenancePlan.length > 0 && (
+                <div className="mt-5 border-t border-slate-100 pt-5">
+                  <h3 className="mb-3 font-semibold text-slate-900">Requested subscription schedule</h3>
+                  <div className="divide-y divide-slate-100">
+                    {workOrder.maintenancePlan.map(task => (
+                      <div key={task.id} className="py-3 first:pt-0 last:pb-0">
+                        <p className="text-sm font-medium text-slate-900">{task.name}</p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          First due in month {task.firstDueMonth} · Year 1: {task.firstYearFrequency} · Thereafter: {task.ongoingFrequency}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </section>
 
             <section className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
@@ -265,11 +281,11 @@ export default function WorkOrderDetailPage() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between gap-4">
                   <span className="text-slate-500">Service total</span>
-                  <span className="font-semibold text-slate-900">${workOrder.totalCost.toLocaleString()}</span>
+                  <span className="font-semibold text-slate-900">{workOrder.pricingStatus === 'quote-pending' && workOrder.totalCost === 0 ? 'Quote pending' : `$${workOrder.totalCost.toLocaleString()}`}</span>
                 </div>
                 <div className="flex justify-between gap-4">
                   <span className="text-slate-500">Billing amount</span>
-                  <span className="font-semibold text-slate-900">${workOrder.billingAmount.toLocaleString()}</span>
+                  <span className="font-semibold text-slate-900">{workOrder.pricingStatus === 'quote-pending' ? 'Not charged' : `$${workOrder.billingAmount.toLocaleString()}`}</span>
                 </div>
                 <div className="flex justify-between gap-4">
                   <span className="text-slate-500">Frequency</span>

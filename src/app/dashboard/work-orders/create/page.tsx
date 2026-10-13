@@ -11,7 +11,8 @@ import {
   Plus,
   Minus,
   DollarSign,
-  CheckCircle2
+  CheckCircle2,
+  Snowflake
 } from 'lucide-react';
 import { serviceCatalog, calculateMonthlyCost, supabase } from '@/lib/supabase';
 import {
@@ -22,6 +23,12 @@ import {
   writeWorkOrders,
 } from '@/lib/localData';
 import { notifyNewWorkOrder, notifyWorkOrderProgress } from '@/lib/notificationClient';
+import {
+  homeMaintenanceTasks,
+  maintenanceFrequencyOptions,
+  type CustomerMaintenanceTask,
+  type MaintenanceFrequency,
+} from '@/lib/homeMaintenance';
 
 type SelectedService = {
   id: string;
@@ -34,6 +41,23 @@ type SelectedService = {
 };
 
 type BillingFrequency = 'one-time' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
+type SubscriptionInterval = 'monthly' | 'quarterly' | 'yearly';
+type ServiceFolderId = 'inspection' | 'work-orders' | 'maintenance' | 'hvac' | 'lawn';
+
+const serviceFolders: {
+  id: ServiceFolderId;
+  title: string;
+  summary: string;
+  icon: typeof Home;
+  serviceIds: string[];
+}[] = [
+  { id: 'inspection', title: 'Inspection', summary: 'Home checks, condition reports, and photos', icon: CheckCircle2, serviceIds: ['full_inspection', 'photo_documentation'] },
+  { id: 'work-orders', title: 'Work Orders', summary: 'Repairs, cleanup, securing, and one-time jobs', icon: ShoppingCart, serviceIds: ['move_out_deep_clean', 'odor_sanitation', 'property_securing', 'board_up', 'debris_removal', 'minor_repairs', 'emergency_response'] },
+  { id: 'maintenance', title: 'Maintenance', summary: 'Recurring home-care tasks and seasonal services', icon: Calendar, serviceIds: ['exterior_cleaning', 'pressure_washing', 'window_cleaning', 'interior_house_cleaning', 'winterization', 'de_winterization', 'gutter_cleaning', 'pest_control'] },
+  { id: 'hvac', title: 'HVAC', summary: 'Heating, cooling, and system service', icon: Snowflake, serviceIds: ['hvac_check'] },
+  { id: 'lawn', title: 'Lawn', summary: 'Mowing, yard cleanup, and grounds care', icon: Home, serviceIds: ['lawn_mowing', 'lawn_cleanup'] },
+];
+
 const WORK_ORDER_DRAFT_KEY = 'preserve_work_order_draft';
 
 export default function CreateWorkOrderV2Page() {
@@ -47,7 +71,10 @@ export default function CreateWorkOrderV2Page() {
   });
 
   const [selectedServices, setSelectedServices] = useState<SelectedService[]>([]);
+  const [activeServiceFolder, setActiveServiceFolder] = useState<ServiceFolderId | null>(null);
+  const [selectedMaintenanceTasks, setSelectedMaintenanceTasks] = useState<Record<string, CustomerMaintenanceTask>>({});
   const [billingFrequency, setBillingFrequency] = useState<BillingFrequency>('monthly');
+  const [planBillingFrequency, setPlanBillingFrequency] = useState<SubscriptionInterval>('monthly');
   const [submitted, setSubmitted] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [properties, setProperties] = useState<PreserveProperty[]>([]);
@@ -64,7 +91,11 @@ export default function CreateWorkOrderV2Page() {
         const draft = JSON.parse(savedDraft);
         setFormData(current => ({ ...current, ...draft.formData }));
         setSelectedServices(Array.isArray(draft.selectedServices) ? draft.selectedServices : []);
+        setActiveServiceFolder(draft.activeServiceFolder || null);
+        const savedMaintenancePlan = Array.isArray(draft.maintenancePlan) ? draft.maintenancePlan as CustomerMaintenanceTask[] : [];
+        setSelectedMaintenanceTasks(Object.fromEntries(savedMaintenancePlan.map(task => [task.id, task])));
         setBillingFrequency(draft.billingFrequency || 'monthly');
+        setPlanBillingFrequency(draft.planBillingFrequency || 'monthly');
         window.localStorage.removeItem(WORK_ORDER_DRAFT_KEY);
         return;
       } catch {
@@ -77,23 +108,57 @@ export default function CreateWorkOrderV2Page() {
     }
   }, []);
 
-  const categories = [...new Set(serviceCatalog.map(s => s.category))];
+  const activeFolder = serviceFolders.find(folder => folder.id === activeServiceFolder);
+  const folderServices = activeFolder
+    ? serviceCatalog.filter(service => activeFolder.serviceIds.includes(service.id))
+    : [];
+  const categories = [...new Set(folderServices.map(service => service.category))];
+  const maintenanceCategories = [...new Set(homeMaintenanceTasks.map(task => task.category))];
+  const maintenancePlan = Object.values(selectedMaintenanceTasks);
+  const selectedCount = selectedServices.length + maintenancePlan.length;
+  const preferredBillingFrequency = maintenancePlan.length ? planBillingFrequency : billingFrequency;
 
-  // Add Full Preservation Package (all recurring services)
-  const addFullPackage = () => {
-    const recurringServices = serviceCatalog.filter(s => 
-      s.frequency === 'monthly' || s.frequency === 'quarterly'
-    );
-    const newServices: SelectedService[] = recurringServices.map(service => ({
-      id: service.id,
-      name: service.name,
-      basePrice: service.basePrice,
-      quantity: 1,
-      frequency: service.frequency,
-      unit: service.unit,
-      total: service.basePrice
+  const addRecommendedMaintenancePlan = () => {
+    setSelectedMaintenanceTasks(Object.fromEntries(homeMaintenanceTasks.map(task => [task.id, {
+      id: task.id,
+      category: task.category,
+      name: task.name,
+      firstDueMonth: task.firstDueMonth,
+      firstYearFrequency: task.firstYearFrequency,
+      ongoingFrequency: task.ongoingFrequency,
+    }])));
+  };
+
+  const toggleMaintenanceTask = (task: typeof homeMaintenanceTasks[number]) => {
+    setSelectedMaintenanceTasks(current => {
+      if (current[task.id]) {
+        const next = { ...current };
+        delete next[task.id];
+        return next;
+      }
+      return {
+        ...current,
+        [task.id]: {
+          id: task.id,
+          category: task.category,
+          name: task.name,
+          firstDueMonth: task.firstDueMonth,
+          firstYearFrequency: task.firstYearFrequency,
+          ongoingFrequency: task.ongoingFrequency,
+        },
+      };
+    });
+  };
+
+  const updateMaintenanceTask = <K extends keyof CustomerMaintenanceTask>(
+    taskId: string,
+    field: K,
+    value: CustomerMaintenanceTask[K],
+  ) => {
+    setSelectedMaintenanceTasks(current => ({
+      ...current,
+      [taskId]: { ...current[taskId], [field]: value },
     }));
-    setSelectedServices(newServices);
   };
 
   const addService = (service: typeof serviceCatalog[0]) => {
@@ -158,7 +223,7 @@ export default function CreateWorkOrderV2Page() {
       return getQuarterlyEstimate();
     } else {
       // yearly
-      return getMonthlyEstimate() * 12 * 0.9; // 10% discount
+      return getMonthlyEstimate() * 12;
     }
   };
   
@@ -191,7 +256,10 @@ export default function CreateWorkOrderV2Page() {
       window.localStorage.setItem(WORK_ORDER_DRAFT_KEY, JSON.stringify({
         formData,
         selectedServices,
+        activeServiceFolder,
+        maintenancePlan,
         billingFrequency,
+        planBillingFrequency,
       }));
       const next = `${window.location.pathname}${window.location.search}`;
       router.push(`/login?next=${encodeURIComponent(next)}&intent=service`);
@@ -211,15 +279,25 @@ export default function CreateWorkOrderV2Page() {
             .filter(Boolean)
             .join(', ')
         : '',
-      serviceType: selectedServices.map(s => s.name).join(', '),
+      serviceType: [
+        ...selectedServices.map(s => s.name),
+        ...(maintenancePlan.length ? ['Home maintenance subscription plan'] : []),
+      ].join(', '),
       services: selectedServices,
+      maintenancePlan,
       status: 'submitted',
       priority: formData.priority || 'medium',
       scheduledDate: formData.scheduledDate || new Date().toISOString(),
-      billingFrequency,
+      billingFrequency: preferredBillingFrequency,
       totalCost: getTotalCost(),
       billingAmount: getBillingAmount(),
-      description: formData.description || '',
+      pricingStatus: maintenancePlan.length ? 'quote-pending' : 'estimate',
+      description: [
+        formData.description,
+        maintenancePlan.length
+          ? `Requested home-maintenance schedule (${preferredBillingFrequency} preferred billing):\n${maintenancePlan.map(task => `- ${task.name}: first due in month ${task.firstDueMonth} of plan; Year 1 ${task.firstYearFrequency}; after Year 1 ${task.ongoingFrequency}`).join('\n')}`
+          : '',
+      ].filter(Boolean).join('\n\n'),
       accessInstructions: formData.accessInstructions || '',
       createdAt: new Date().toISOString(),
     };
@@ -246,35 +324,38 @@ export default function CreateWorkOrderV2Page() {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6">
         <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-8 md:p-12 max-w-2xl w-full">
           <div className="text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle2 className="w-12 h-12 text-green-600" />
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 shadow-lg shadow-blue-200">
+              <CheckCircle2 className="h-10 w-10 text-white" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Work Order Created!</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">{maintenancePlan.length ? 'Maintenance Plan Request Submitted' : 'Work Order Created!'}</h2>
             <p className="text-base sm:text-lg text-slate-600 mb-6">
-              Your service request has been submitted to Preserve. We&apos;ll begin work shortly.
+              {maintenancePlan.length
+                ? 'Your selected task schedule and preferred billing interval are saved for review. Preserve will confirm availability and pricing before a subscription starts.'
+                : 'Your service request has been submitted to Preserve. We&apos;ll begin work shortly.'}
             </p>
             
-            <div className="bg-blue-50 rounded-xl p-4 sm:p-6 mb-6">
+            <div className="mb-6 rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-4 sm:p-6">
               <div className="grid gap-4 min-[380px]:grid-cols-2 text-left">
                 <div>
                   <p className="text-sm text-blue-600 font-medium mb-1">Work Order Number</p>
                   <p className="text-lg font-bold text-blue-900">{orderNumber}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-blue-600 font-medium mb-1">Billing Type</p>
-                  <p className="text-lg font-bold text-blue-900 capitalize">{billingFrequency}</p>
+                  <p className="text-sm text-blue-600 font-medium mb-1">{maintenancePlan.length ? 'Preferred billing interval' : 'Billing Type'}</p>
+                  <p className="text-lg font-bold text-blue-900 capitalize">{preferredBillingFrequency}</p>
                 </div>
                 <div>
                   <p className="text-sm text-blue-600 font-medium mb-1">Services</p>
-                  <p className="text-lg font-bold text-blue-900">{selectedServices.length}</p>
+                  <p className="text-lg font-bold text-blue-900">{maintenancePlan.length ? `${maintenancePlan.length} plan tasks` : selectedServices.length}</p>
                 </div>
                 <div>
                   <p className="text-sm text-blue-600 font-medium mb-1">
-                    {getBillingLabel()}
+                    {maintenancePlan.length ? 'Subscription pricing' : getBillingLabel()}
                   </p>
                   <p className="text-lg font-bold text-blue-900">
-                    ${getBillingAmount().toFixed(0)}
-                    {getBillingSuffix()}
+                    {maintenancePlan.length
+                      ? `${selectedServices.length ? `$${getBillingAmount().toFixed(0)} service estimate + ` : ''}plan quote pending`
+                      : `$${getBillingAmount().toFixed(0)}${getBillingSuffix()}`}
                   </p>
                 </div>
               </div>
@@ -284,7 +365,7 @@ export default function CreateWorkOrderV2Page() {
             
             <Link
               href="/dashboard/work-orders"
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 px-8 py-3 font-bold text-white shadow-lg shadow-blue-200 transition hover:-translate-y-0.5 hover:from-blue-700 hover:to-sky-600"
             >
               View Work Orders
             </Link>
@@ -295,9 +376,9 @@ export default function CreateWorkOrderV2Page() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#f7fbff] text-slate-950">
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-40">
+      <header className="sticky top-0 z-40 border-b border-blue-100 bg-white/90 shadow-sm backdrop-blur-xl">
         <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center space-x-4">
@@ -318,33 +399,37 @@ export default function CreateWorkOrderV2Page() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8">
-        <div className="mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Request Preservation Services</h1>
-          <p className="text-slate-600">Select the services you need to maintain your property</p>
+      <main className="mx-auto max-w-7xl px-3 py-6 sm:px-4 md:px-6 md:py-8">
+        <div className="relative isolate mb-6 overflow-hidden rounded-[1.75rem] border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-sky-50 px-5 py-6 shadow-sm md:mb-8 md:px-8 md:py-9">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-24 -z-10 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl" />
+          <p className="inline-flex rounded-full border border-blue-200 bg-white/85 px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.18em] text-blue-700 shadow-sm">Your home, cared for</p>
+          <h1 className="mt-3 text-3xl font-black leading-tight tracking-tight text-slate-950 md:text-4xl">Build a Home Care Plan</h1>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 md:text-base">Choose recurring maintenance tasks for a new or longtime home, or request a one-time service. Preserve helps coordinate the work and keep your home on schedule.</p>
         </div>
 
         {/* Mobile Order Summary Bar */}
-        {selectedServices.length > 0 && (
-          <div className="lg:hidden sticky top-16 z-30 bg-white border-b shadow-sm px-4 py-3 flex items-center justify-between gap-3">
+        {selectedCount > 0 && (
+          <div className="sticky top-16 z-30 flex items-center justify-between gap-3 rounded-2xl border border-blue-100 bg-white/95 px-4 py-3 shadow-lg shadow-blue-100/60 backdrop-blur lg:hidden">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 shadow-sm">
                 <span className="text-white text-xs font-bold">{selectedServices.length}</span>
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-slate-900 truncate">
-                  {selectedServices.length} service{selectedServices.length !== 1 ? 's' : ''} selected
+                  {selectedCount} item{selectedCount !== 1 ? 's' : ''} selected
                 </p>
                 <p className="text-xs text-slate-500">
-                  ${getBillingAmount().toFixed(0)}{getBillingSuffix()} · {billingFrequency}
+                  {maintenancePlan.length
+                    ? `${selectedServices.length ? `$${getBillingAmount().toFixed(0)} service estimate + ` : ''}plan quote pending · ${preferredBillingFrequency} preference`
+                    : `$${getBillingAmount().toFixed(0)}${getBillingSuffix()} · ${preferredBillingFrequency}`}
                 </p>
               </div>
             </div>
             <button
               type="submit"
               form="work-order-form"
-              disabled={!formData.propertyId}
-              className="flex-shrink-0 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!formData.propertyId || selectedCount === 0}
+              className="flex-shrink-0 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Submit
             </button>
@@ -356,13 +441,13 @@ export default function CreateWorkOrderV2Page() {
             {/* Left Column - Service Selection */}
             <div className="lg:col-span-2 space-y-6">
               {/* Property Selection */}
-              <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Home className="w-6 h-6 text-blue-600" />
+              <div className="rounded-[1.5rem] border border-blue-100 bg-white p-4 shadow-sm transition hover:shadow-md md:p-6">
+                <div className="mb-6 flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 shadow-md shadow-blue-100">
+                    <Home className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-lg md:text-xl font-semibold text-slate-900">Select Property</h2>
+                    <h2 className="text-lg font-black text-slate-950 md:text-xl">Select Property</h2>
                     <p className="text-sm text-slate-600">Choose the property that needs service</p>
                   </div>
                 </div>
@@ -372,7 +457,7 @@ export default function CreateWorkOrderV2Page() {
                   value={formData.propertyId}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
                 >
                   <option value="">Select a property</option>
                   {properties.length === 0 ? (
@@ -392,68 +477,175 @@ export default function CreateWorkOrderV2Page() {
                 )}
               </div>
 
-              {/* Service Catalog */}
-              <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <ShoppingCart className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg md:text-xl font-semibold text-slate-900">Select Services (Multiple)</h2>
-                      <p className="text-sm text-slate-600">Click to add multiple services - they&apos;ll appear in your cart</p>
-                    </div>
+              <section className="relative isolate overflow-hidden rounded-[1.75rem] border border-blue-100 bg-gradient-to-br from-white via-blue-50/80 to-sky-50/70 p-4 shadow-sm md:p-6" aria-labelledby="service-folders-heading">
+                <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-20 -z-10 h-64 w-64 rounded-full bg-blue-200/40 blur-3xl" />
+                <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="inline-flex rounded-full border border-blue-200 bg-white/80 px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.18em] text-blue-700 shadow-sm">Step 1 · Choose a service folder</p>
+                    <h2 id="service-folders-heading" className="mt-3 text-2xl font-black tracking-tight text-slate-950 md:text-3xl">What does your home need?</h2>
+                    <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">Start with a category. We’ll show the matching services, visit cadence, and pricing next.</p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={addFullPackage}
-                    className="w-full sm:w-auto px-3 md:px-4 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition font-semibold text-sm flex items-center justify-center gap-2"
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span className="hidden sm:inline">Full Preservation Package</span>
-                    <span className="sm:hidden">Full Package</span>
-                  </button>
+                  {selectedCount > 0 && <span className="inline-flex w-fit items-center gap-2 rounded-full border border-blue-200 bg-white/90 px-3 py-2 text-sm font-bold text-blue-800 shadow-sm"><CheckCircle2 className="h-4 w-4" />{selectedCount} selected</span>}
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                  {serviceFolders.map(folder => {
+                    const FolderIcon = folder.icon;
+                    const folderServiceCount = selectedServices.filter(service => folder.serviceIds.includes(service.id)).length;
+                    const folderTaskCount = folder.id === 'maintenance' ? maintenancePlan.length : 0;
+                    const selected = activeServiceFolder === folder.id;
+                    return (
+                      <button key={folder.id} type="button" onClick={() => setActiveServiceFolder(folder.id)} aria-pressed={selected}
+                        className={`group relative overflow-hidden rounded-2xl border p-4 text-left shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-100 ${selected ? 'border-blue-400 bg-gradient-to-br from-blue-600 to-sky-500 text-white shadow-lg shadow-blue-200/70' : 'border-white/80 bg-white/90 hover:border-blue-200'}`}>
+                        {selected && <span aria-hidden="true" className="absolute -right-7 -top-8 h-24 w-24 rounded-full bg-white/15 blur-xl" />}
+                        <div className={`relative flex h-11 w-11 items-center justify-center rounded-xl transition ${selected ? 'bg-white/20 text-white' : 'bg-blue-50 text-blue-700 group-hover:bg-blue-100'}`}>
+                          <FolderIcon className="h-5 w-5" />
+                        </div>
+                        <span className={`relative mt-3 block font-black ${selected ? 'text-white' : 'text-slate-950'}`}>{folder.title}</span>
+                        <span className={`relative mt-1 block min-h-10 text-xs leading-5 ${selected ? 'text-blue-50' : 'text-slate-600'}`}>{folder.summary}</span>
+                        <span className={`relative mt-3 inline-flex min-h-6 items-center rounded-full px-2.5 py-1 text-[0.68rem] font-bold ${selected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                          {(folderServiceCount + folderTaskCount) > 0 ? `${folderServiceCount + folderTaskCount} selected` : `${folder.serviceIds.length} services`}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
+
+              {/* Home maintenance subscription builder */}
+              {activeServiceFolder === 'maintenance' && (
+              <section className="relative isolate overflow-hidden rounded-[1.75rem] border border-blue-100 bg-gradient-to-br from-white via-blue-50/70 to-white p-4 shadow-sm md:p-6" aria-labelledby="home-plan-heading">
+                <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-24 -z-10 h-72 w-72 rounded-full bg-sky-200/30 blur-3xl" />
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <p className="inline-flex rounded-full border border-blue-200 bg-white/80 px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.18em] text-blue-700 shadow-sm">Step 2 · Recurring home care</p>
+                    <h2 id="home-plan-heading" className="mt-3 text-2xl font-black tracking-tight text-slate-950 md:text-3xl">Build a maintenance subscription</h2>
+                    <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">
+                      Pick the jobs you want Preserve to coordinate. Set a first-year cadence and an ongoing cadence for each task.
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 gap-2">
+                    <button type="button" onClick={addRecommendedMaintenancePlan} className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700">
+                      Add suggested checklist
+                    </button>
+                    {maintenancePlan.length > 0 && (
+                    <button type="button" onClick={() => setSelectedMaintenanceTasks({})} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-blue-200 hover:text-blue-700">
+                        Clear
+                      </button>
+                    )}
+                  </div>
                 </div>
 
-                {/* Full Package Info Banner */}
-                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <CheckCircle2 className="w-6 h-6 text-green-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-green-900 mb-1">Full Preservation Package</h3>
-                      <p className="text-sm text-green-800 mb-2">
-                        Get all recurring preservation services at once. Includes lawn care, interior house cleaning, exterior cleaning, inspections, and regular maintenance.
-                      </p>
-                      <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm">
-                        <span className="text-green-700 font-medium">💰 Best Value</span>
-                        <span className="text-green-700 font-medium">🏠 Complete Protection</span>
-                        <span className="text-green-700 font-medium">📅 Recurring Services</span>
+                <div className="mt-5 rounded-2xl border border-blue-100 bg-white/80 p-4 text-sm leading-6 text-blue-900 shadow-sm">
+                  {maintenancePlan.length} of {homeMaintenanceTasks.length} checklist tasks selected. This is a plan request, not a charge. Preserve will confirm coverage, vendor pricing, and the final subscription price before activation.
+                </div>
+
+                {maintenancePlan.length > 0 && (
+                  <div className="mt-4 grid gap-3 rounded-lg border border-slate-200 p-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                    <label className="text-sm font-medium text-slate-700">
+                      Preferred subscription billing interval
+                      <select value={planBillingFrequency} onChange={event => setPlanBillingFrequency(event.target.value as SubscriptionInterval)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-900 sm:max-w-xs">
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="yearly">Yearly</option>
+                      </select>
+                    </label>
+                    <button type="submit" disabled={!formData.propertyId} className="rounded-lg bg-green-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50">
+                      Request plan review
+                    </button>
+                  </div>
+                )}
+
+                <div className="mt-5 space-y-5">
+                  {maintenanceCategories.map(category => (
+                    <div key={category} className="rounded-2xl border border-slate-100 bg-white/75 p-4 shadow-sm">
+                      <h3 className="mb-3 flex items-center gap-2 text-sm font-black text-slate-900"><span className="h-2 w-2 rounded-full bg-blue-500" />{category}</h3>
+                      <div className="grid gap-2">
+                        {homeMaintenanceTasks.filter(task => task.category === category).map(task => {
+                          const selected = selectedMaintenanceTasks[task.id];
+                          return (
+                            <div key={task.id} className={`rounded-xl border p-3 transition-colors ${selected ? 'border-blue-300 bg-blue-50/80 shadow-sm' : 'border-slate-200 bg-white hover:border-blue-200'}`}>
+                              <label className="flex cursor-pointer items-start gap-3">
+                                <input type="checkbox" checked={Boolean(selected)} onChange={() => toggleMaintenanceTask(task)} className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+                                <span className="min-w-0 flex-1">
+                                  <span className="block text-sm font-semibold text-slate-900">{task.name}</span>
+                                  <span className="mt-0.5 block text-xs leading-5 text-slate-600">{task.description}</span>
+                                </span>
+                              </label>
+                              {selected && (
+                                <div className="mt-3 grid gap-2 pl-7 sm:grid-cols-3">
+                                  <label className="text-xs font-medium text-slate-600">
+                                    First due from plan start
+                                    <select value={selected.firstDueMonth} onChange={event => updateMaintenanceTask(task.id, 'firstDueMonth', Number(event.target.value))} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900">
+                                      {Array.from({ length: 12 }, (_, index) => index + 1).map(month => <option key={month} value={month}>Month {month}</option>)}
+                                    </select>
+                                  </label>
+                                  <label className="text-xs font-medium text-slate-600">
+                                    During Year 1
+                                    <select value={selected.firstYearFrequency} onChange={event => updateMaintenanceTask(task.id, 'firstYearFrequency', event.target.value as MaintenanceFrequency)} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900">
+                                      {maintenanceFrequencyOptions.map(frequency => <option key={frequency}>{frequency}</option>)}
+                                    </select>
+                                  </label>
+                                  <label className="text-xs font-medium text-slate-600">
+                                    After Year 1
+                                    <select value={selected.ongoingFrequency} onChange={event => updateMaintenanceTask(task.id, 'ongoingFrequency', event.target.value as MaintenanceFrequency)} className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900">
+                                      {maintenanceFrequencyOptions.map(frequency => <option key={frequency}>{frequency}</option>)}
+                                    </select>
+                                  </label>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
+                  ))}
+                </div>
+                <p className="mt-4 text-xs leading-5 text-slate-500">
+                  Cadences are starter recommendations adapted from the supplied checklist. Preserve will confirm each task against the home, local climate, equipment guidance, and warranty requirements.
+                </p>
+              </section>
+              )}
+
+              {/* Open one folder at a time to browse its services and prices. */}
+              {activeFolder && (
+              <section className="relative isolate overflow-hidden rounded-[1.75rem] border border-blue-100 bg-gradient-to-br from-white via-blue-50/60 to-white p-4 shadow-sm md:p-6" aria-labelledby="folder-services-heading">
+                <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-24 -z-10 h-72 w-72 rounded-full bg-blue-200/30 blur-3xl" />
+                <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-white shadow-lg shadow-blue-200">
+                      {(() => { const FolderIcon = activeFolder.icon; return <FolderIcon className="h-6 w-6" />; })()}
+                    </div>
+                    <div>
+                      <p className="text-[0.65rem] font-black uppercase tracking-[0.18em] text-blue-700">Step 3 · Browse services</p>
+                      <h2 id="folder-services-heading" className="text-xl font-black tracking-tight text-slate-950 md:text-2xl">{activeFolder.title} Services</h2>
+                      <p className="text-sm text-slate-600">Select one or more services in this folder. The price and visit frequency are shown on each option.</p>
+                    </div>
                   </div>
+                  <button type="button" onClick={() => setActiveServiceFolder(null)} className="rounded-xl border border-slate-200 bg-white/90 px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-200 hover:text-blue-700">
+                    Change folder
+                  </button>
                 </div>
 
                 {/* Helper Text */}
                 {selectedServices.length > 0 && (
-                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-sm text-blue-800">
-                      ✓ <strong>{selectedServices.length} service{selectedServices.length > 1 ? 's' : ''}</strong> added to cart. 
+                  <div className="mb-5 flex items-center gap-3 rounded-2xl border border-blue-100 bg-white/80 p-4 text-blue-800 shadow-sm">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-100"><CheckCircle2 className="h-5 w-5 text-blue-700" /></span>
+                    <p className="text-sm">
+                      <strong>{selectedServices.length} service{selectedServices.length > 1 ? 's' : ''}</strong> added to your request.
                       Keep clicking to add more!
                     </p>
                   </div>
                 )}
 
                 {categories.map(category => {
-                  const categoryServices = serviceCatalog.filter(s => s.category === category);
+                  const categoryServices = folderServices.filter(service => service.category === category);
                   return (
                     <div key={category} className="mb-6 last:mb-0">
-                      <h3 className="font-semibold text-slate-900 mb-3 pb-2 border-b flex flex-col min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between gap-1">
+                      <h3 className="mb-3 flex flex-col gap-1 border-b border-blue-100 pb-3 font-black text-slate-950 min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between">
                         <span>{category}</span>
-                        <span className="text-xs text-slate-500 font-normal">Click any service to add</span>
+                        <span className="text-xs font-medium text-slate-500">Click any service to add</span>
                       </h3>
-                      <div className="space-y-2">
+                      <div className="grid gap-3">
                         {categoryServices.map(service => {
                           const isSelected = selectedServices.some(s => s.id === service.id);
                           const selectedService = selectedServices.find(s => s.id === service.id);
@@ -462,24 +654,24 @@ export default function CreateWorkOrderV2Page() {
                               key={service.id}
                               type="button"
                               onClick={() => addService(service)}
-                              className={`w-full text-left p-4 rounded-lg border-2 transition relative ${
+                              className={`group w-full text-left p-4 sm:p-5 rounded-2xl border transition duration-200 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-blue-100 ${
                                 isSelected
-                                  ? 'border-green-500 bg-green-50 shadow-lg'
-                                  : 'border-slate-200 hover:border-blue-400 hover:shadow-md bg-white'
+                                  ? 'border-blue-400 bg-gradient-to-br from-blue-50 to-white shadow-md shadow-blue-100'
+                                  : 'border-slate-200/80 bg-white/90 hover:border-blue-300 hover:shadow-lg'
                               }`}
                             >
                               <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-start min-[380px]:justify-between gap-3 min-[380px]:gap-4">
                                 {/* Left Content */}
                                 <div className="flex-1 min-w-0">
                                   <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-start gap-2 mb-1">
-                                    <h4 className={`font-semibold flex-1 ${isSelected ? 'text-green-900' : 'text-slate-900'}`}>
+                                    <h4 className="flex-1 font-black text-slate-950">
                                       {service.name}
                                     </h4>
                                     {/* Status Badge - Inline with title */}
                                     <div className={`px-2.5 py-0.5 rounded-full text-xs font-bold flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${
                                       isSelected 
-                                        ? 'bg-green-600 text-white' 
-                                        : 'bg-slate-200 text-slate-600'
+                                        ? 'bg-blue-600 text-white shadow-sm'
+                                        : 'bg-slate-100 text-slate-600 group-hover:bg-blue-50 group-hover:text-blue-700'
                                     }`}>
                                       {isSelected ? (
                                         <>
@@ -494,22 +686,21 @@ export default function CreateWorkOrderV2Page() {
                                       )}
                                     </div>
                                   </div>
-                                  <p className="text-sm text-slate-600 mb-2">{service.description}</p>
-                                  <div className="flex items-center gap-4 text-sm">
-                                    <span className="text-slate-500">
+                                  <p className="mb-3 text-sm leading-6 text-slate-600">{service.description}</p>
+                                  <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-600">
                                       {service.frequency === 'as-needed' ? 'As Needed' : 
                                        service.frequency.charAt(0).toUpperCase() + service.frequency.slice(1)}
                                     </span>
-                                    <span className="text-slate-400">•</span>
-                                    <span className="text-slate-500">{service.unit}</span>
+                                    <span className="rounded-full bg-sky-50 px-2.5 py-1 text-sky-800">{service.unit}</span>
                                   </div>
                                 </div>
                                 {/* Right Price - Always visible */}
-                                <div className="text-left min-[380px]:text-right flex-shrink-0 min-[380px]:ml-2">
-                                  <div className="text-xl md:text-2xl font-bold text-blue-600 whitespace-nowrap">
+                                <div className="flex min-w-28 flex-col justify-center rounded-xl bg-blue-50/80 px-4 py-3 text-left min-[380px]:ml-2 min-[380px]:text-right">
+                                  <div className="whitespace-nowrap text-xl font-black text-blue-700 md:text-2xl">
                                     ${service.basePrice}
                                   </div>
-                                  <div className="text-xs text-slate-500">{service.unit}</div>
+                                  <div className="text-xs font-semibold text-slate-500">per {service.unit}</div>
                                 </div>
                               </div>
                             </button>
@@ -519,16 +710,17 @@ export default function CreateWorkOrderV2Page() {
                     </div>
                   );
                 })}
-              </div>
+              </section>
+              )}
 
               {/* Schedule & Details */}
-              <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-blue-600" />
+              <div className="rounded-[1.5rem] border border-blue-100 bg-white p-4 shadow-sm md:p-6">
+                <div className="mb-6 flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 shadow-md shadow-blue-100">
+                    <Calendar className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-lg md:text-xl font-semibold text-slate-900">Schedule & Details</h2>
+                    <h2 className="text-lg font-black text-slate-950 md:text-xl">Schedule & Details</h2>
                     <p className="text-sm text-slate-600">When should we start?</p>
                   </div>
                 </div>
@@ -544,7 +736,7 @@ export default function CreateWorkOrderV2Page() {
                         value={formData.priority}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
                       >
                         <option value="low">Low - Routine maintenance</option>
                         <option value="normal">Normal - Standard service</option>
@@ -565,7 +757,7 @@ export default function CreateWorkOrderV2Page() {
                           onChange={handleChange}
                           required
                           min={new Date().toISOString().split('T')[0]}
-                          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 cursor-pointer hover:border-blue-400 transition bg-white"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 transition hover:border-blue-300 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100"
                           style={{ colorScheme: 'light' }}
                         />
                         <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
@@ -583,7 +775,7 @@ export default function CreateWorkOrderV2Page() {
                       value={formData.description}
                       onChange={handleChange}
                       rows={3}
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
                       placeholder="Any special requests or areas of concern..."
                     />
                   </div>
@@ -597,7 +789,7 @@ export default function CreateWorkOrderV2Page() {
                       value={formData.accessInstructions}
                       onChange={handleChange}
                       rows={2}
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
                       placeholder="Gate codes, lockbox location, key pickup instructions..."
                     />
                   </div>
@@ -605,22 +797,22 @@ export default function CreateWorkOrderV2Page() {
               </div>
 
               {/* Mobile-only Order Summary Card */}
-              <div className="lg:hidden bg-white rounded-xl shadow-sm border p-4">
-                <div className="flex items-center gap-3 mb-4">
-                  <DollarSign className="w-5 h-5 text-blue-600" />
-                  <h2 className="text-lg font-semibold text-slate-900">Order Summary</h2>
+              <div className="lg:hidden rounded-[1.5rem] border border-blue-100 bg-gradient-to-br from-white via-blue-50/40 to-white p-4 shadow-sm">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-sky-500"><DollarSign className="h-5 w-5 text-white" /></div>
+                  <div><p className="text-[0.6rem] font-black uppercase tracking-[0.16em] text-blue-700">Your selection</p><h2 className="text-lg font-black text-slate-950">Order Summary</h2></div>
                 </div>
 
                 {selectedServices.length === 0 ? (
                   <div className="text-center py-6">
                     <ShoppingCart className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                    <p className="text-slate-500 text-sm">No services selected yet</p>
+                    <p className="text-slate-500 text-sm">{maintenancePlan.length ? `${maintenancePlan.length} maintenance plan tasks selected` : 'No services selected yet'}</p>
                   </div>
                 ) : (
                   <>
                     <div className="space-y-3 mb-4">
                       {selectedServices.map(service => (
-                        <div key={service.id} className="flex flex-wrap items-center justify-between gap-2 py-2 border-b last:border-b-0">
+                        <div key={service.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-blue-50 py-3 last:border-b-0">
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-slate-900 truncate">{service.name}</p>
                             <p className="text-xs text-slate-500">${service.basePrice} × {service.quantity}</p>
@@ -649,17 +841,17 @@ export default function CreateWorkOrderV2Page() {
                       <select
                         value={billingFrequency}
                         onChange={e => setBillingFrequency(e.target.value as BillingFrequency)}
-                        className="w-full px-3 py-2.5 border border-slate-300 rounded-lg text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100"
                       >
                         <option value="one-time">One-Time — ${getTotalCost().toLocaleString()}</option>
                         <option value="weekly">Weekly — ${(getMonthlyEstimate() / 4).toFixed(0)}/wk</option>
                         <option value="monthly">Monthly — ${getMonthlyEstimate().toFixed(0)}/mo</option>
                         <option value="quarterly">Quarterly — ${getQuarterlyEstimate().toFixed(0)}/qtr (Save 5%)</option>
-                        <option value="yearly">Yearly — ${(getMonthlyEstimate() * 12 * 0.9).toFixed(0)}/yr (Save 10%)</option>
+                        <option value="yearly">Yearly — ${(getMonthlyEstimate() * 12).toFixed(0)}/yr estimate</option>
                       </select>
                     </div>
 
-                    <div className="flex items-center justify-between mb-4 p-3 bg-blue-50 rounded-lg">
+                    <div className="mb-4 flex items-center justify-between rounded-xl border border-blue-100 bg-white p-3">
                       <span className="font-semibold text-slate-900 text-sm">{getBillingLabel()}</span>
                       <span className="text-xl font-bold text-blue-600">
                         ${getBillingAmount().toFixed(0)}{getBillingSuffix()}
@@ -669,9 +861,9 @@ export default function CreateWorkOrderV2Page() {
                     <button
                       type="submit"
                       disabled={selectedServices.length === 0 || !formData.propertyId}
-                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3.5 rounded-lg font-bold text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 py-3.5 text-base font-black text-white shadow-lg shadow-blue-200 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                      {billingFrequency === 'one-time' ? '🛒 Submit Order' : '✅ Subscribe & Submit'}
+                      {billingFrequency === 'one-time' ? '🛒 Request Service Quote' : '✅ Request Subscription Quote'}
                     </button>
                     {!formData.propertyId && (
                       <p className="text-xs text-center text-amber-600 mt-2">⚠️ Please select a property first</p>
@@ -682,25 +874,25 @@ export default function CreateWorkOrderV2Page() {
             </div>
 
             {/* Right Column - Order Summary (Desktop Sticky, already in code below) */}
-            <div className="lg:col-span-1 hidden lg:block">
+            <div className="hidden lg:col-span-1 lg:block">
               <div className="sticky top-24">
-                <div className="bg-white rounded-xl shadow-lg border p-4 md:p-6">
-                  <div className="flex items-center gap-3 mb-6">
-                    <DollarSign className="w-6 h-6 text-blue-600" />
-                    <h2 className="text-lg md:text-xl font-semibold text-slate-900">Order Summary</h2>
+                <div className="overflow-hidden rounded-[1.5rem] border border-blue-100 bg-gradient-to-br from-white via-blue-50/30 to-white p-4 shadow-xl shadow-blue-100/60 md:p-6">
+                  <div className="mb-6 flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 shadow-md shadow-blue-100"><DollarSign className="h-5 w-5 text-white" /></div>
+                    <div><p className="text-[0.65rem] font-black uppercase tracking-[0.18em] text-blue-700">Your selection</p><h2 className="text-lg font-black text-slate-950 md:text-xl">Order Summary</h2></div>
                   </div>
 
                   {selectedServices.length === 0 ? (
                     <div className="text-center py-8">
                       <ShoppingCart className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                      <p className="text-slate-500 text-sm">No services selected yet</p>
-                      <p className="text-slate-400 text-xs mt-1">Choose services from the left</p>
+                      <p className="text-slate-500 text-sm">{maintenancePlan.length ? `${maintenancePlan.length} maintenance plan tasks selected` : 'No services selected yet'}</p>
+                      <p className="text-slate-400 text-xs mt-1">{maintenancePlan.length ? 'Final price will be confirmed after review' : 'Choose services from the left'}</p>
                     </div>
                   ) : (
                     <>
                       <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
                         {selectedServices.map(service => (
-                          <div key={service.id} className="border-b pb-4 last:border-b-0">
+                          <div key={service.id} className="rounded-xl border border-blue-50 bg-white/80 p-3">
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex-1 pr-2">
                                 <h4 className="font-medium text-slate-900 text-sm">{service.name}</h4>
@@ -753,14 +945,14 @@ export default function CreateWorkOrderV2Page() {
                             onClick={() => setBillingFrequency('one-time')}
                             className={`w-full p-3 rounded-lg border-2 transition text-left ${
                               billingFrequency === 'one-time'
-                                ? 'border-blue-500 bg-blue-50'
-                                : 'border-slate-200 hover:border-slate-300'
+                                ? 'border-blue-400 bg-gradient-to-r from-blue-50 to-sky-50 shadow-sm'
+                                : 'border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50/40'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <div className="font-semibold text-slate-900 text-sm">One-Time</div>
-                                <div className="text-xs text-slate-600">Pay once for all services</div>
+                                <div className="font-semibold text-slate-900 text-sm">One-Time Request</div>
+                                <div className="text-xs text-slate-600">Service estimate, confirmed before work</div>
                               </div>
                               <div className="text-base md:text-lg font-bold text-slate-900">
                                 ${getTotalCost().toLocaleString()}
@@ -773,14 +965,14 @@ export default function CreateWorkOrderV2Page() {
                             onClick={() => setBillingFrequency('weekly')}
                             className={`w-full p-3 rounded-lg border-2 transition text-left ${
                               billingFrequency === 'weekly'
-                                ? 'border-blue-500 bg-blue-50'
-                                : 'border-slate-200 hover:border-slate-300'
+                                ? 'border-blue-400 bg-gradient-to-r from-blue-50 to-sky-50 shadow-sm'
+                                : 'border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50/40'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <div className="font-semibold text-slate-900 text-sm">Weekly Subscription</div>
-                                <div className="text-xs text-slate-600">Automatic weekly billing</div>
+                                <div className="font-semibold text-slate-900 text-sm">Weekly Billing Preference</div>
+                                <div className="text-xs text-slate-600">Final quote confirmed before activation</div>
                               </div>
                               <div className="text-base md:text-lg font-bold text-blue-600">
                                 ${(getMonthlyEstimate() / 4).toFixed(0)}/wk
@@ -793,14 +985,14 @@ export default function CreateWorkOrderV2Page() {
                             onClick={() => setBillingFrequency('monthly')}
                             className={`w-full p-3 rounded-lg border-2 transition text-left ${
                               billingFrequency === 'monthly'
-                                ? 'border-blue-500 bg-blue-50'
-                                : 'border-slate-200 hover:border-slate-300'
+                                ? 'border-blue-400 bg-gradient-to-r from-blue-50 to-sky-50 shadow-sm'
+                                : 'border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50/40'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <div className="font-semibold text-slate-900 text-sm">Monthly Subscription</div>
-                                <div className="text-xs text-slate-600">Automatic monthly billing</div>
+                                <div className="font-semibold text-slate-900 text-sm">Monthly Billing Preference</div>
+                                <div className="text-xs text-slate-600">Final quote confirmed before activation</div>
                               </div>
                               <div className="text-base md:text-lg font-bold text-green-600">
                                 ${getMonthlyEstimate().toFixed(0)}/mo
@@ -813,19 +1005,16 @@ export default function CreateWorkOrderV2Page() {
                             onClick={() => setBillingFrequency('quarterly')}
                             className={`w-full p-3 rounded-lg border-2 transition text-left ${
                               billingFrequency === 'quarterly'
-                                ? 'border-blue-500 bg-blue-50'
-                                : 'border-slate-200 hover:border-slate-300'
+                                ? 'border-blue-400 bg-gradient-to-r from-blue-50 to-sky-50 shadow-sm'
+                                : 'border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50/40'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div>
                                 <div className="flex items-center gap-2">
-                                  <div className="font-semibold text-slate-900">Quarterly Subscription</div>
-                                  <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-semibold">
-                                    SAVE 5%
-                                  </span>
+                                  <div className="font-semibold text-slate-900">Quarterly Billing Preference</div>
                                 </div>
-                                <div className="text-xs text-slate-600">Bill every 3 months</div>
+                                <div className="text-xs text-slate-600">Preferred interval; final quote confirmed first</div>
                               </div>
                               <div className="text-lg font-bold text-green-600">
                                 ${getQuarterlyEstimate().toFixed(0)}/qtr
@@ -838,22 +1027,19 @@ export default function CreateWorkOrderV2Page() {
                             onClick={() => setBillingFrequency('yearly')}
                             className={`w-full p-3 rounded-lg border-2 transition text-left ${
                               billingFrequency === 'yearly'
-                                ? 'border-blue-500 bg-blue-50'
-                                : 'border-slate-200 hover:border-slate-300'
+                                ? 'border-blue-400 bg-gradient-to-r from-blue-50 to-sky-50 shadow-sm'
+                                : 'border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50/40'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div>
                                 <div className="flex items-center gap-2">
-                                  <div className="font-semibold text-slate-900">Yearly Subscription</div>
-                                  <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-semibold">
-                                    SAVE 10%
-                                  </span>
+                                  <div className="font-semibold text-slate-900">Yearly Billing Preference</div>
                                 </div>
-                                <div className="text-xs text-slate-600">Bill annually - best value</div>
+                                <div className="text-xs text-slate-600">Preferred interval; final quote confirmed first</div>
                               </div>
                               <div className="text-lg font-bold text-green-600">
-                                ${(getMonthlyEstimate() * 12 * 0.9).toFixed(0)}/yr
+                                ${(getMonthlyEstimate() * 12).toFixed(0)}/yr
                               </div>
                             </div>
                           </button>
@@ -878,9 +1064,9 @@ export default function CreateWorkOrderV2Page() {
                             </span>
                           </div>
                           {billingFrequency !== 'one-time' && (
-                            <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-2">
-                              <p className="text-xs text-green-800">
-                                <strong>Subscription Benefits:</strong> Automatic scheduling, priority service, and consistent property care.
+                            <div className="mb-2 rounded-xl border border-blue-100 bg-blue-50/80 p-3">
+                              <p className="text-xs leading-5 text-blue-900">
+                                <strong>Plan request:</strong> Preserve will confirm task schedule, vendor availability, and the final price before activation.
                               </p>
                             </div>
                           )}
@@ -890,14 +1076,14 @@ export default function CreateWorkOrderV2Page() {
                       <button
                         type="submit"
                         disabled={selectedServices.length === 0 || !formData.propertyId}
-                        className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                        className="mt-6 w-full rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 py-4 text-lg font-black text-white shadow-lg shadow-blue-200 transition hover:-translate-y-0.5 hover:from-blue-700 hover:to-sky-600 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        {billingFrequency === 'one-time' ? '🛒 Checkout & Submit Order' : '✅ Subscribe & Submit Order'}
+                        {billingFrequency === 'one-time' ? '🛒 Request Service Quote' : '✅ Request Subscription Quote'}
                       </button>
                       
                       {billingFrequency !== 'one-time' && (
                         <p className="text-xs text-center text-slate-500 mt-2">
-                          You can cancel your subscription anytime
+                          No recurring charge starts until the plan and price are confirmed.
                         </p>
                       )}
                     </>
@@ -905,9 +1091,9 @@ export default function CreateWorkOrderV2Page() {
                 </div>
 
                 {/* Help Card */}
-                <div className="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
-                  <h3 className="font-semibold text-blue-900 text-sm mb-2">Need Help?</h3>
-                  <p className="text-xs text-blue-800">
+                <div className="mt-4 rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-4 shadow-sm">
+                  <h3 className="mb-2 text-sm font-black text-blue-900">Need Help?</h3>
+                  <p className="text-xs leading-5 text-blue-800">
                     Not sure which services you need? Our team can help you create a custom preservation plan. Contact us through the portal.
                   </p>
                 </div>

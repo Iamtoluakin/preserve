@@ -1,4 +1,5 @@
 import { formatWorkflowStatus, normalizeWorkflowStatus } from './operations.js';
+import type { CustomerMaintenanceTask } from './homeMaintenance';
 
 export type WorkOrderStatus =
   | 'draft'
@@ -42,12 +43,14 @@ export type PreserveWorkOrder = {
   propertyAddress: string;
   serviceType: string;
   services?: unknown[];
+  maintenancePlan?: CustomerMaintenanceTask[];
   status: WorkOrderStatus;
   priority: string;
   scheduledDate?: string;
   billingFrequency: string;
   totalCost: number;
   billingAmount: number;
+  pricingStatus?: 'estimate' | 'quote-pending';
   description?: string;
   accessInstructions?: string;
   createdAt: string;

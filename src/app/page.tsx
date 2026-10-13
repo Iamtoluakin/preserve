@@ -21,31 +21,29 @@ import {
 
 const steps = [
   {
-    title: 'Request',
-    text: 'Tell us the property, service, timing, access notes, and anything the field team should know.',
+    title: 'Add Your Home',
+    text: 'Start with a new purchase or a home you have owned for years. Share the details that shape its care.',
   },
   {
-    title: 'We Coordinate',
-    text: 'PreserveHQ stays between the customer and vendor, assigns the right local pro, and manages the details.',
+    title: 'Build Your Schedule',
+    text: 'Organize routine upkeep by cadence, from weekly seasonal tasks to monthly and annual maintenance.',
   },
   {
-    title: 'Work Gets Done',
-    text: 'The assigned professional completes the work, shares updates, and uploads required photos or notes.',
+    title: 'We Coordinate the Work',
+    text: 'Preserve matches each task with a local professional and handles scheduling and follow-through.',
   },
   {
-    title: 'Review the Result',
-    text: 'You get completion proof, property history, and a clear record of what happened.',
+    title: 'See Every Visit',
+    text: 'Get updates, completion photos, and a clear maintenance history for your home.',
   },
 ];
 
 const membershipServices = [
-  'Inspections',
-  'Lawn care',
-  'Cleaning',
-  'Repairs',
-  'Seasonal maintenance',
-  'Vacancy checks',
-  'Photo updates',
+  { frequency: 'Monthly', tasks: ['Test smoke alarms and GFCI outlets', 'Check tile, grout, and shower seals', 'Replace HVAC filters during Year 1'] },
+  { frequency: 'Every other month after Year 1', tasks: ['Replace HVAC return-air filters'] },
+  { frequency: 'Quarterly', tasks: ['Check caulk, door thresholds, gutters, and drainage', 'Review exterior paint, steps, and rails'] },
+  { frequency: 'Twice yearly', tasks: ['Check washer hoses, dryer vents, and crawlspace lines', 'Schedule a professional HVAC inspection'] },
+  { frequency: 'Annually / as needed', tasks: ['Wash exterior and seal exposed wood', 'Flush water heater; check shutoff valve and termite plan', 'Steam-clean carpet as needed'] },
 ];
 
 const preservationServices = [
@@ -80,16 +78,16 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[0.94fr_1.06fr] lg:gap-12">
           <div className="animate-[fadeUp_700ms_ease-out_both]">
             <p className="mb-4 inline-flex rounded-full border border-blue-200 bg-white/85 px-4 py-2 text-[0.68rem] font-black uppercase tracking-[0.2em] text-blue-700 shadow-sm sm:text-xs">
-              From one home to an entire portfolio.
+              A better way to care for your home.
             </p>
             <h1 className="max-w-3xl text-[3.1rem] font-black leading-[0.95] tracking-normal text-slate-950 sm:text-6xl lg:text-7xl">
-              Property care.
+              Home care.
               <span className="block bg-gradient-to-r from-blue-600 to-sky-500 bg-clip-text text-transparent">
                 Handled.
               </span>
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-xl sm:leading-8">
-              From everyday home maintenance to vacant and foreclosed property preservation, PreserveHQ coordinates trusted local professionals and manages the work from start to finish.
+              New home or longtime home, know what needs attention and when. Preserve builds a maintenance schedule for your property, coordinates trusted local professionals, and keeps every visit and update in one place.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -121,8 +119,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <SectionIntro
             label="How it works"
-            title="Request to proof, without the contractor marketplace chaos."
-            text="PreserveHQ coordinates the job, manages the vendor relationship, and keeps the customer experience organized."
+            title="A home-care plan that keeps moving."
+            text="Preserve organizes the recurring schedule, coordinates the right local professionals, and shares updates and proof as work gets done."
           />
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, index) => (
@@ -141,9 +139,9 @@ export default function HomePage() {
       <section id="membership" className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-2">
           <AudienceCard
-            eyebrow="Property care membership"
-            title="Ongoing care for owners, landlords, investors, and remote homeowners."
-            text="Subscribe for coordinated property upkeep, updates, and work history without managing every vendor yourself."
+            eyebrow="Home maintenance membership"
+            title="Know what your home needs, and when it needs it."
+            text="Add a newly purchased home or one you have owned for years. Subscribe for a coordinated maintenance plan, with tasks scheduled through the year and local pros arranged by Preserve."
             icon={Home}
             items={membershipServices}
           />
@@ -209,10 +207,10 @@ export default function HomePage() {
       <section id="final-cta" className="px-4 py-12 pb-16 sm:px-6 sm:py-16 lg:px-8">
         <div className="mx-auto max-w-5xl rounded-[1.75rem] bg-slate-950 px-5 py-10 text-center text-white shadow-2xl shadow-slate-200 sm:px-10 sm:py-14">
           <h2 className="text-3xl font-black tracking-normal sm:text-5xl">
-            From one home to an entire portfolio.
+            Your home has a schedule. Preserve helps you keep it.
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-            PreserveHQ coordinates property care and preservation work so every request has a clear owner, field pro, status, and result.
+            Start with your home. We&apos;ll help organize routine maintenance and coordinate trusted professionals as it comes due.
           </p>
           <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
@@ -322,7 +320,7 @@ function AudienceCard({
   title: string;
   text: string;
   icon: typeof Home;
-  items: string[];
+  items: string[] | { frequency: string; tasks: string[] }[];
   highlighted?: boolean;
 }) {
   return (
@@ -333,13 +331,27 @@ function AudienceCard({
       <p className={`mt-5 text-xs font-black uppercase tracking-[0.2em] ${highlighted ? 'text-blue-100' : 'text-blue-700'}`}>{eyebrow}</p>
       <h2 className="mt-3 text-2xl font-black tracking-normal sm:text-3xl">{title}</h2>
       <p className={`mt-4 text-sm leading-6 sm:text-base ${highlighted ? 'text-blue-50' : 'text-slate-600'}`}>{text}</p>
-      <div className="mt-6 flex flex-wrap gap-2">
-        {items.map((item) => (
-          <span key={item} className={`rounded-full px-3 py-2 text-xs font-bold ${highlighted ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-700'}`}>
-            {item}
-          </span>
-        ))}
-      </div>
+      {typeof items[0] === 'string' ? (
+        <div className="mt-6 flex flex-wrap gap-2">
+          {(items as string[]).map((item) => (
+            <span key={item} className={`rounded-full px-3 py-2 text-xs font-bold ${highlighted ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-700'}`}>
+              {item}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-6 space-y-3">
+          {(items as { frequency: string; tasks: string[] }[]).map((group) => (
+            <div key={group.frequency} className={`rounded-xl p-3 ${highlighted ? 'bg-white/10' : 'bg-slate-50'}`}>
+              <h3 className={`text-xs font-black uppercase tracking-wide ${highlighted ? 'text-blue-100' : 'text-blue-700'}`}>{group.frequency}</h3>
+              <p className={`mt-1 text-sm leading-6 ${highlighted ? 'text-white' : 'text-slate-700'}`}>{group.tasks.join(' · ')}</p>
+            </div>
+          ))}
+          <p className={`text-xs leading-5 ${highlighted ? 'text-blue-100' : 'text-slate-500'}`}>
+            Adapted from a sample 3-year homeowner checklist. Confirm each task and timing for the home, equipment, climate, and applicable warranties.
+          </p>
+        </div>
+      )}
     </article>
   );
 }
