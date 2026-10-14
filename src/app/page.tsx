@@ -61,7 +61,7 @@ export default function HomePage() {
               A better way to care for your home.
             </p>
             <h1 className="max-w-3xl text-[3.1rem] font-black leading-[0.95] tracking-normal text-slate-950 sm:text-6xl lg:text-7xl">
-              Home care.
+              Property care.
               <span className="block bg-gradient-to-r from-blue-600 to-sky-500 bg-clip-text text-transparent">
                 Handled.
               </span>
