@@ -12,7 +12,8 @@ import {
   Minus,
   DollarSign,
   CheckCircle2,
-  Snowflake
+  Snowflake,
+  Sparkles,
 } from 'lucide-react';
 import { serviceCatalog, calculateMonthlyCost, supabase } from '@/lib/supabase';
 import {
@@ -52,7 +53,7 @@ const serviceFolders: {
   serviceIds: string[];
 }[] = [
   { id: 'inspection', title: 'Inspection', summary: 'Home checks, condition reports, and photos', icon: CheckCircle2, serviceIds: ['full_inspection', 'photo_documentation'] },
-  { id: 'work-orders', title: 'Work Orders', summary: 'Repairs, cleanup, securing, and one-time jobs', icon: ShoppingCart, serviceIds: ['move_out_deep_clean', 'odor_sanitation', 'property_securing', 'board_up', 'debris_removal', 'minor_repairs', 'emergency_response'] },
+  { id: 'work-orders', title: 'One-Time Requests', summary: 'Repairs, cleanup, debris removal, property securing, and urgent help', icon: ShoppingCart, serviceIds: ['move_out_deep_clean', 'odor_sanitation', 'property_securing', 'board_up', 'debris_removal', 'minor_repairs', 'emergency_response'] },
   { id: 'maintenance', title: 'Maintenance', summary: 'Recurring home-care tasks and seasonal services', icon: Calendar, serviceIds: ['exterior_cleaning', 'pressure_washing', 'window_cleaning', 'interior_house_cleaning', 'winterization', 'de_winterization', 'gutter_cleaning', 'pest_control'] },
   { id: 'hvac', title: 'HVAC', summary: 'Heating, cooling, and system service', icon: Snowflake, serviceIds: ['hvac_check'] },
   { id: 'lawn', title: 'Lawn', summary: 'Mowing, yard cleanup, and grounds care', icon: Home, serviceIds: ['lawn_mowing', 'lawn_cleanup'] },
@@ -145,9 +146,32 @@ export default function CreateWorkOrderV2Page() {
   const maintenanceMonthlyEstimate = pricedMaintenanceTasks.reduce((sum, item) => sum + (item.monthlyEstimate || 0), 0);
   const selectedCount = selectedServices.length + maintenancePlan.length;
   const preferredBillingFrequency = maintenancePlan.length ? planBillingFrequency : billingFrequency;
+  const selectedProperty = properties.find(property => property.id === formData.propertyId);
+  const homeAge = selectedProperty?.yearBuilt ? new Date().getFullYear() - selectedProperty.yearBuilt : null;
+  const recommendedTaskIds = new Set([
+    'smoke-alarms', 'gfi-outlets', 'air-filters', 'hvac-service', 'gutters-roof', 'water-heater',
+    ...(homeAge !== null && homeAge >= 20 ? ['foundation-drains', 'exterior-caulk', 'crawlspace-lines', 'main-water-valve', 'steps-rails'] : []),
+  ]);
+  const recommendedTasks = homeMaintenanceTasks.filter(task => recommendedTaskIds.has(task.id));
+  const recommendationReason = homeAge === null
+    ? 'A balanced starter checklist covers routine safety, HVAC, drainage, and water-heater checks. Add the year built to tailor it for an older home.'
+    : homeAge >= 20
+      ? `Built in ${selectedProperty?.yearBuilt}, this home is about ${homeAge} years old. The suggested checklist adds closer checks for drainage, seals, crawlspace lines, and shutoffs alongside routine upkeep.`
+      : `Built in ${selectedProperty?.yearBuilt}, this home is about ${homeAge} years old. The suggested checklist starts with routine safety, HVAC, drainage, and water-heater upkeep.`;
 
   const addRecommendedMaintenancePlan = () => {
     setSelectedMaintenanceTasks(Object.fromEntries(homeMaintenanceTasks.map(task => [task.id, {
+      id: task.id,
+      category: task.category,
+      name: task.name,
+      firstDueMonth: task.firstDueMonth,
+      firstYearFrequency: task.firstYearFrequency,
+      ongoingFrequency: task.ongoingFrequency,
+    }])));
+  };
+
+  const applyPersonalizedRecommendation = () => {
+    setSelectedMaintenanceTasks(Object.fromEntries(recommendedTasks.map(task => [task.id, {
       id: task.id,
       category: task.category,
       name: task.name,
@@ -515,7 +539,7 @@ export default function CreateWorkOrderV2Page() {
                   </div>
                   {selectedCount > 0 && <span className="inline-flex w-fit items-center gap-2 rounded-full border border-blue-200 bg-white/90 px-3 py-2 text-sm font-bold text-blue-800 shadow-sm"><CheckCircle2 className="h-4 w-4" />{selectedCount} selected</span>}
                 </div>
-                <div className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-3 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 xl:grid-cols-5">
+                <div className="-mx-1 flex touch-pan-x snap-x snap-mandatory gap-3 overflow-x-scroll overscroll-x-contain px-1 pb-3 [scrollbar-width:thin] sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 xl:grid-cols-5">
                   {serviceFolders.map(folder => {
                     const FolderIcon = folder.icon;
                     const folderServiceCount = selectedServices.filter(service => folder.serviceIds.includes(service.id)).length;
@@ -550,10 +574,18 @@ export default function CreateWorkOrderV2Page() {
                     <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">
                       Pick the jobs you want Preserve to coordinate. Set a first-year cadence and an ongoing cadence for each task.
                     </p>
+                    <div className="mt-4 max-w-3xl rounded-2xl border border-sky-200 bg-sky-50/80 p-4">
+                      <p className="flex items-center gap-2 text-sm font-black text-sky-950"><Sparkles className="h-4 w-4" />Suggested starting plan for your home</p>
+                      <p className="mt-1 text-sm leading-6 text-sky-900">{recommendationReason}</p>
+                      {selectedProperty?.squareFeet && <p className="mt-1 text-xs text-sky-800">Home profile: {selectedProperty.squareFeet.toLocaleString()} sq ft{selectedProperty.propertyType ? ` · ${selectedProperty.propertyType}` : ''}. The suggestion is a starting point; your home’s condition, upgrades, and equipment can change what it needs.</p>}
+                    </div>
                   </div>
                   <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row">
-                    <button type="button" onClick={addRecommendedMaintenancePlan} className="min-h-12 rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white shadow-md shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700 sm:min-h-0 sm:py-2.5">
-                      Add suggested checklist
+                    <button type="button" onClick={applyPersonalizedRecommendation} className="min-h-12 rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white shadow-md shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700 sm:min-h-0 sm:py-2.5">
+                      Use suggested plan · {recommendedTasks.length} tasks
+                    </button>
+                    <button type="button" onClick={addRecommendedMaintenancePlan} className="min-h-12 rounded-xl border border-blue-200 bg-white px-4 py-3 text-sm font-bold text-blue-800 transition hover:bg-blue-50 sm:min-h-0 sm:py-2.5">
+                      Add full checklist
                     </button>
                     {maintenancePlan.length > 0 && (
                     <button type="button" onClick={() => setSelectedMaintenanceTasks({})} className="min-h-12 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-blue-200 hover:text-blue-700 sm:min-h-0 sm:py-2.5">

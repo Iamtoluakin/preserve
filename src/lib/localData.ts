@@ -29,6 +29,8 @@ export type PreserveProperty = {
   serviceArea?: string;
   zip?: string;
   propertyType?: string;
+  yearBuilt?: number;
+  squareFeet?: number;
   acquisitionDate?: string;
   status?: string;
   bankReference?: string;

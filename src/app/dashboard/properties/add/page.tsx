@@ -11,7 +11,7 @@ const NC_COUNTIES = ['Alamance','Alexander','Alleghany','Anson','Ashe','Avery','
 type Step = 'search'|'confirm'|'manual'|'saving'|'done';
 type LookupResult = { address:string; city:string; state:string; zip:string; county:string; beds:number|null; baths:number|null; sqft:number|null; year_built:number|null; property_type:string|null; stories:number|null; lot_size:number|null; apn:string|null; owner_name:string|null; estimated_value:number|null; };
 type Extras = { nickname:string; notes:string; county:string; purpose:string; };
-const defaultManual = { address:'', city:'', state:'NC', zip:'', county:'', propertyType:'', parcelId:'', notes:'', purpose:'' };
+const defaultManual = { address:'', city:'', state:'NC', zip:'', county:'', propertyType:'', yearBuilt:'', parcelId:'', notes:'', purpose:'' };
 
 export default function AddPropertyPage() {
   const router = useRouter();
@@ -44,7 +44,7 @@ export default function AddPropertyPage() {
   const handleSaveFromLookup = () => {
     if (!result) return;
     setStep('saving');
-    const p: PreserveProperty = { id:`prop_${Date.now()}`, address:result.address, city:result.city, state:result.state, zip:result.zip, county:extras.county, propertyType:result.property_type||'', parcelId:result.apn||'', notes:extras.notes, status:'active' };
+    const p: PreserveProperty = { id:`prop_${Date.now()}`, address:result.address, city:result.city, state:result.state, zip:result.zip, county:extras.county, propertyType:result.property_type||'', yearBuilt:result.year_built||undefined, squareFeet:result.sqft||undefined, parcelId:result.apn||'', notes:extras.notes, status:'active' };
     writeProperties([...readProperties(), p]);
     setStep('done');
     setTimeout(() => router.push('/dashboard/properties'), 1500);
@@ -52,7 +52,7 @@ export default function AddPropertyPage() {
 
   const handleSaveManual = (e: React.FormEvent) => {
     e.preventDefault(); setStep('saving');
-    const p: PreserveProperty = { id:`prop_${Date.now()}`, address:manual.address, city:manual.city, state:manual.state, zip:manual.zip, county:manual.county, propertyType:manual.propertyType, parcelId:manual.parcelId, notes:manual.notes, status:'active' };
+    const p: PreserveProperty = { id:`prop_${Date.now()}`, address:manual.address, city:manual.city, state:manual.state, zip:manual.zip, county:manual.county, propertyType:manual.propertyType, yearBuilt:Number(manual.yearBuilt)||undefined, parcelId:manual.parcelId, notes:manual.notes, status:'active' };
     writeProperties([...readProperties(), p]);
     setStep('done');
     setTimeout(() => router.push('/dashboard/properties'), 1500);
@@ -217,6 +217,7 @@ export default function AddPropertyPage() {
               <div><label className="block text-sm font-medium text-slate-700 mb-1">County</label><select value={manual.county} onChange={e=>setManual(p=>({...p,county:e.target.value}))} className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm bg-white"><option value="">Select county</option>{NC_COUNTIES.map(c=><option key={c} value={c}>{c} County</option>)}</select></div>
               <div><label className="block text-sm font-medium text-slate-700 mb-1">Property Type</label><select value={manual.propertyType} onChange={e=>setManual(p=>({...p,propertyType:e.target.value}))} className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm bg-white"><option value="">Select type</option><option>Single Family</option><option>Condo</option><option>Townhouse</option><option>Multi-Family</option><option>Commercial</option><option>Vacant Land</option></select></div>
             </div>
+            <div><label className="block text-sm font-medium text-slate-700 mb-1">Year built <span className="font-normal text-slate-400">(optional, helps tailor a maintenance suggestion)</span></label><input type="number" min="1700" max={new Date().getFullYear()} value={manual.yearBuilt} onChange={e=>setManual(p=>({...p,yearBuilt:e.target.value}))} placeholder="e.g. 2008" className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-900 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"/></div>
             <div><label className="block text-sm font-medium text-slate-700 mb-1">Notes</label><textarea value={manual.notes} onChange={e=>setManual(p=>({...p,notes:e.target.value}))} rows={2} placeholder="Any additional notes…" className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 text-sm resize-none"/></div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Property Purpose</label>
