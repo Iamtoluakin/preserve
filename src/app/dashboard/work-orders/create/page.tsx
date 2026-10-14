@@ -61,7 +61,6 @@ const serviceFolders: {
 
 const maintenanceTaskPriceService: Record<string, string> = {
   'exterior-wash': 'pressure_washing',
-  'hvac-service': 'hvac_check',
   'gutters-roof': 'gutter_cleaning',
   'termite-plan': 'pest_control',
 };
@@ -149,7 +148,7 @@ export default function CreateWorkOrderV2Page() {
   const selectedProperty = properties.find(property => property.id === formData.propertyId);
   const homeAge = selectedProperty?.yearBuilt ? new Date().getFullYear() - selectedProperty.yearBuilt : null;
   const recommendedTaskIds = new Set([
-    'smoke-alarms', 'gfi-outlets', 'air-filters', 'hvac-service', 'gutters-roof', 'water-heater',
+    'smoke-alarms', 'gfi-outlets', 'air-filters', 'gutters-roof', 'water-heater',
     ...(homeAge !== null && homeAge >= 20 ? ['foundation-drains', 'exterior-caulk', 'crawlspace-lines', 'main-water-valve', 'steps-rails'] : []),
   ]);
   const recommendedTasks = homeMaintenanceTasks.filter(task => recommendedTaskIds.has(task.id));
@@ -199,6 +198,26 @@ export default function CreateWorkOrderV2Page() {
           ongoingFrequency: task.ongoingFrequency,
         },
       };
+    });
+  };
+
+  const toggleMaintenanceCategory = (category: string) => {
+    const tasks = homeMaintenanceTasks.filter(task => task.category === category);
+    const allSelected = tasks.every(task => selectedMaintenanceTasks[task.id]);
+    setSelectedMaintenanceTasks(current => {
+      const next = { ...current };
+      for (const task of tasks) {
+        if (allSelected) delete next[task.id];
+        else next[task.id] = {
+          id: task.id,
+          category: task.category,
+          name: task.name,
+          firstDueMonth: task.firstDueMonth,
+          firstYearFrequency: task.firstYearFrequency,
+          ongoingFrequency: task.ongoingFrequency,
+        };
+      }
+      return next;
     });
   };
 
@@ -656,7 +675,12 @@ export default function CreateWorkOrderV2Page() {
                 <div className="mt-5 space-y-4">
                   {maintenanceCategories.map(category => (
                     <div key={category} className="rounded-2xl border border-slate-100 bg-white/75 p-4 shadow-sm">
-                      <h3 className="mb-3 flex items-center gap-2 text-sm font-black text-slate-900"><span className="h-2 w-2 rounded-full bg-blue-500" />{category}</h3>
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <h3 className="flex items-center gap-2 text-sm font-black text-slate-900"><span className="h-2 w-2 rounded-full bg-blue-500" />{category}<span className="text-xs font-semibold text-slate-500">{homeMaintenanceTasks.filter(task => task.category === category).length} items</span></h3>
+                        <button type="button" onClick={() => toggleMaintenanceCategory(category)} className="min-h-10 rounded-lg px-3 text-xs font-bold text-blue-700 hover:bg-blue-50">
+                          {homeMaintenanceTasks.filter(task => task.category === category).every(task => selectedMaintenanceTasks[task.id]) ? 'Clear group' : 'Select group'}
+                        </button>
+                      </div>
                       <div className="grid gap-2 sm:grid-cols-2">
                         {homeMaintenanceTasks.filter(task => task.category === category).map(task => {
                           const selected = selectedMaintenanceTasks[task.id];
