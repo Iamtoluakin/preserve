@@ -117,8 +117,8 @@ export default function HomePage() {
       </section>
 
       <section id="membership" className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <div className="mx-auto max-w-5xl rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-9">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <div className="mx-auto grid max-w-6xl gap-7 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-8 lg:grid-cols-[1fr_0.85fr] lg:items-center lg:gap-10">
+          <div>
             <div className="max-w-2xl">
               <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-700">Home maintenance membership</p>
               <h2 className="mt-3 text-3xl font-black tracking-normal text-slate-950 sm:text-4xl">Know what your home needs, and when.</h2>
@@ -126,15 +126,27 @@ export default function HomePage() {
                 Get a personalized upkeep schedule and help coordinating trusted local professionals, all in one place.
               </p>
             </div>
-            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
-              <Home className="h-6 w-6" />
+            <div className="mt-6 flex flex-wrap gap-2">
+              {['Seasonal checkups', 'HVAC filter changes', 'Safety checks'].map((item) => (
+                <span key={item} className="rounded-full bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700">{item}</span>
+              ))}
             </div>
           </div>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {['Seasonal checkups', 'HVAC filter changes', 'Safety checks'].map((item) => (
-              <span key={item} className="rounded-full bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700">{item}</span>
-            ))}
-          </div>
+          <figure className="relative overflow-hidden rounded-2xl border border-blue-100 bg-slate-100 shadow-lg shadow-blue-100/60">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/home-service-crew.jpg"
+              alt="Home service crew wearing work uniforms and carrying equipment outside a house"
+              className="aspect-[4/3] w-full object-cover object-[center_72%]"
+              width={1400}
+              height={2100}
+              loading="lazy"
+            />
+            <figcaption className="absolute bottom-3 left-3 rounded-lg bg-white/95 px-3 py-2 text-xs font-bold text-slate-700 shadow-sm backdrop-blur">
+              <span className="block">Local pros, ready to help</span>
+              <a className="mt-0.5 block text-[10px] font-medium text-slate-500 underline" href="https://www.pexels.com/photo/3-men-in-orange-and-black-uniform-standing-beside-white-and-brown-house-6196222/" target="_blank" rel="noreferrer">Photo by Tima Miroshnichenko / Pexels</a>
+            </figcaption>
+          </figure>
         </div>
       </section>
 
