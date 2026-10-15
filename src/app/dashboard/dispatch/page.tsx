@@ -6,14 +6,9 @@ import {
   ArrowLeft,
   CheckCircle2,
   ClipboardList,
-  FileText,
-  Home,
   MapPin,
-  Plus,
-  Settings,
   ShieldCheck,
   Star,
-  UserCheck,
 } from 'lucide-react';
 import {
   PreserveWorkOrder,
@@ -396,31 +391,6 @@ export default function DispatchPage() {
           </section>
         </div>
       </main>
-
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 grid grid-cols-5 border-t bg-white/95 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_24px_rgba(15,23,42,0.08)] backdrop-blur">
-        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 rounded-lg px-1 py-1.5 text-slate-500">
-          <Home className="h-5 w-5" />
-          <span className="text-xs font-medium">Home</span>
-        </Link>
-        <Link href="/dashboard/properties" className="flex flex-col items-center gap-0.5 rounded-lg px-1 py-1.5 text-slate-500">
-          <MapPin className="h-5 w-5" />
-          <span className="text-xs font-medium">Properties</span>
-        </Link>
-        <Link href="/dashboard/work-orders/create" className="flex flex-col items-center gap-0.5">
-          <div className="-mt-5 grid h-12 w-12 place-items-center rounded-full bg-blue-600 shadow-lg">
-            <Plus className="h-6 w-6 text-white" />
-          </div>
-          <span className="mt-0.5 text-xs font-medium text-slate-500">New</span>
-        </Link>
-        <Link href="/dashboard/work-orders" className="flex flex-col items-center gap-0.5 rounded-lg px-1 py-1.5 text-slate-500">
-          <FileText className="h-5 w-5" />
-          <span className="text-xs font-medium">Orders</span>
-        </Link>
-        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 rounded-lg px-1 py-1.5 text-slate-500">
-          <Settings className="h-5 w-5" />
-          <span className="text-xs font-medium">Settings</span>
-        </Link>
-      </nav>
     </div>
   );
 }

@@ -7,7 +7,6 @@ import {
   Home,
   FileText, 
   Camera, 
-  Settings,
   Plus,
   Search,
   Bell,
@@ -158,30 +157,6 @@ export default function DashboardPage() {
       </header>
 
       <div className="flex">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white border-r min-h-screen hidden lg:block">
-          <nav className="p-4 space-y-2">
-            <Link href="/dashboard">
-              <NavItem icon={<Home />} label="Dashboard" active />
-            </Link>
-            <Link href="/dashboard/properties">
-              <NavItem icon={<MapPin />} label="Your Properties" />
-            </Link>
-            <Link href="/dashboard/work-orders">
-              <NavItem icon={<FileText />} label="Work Orders" />
-            </Link>
-            <Link href="/dashboard/dispatch">
-              <NavItem icon={<UserCheck />} label="Dispatch" />
-            </Link>
-            <Link href="/dashboard/inspections">
-              <NavItem icon={<Camera />} label="Inspections" />
-            </Link>
-            <Link href="/dashboard/settings">
-              <NavItem icon={<Settings />} label="Settings" />
-            </Link>
-          </nav>
-        </aside>
-
         {/* Main Content */}
         <main className="flex-1 p-3 sm:p-4 md:p-6 pb-28 lg:pb-6">
           {/* Stats Grid */}
@@ -386,48 +361,7 @@ export default function DashboardPage() {
           </div>
         </main>
       </div>
-
-      {/* Mobile Bottom Nav */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t z-50 grid grid-cols-5 px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(15,23,42,0.08)]">
-        <Link href="/dashboard" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg bg-blue-50 text-blue-600">
-          <Home className="w-5 h-5" />
-          <span className="text-xs font-medium">Home</span>
-        </Link>
-        <Link href="/dashboard/properties" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
-          <MapPin className="w-5 h-5" />
-          <span className="text-xs font-medium">Properties</span>
-        </Link>
-        <Link href="/dashboard/work-orders/create" className="flex flex-col items-center gap-0.5">
-          <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center shadow-lg -mt-5">
-            <Plus className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-xs font-medium text-slate-500 mt-0.5">New</span>
-        </Link>
-        <Link href="/dashboard/work-orders" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
-          <FileText className="w-5 h-5" />
-          <span className="text-xs font-medium">Orders</span>
-        </Link>
-        <Link href="/dashboard/settings" className="flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 transition">
-          <Settings className="w-5 h-5" />
-          <span className="text-xs font-medium">Settings</span>
-        </Link>
-      </nav>
     </div>
-  );
-}
-
-function NavItem({ icon, label, active = false }: { icon: React.ReactNode; label: string; active?: boolean }) {
-  return (
-    <button
-      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition ${
-        active
-          ? 'bg-blue-50 text-blue-600 font-medium'
-          : 'text-slate-600 hover:bg-slate-50'
-      }`}
-    >
-      {icon}
-      <span>{label}</span>
-    </button>
   );
 }
 
